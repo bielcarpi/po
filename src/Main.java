@@ -1,5 +1,9 @@
-import entities.AbstractSyntaxTree;
+import entities.ParseTree;
+import lexical_analysis.POLexer;
+import preprocessor.POPreprocessor;
 import preprocessor.Preprocessor;
+import semantic_analysis.POSemanticAnalyzer;
+import syntax_analysis.POParser;
 import syntax_analysis.Parser;
 
 public class Main {
@@ -11,8 +15,8 @@ public class Main {
         String pureHLL = preprocessor.generatePureHighLevelLanguage(file);
 
         Parser parser = new POParser(pureHLL);
-        AbstractSyntaxTree ast = parser.generateAbstractSyntaxTree(new POLexer(), new POSemanticAnalyzer());
+        ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());
 
-        AbstractSyntaxTree.printTree(ast);
+        System.out.println(pt);
     }
 }

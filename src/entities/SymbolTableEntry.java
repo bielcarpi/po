@@ -9,4 +9,8 @@ public abstract class SymbolTableEntry {
         this.id = id;
         this.scope = scope;
     }
+
+    public String getId(){
+        return id;
+    }
 }

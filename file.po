@@ -1,0 +1,9 @@
+//Primer Fitxer a Compilar!
+
+/*
+    Comentaris
+*/
+
+func main(){
+    var a = 3
+}

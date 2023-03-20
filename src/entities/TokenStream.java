@@ -1,10 +1,17 @@
 package entities;
 
-import java.util.ArrayList;
+import java.util.Queue;
 
+/**
+ * The TokenStream class represents a stream of {@link Token}.
+ * Acting as a {@link Queue}, it wraps useful functions for manipulation of a stream of tokens.
+ *
+ * @see Token
+ * @see TokenType
+ */
 public class TokenStream {
 
-    private ArrayList<Token> tokens; //Queue instead of ArrayList?
+    private Queue<Token> tokens;
 
     public TokenStream(){
     }

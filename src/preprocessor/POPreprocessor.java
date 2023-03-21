@@ -1,5 +1,7 @@
 package preprocessor;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -9,18 +11,16 @@ import java.util.stream.Stream;
 
 public class POPreprocessor implements Preprocessor {
     @Override
-    public @NotNull String generatePureHighLevelLanguage( @NotNull String filePath) {
-
-        String content = fileToString(filePath);
-        String cleanContent = cleanFileContent(content);
-
-        return cleanContent;
+    @NotNull
+    public String generatePureHighLevelLanguage(@NotNull String filePath) {
+        return cleanFileContent(fileToString(filePath));
     }
 
     /**
      * This function is used to read all the file information and store it into one single line. The
      * bytes from the file are decoded into characters using the specified charset. The returned stream
      * contains the reference to an open file, and it is closed by closing the stream.
+     *
      * @param filePath: Path of the file to read
      * @return fileContent: String with the representation of the content of the file
      */
@@ -31,15 +31,16 @@ public class POPreprocessor implements Preprocessor {
             // Stream of data appended from the file
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
-            // Handle exception
+            // TODO: Handle exception
         }
-        String fileContent = contentBuilder.toString();
-        return fileContent;
+
+        return contentBuilder.toString();
     }
 
     /**
      * This function is used to clean the information read from the file, simulating a preprocessor
      * function so that the code is cleaned to be parsed or analized properly.
+     *
      * @param content: String with the representation of the content of the file read before.
      * @return clearContent: String with the representation of the content of the file once cleaned.
      */

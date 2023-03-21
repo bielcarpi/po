@@ -13,22 +13,32 @@ import java.util.HashMap;
  */
 public class SymbolTable {
 
-    private HashMap<String, SymbolTableEntry> map;
+    private final HashMap<String, SymbolTableEntry> map;
+
+    /**
+     * Symbol Table Constructor
+     */
+    public SymbolTable(){
+        map = new HashMap<>();
+    }
 
     /**
      * Inserts a SymbolTableEntry to this SymbolTable
      * @param entry The entry to insert
      */
-    public void insert(@NotNull SymbolTableEntry entry){
+    public void insert(@NotNull SymbolTableEntry entry) throws DuplicateEntryException{
+        if(map.containsKey(entry.getId())) throw new DuplicateEntryException(entry.getId());
+        map.put(entry.getId(), entry);
     }
 
     /**
      * Deletes a SymbolTableEntry from this SymbolTable, given its ID
      * @param entryId The ID of the entry to delete
-     * @return Whether the entry was deleted or not
+     * @return The entry that was deleted, or {@code null} if there was no entry with the provided ID
      */
-    public boolean delete(@NotNull String entryId){
-        return false;
+    @Nullable
+    public SymbolTableEntry delete(@NotNull String entryId){
+        return map.remove(entryId);
     }
 
     /**
@@ -38,6 +48,6 @@ public class SymbolTable {
      */
     @Nullable
     public SymbolTableEntry lookup(@NotNull String entryId){
-        return null;
+        return map.get(entryId);
     }
 }

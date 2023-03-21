@@ -18,14 +18,14 @@ public class TokenStream {
 
 
     public Token nextToken(){
-        return null;
+        return tokens.poll();
     }
 
     public void addNewToken(Token token){
-        System.out.println("New token added -> " + token);
+        tokens.add(token);
     }
 
     public boolean isEmpty(){
-        return true;
+        return tokens.isEmpty();
     }
 }

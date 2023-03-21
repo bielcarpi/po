@@ -22,5 +22,10 @@ public class TokenStream {
     }
 
     public void addNewToken(Token token){
+        System.out.println("New token added -> " + token);
+    }
+
+    public boolean isEmpty(){
+        return true;
     }
 }

@@ -23,4 +23,10 @@ public class Token {
         this.type = type;
         this.data = data;
     }
+
+
+    @Override
+    public String toString() {
+        return "Token {Type: %s, Data: %s}".formatted(type, data);
+    }
 }

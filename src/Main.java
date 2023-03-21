@@ -16,12 +16,7 @@ public class Main {
         String pureHLL = preprocessor.generatePureHighLevelLanguage(file);
 
         //Simulate the preprocessor is working and that parser calls the Lexer
-        TokenStream ts
-        = new POLexer().generateTokenStream("func main(){\n\tvar a = 3\n}");
-        assert ts!= null;
-        while (!ts.isEmpty()){
-            System.out.println(ts.nextToken().toString());
-        }
+        new POLexer().generateTokenStream("func main(){\n\tvar a = 3\n}");
 
         //Parser parser = new POParser(pureHLL);
         //ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());

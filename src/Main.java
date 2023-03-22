@@ -14,9 +14,13 @@ public class Main {
         Preprocessor preprocessor = new POPreprocessor();
         String pureHLL = preprocessor.generatePureHighLevelLanguage(file);
 
-        Parser parser = new POParser(pureHLL);
-        ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());
+        //Simulate the preprocessor is working and that parser calls the Lexer
+        new POLexer().generateTokenStream("func main(){\n\tvar a = 3\n}");
 
-        System.out.println(pt);
+
+        //Parser parser = new POParser(pureHLL);
+        //ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());
+
+        //System.out.println(pt);
     }
 }

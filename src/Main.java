@@ -1,5 +1,4 @@
 import entities.ParseTree;
-import entities.TokenStream;
 import lexical_analysis.POLexer;
 import preprocessor.POPreprocessor;
 import preprocessor.Preprocessor;
@@ -17,6 +16,7 @@ public class Main {
 
         //Simulate the preprocessor is working and that parser calls the Lexer
         new POLexer().generateTokenStream("func main(){\n\tvar a = 3\n}");
+
 
         //Parser parser = new POParser(pureHLL);
         //ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());

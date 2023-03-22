@@ -58,6 +58,7 @@ public enum TokenType {
     TRUE(Pattern.compile("^true$")),
     FALSE(Pattern.compile("^false$")),
     EOL(Pattern.compile("^\\n$")),
+    EOF(Pattern.compile("^$")),
     ID(Pattern.compile("^[a-zA-Z_]\\w*$"));
 
     private final Pattern regex;

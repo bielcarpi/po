@@ -1,5 +1,7 @@
 package entities;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * The SymbolTableVariableEntry represents a {@link SymbolTableEntry} for Variables.
  *
@@ -16,8 +18,16 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      * @param scope The scope of the Variable
      * @param size The size of the variable (or 1 if it is not an array)
      */
-    public SymbolTableVariableEntry(final String id, final String scope, final int size) {
+    public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final int size) {
         super(id, scope);
         this.size = size;
+    }
+
+    /**
+     * Returns the size of the array (or 1 if it's a simple variable)
+     * @return The size of the array or 1 if it's not an array
+     */
+    public int getSize() {
+        return size;
     }
 }

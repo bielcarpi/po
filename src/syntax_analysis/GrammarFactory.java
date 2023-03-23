@@ -44,9 +44,14 @@ public class GrammarFactory {
                         continue;
                     }
 
-                    TokenType type = TokenType.getMatch(splits[i]);
-                    if(splits[i].equals("ε")) type = TokenType.VOID;
-                    else if(splits[i].equals("\\n")) type = TokenType.EOL;
+                    TokenType.getMatch(splits[i]);
+                    TokenType type = switch (splits[i]) {
+                        case "ε" -> TokenType.VOID;
+                        case "\\n" -> TokenType.EOL;
+                        case "NUMBER" -> TokenType.INT;
+                        case "STRING" -> TokenType.STRING;
+                        default -> TokenType.getMatch(splits[i]);
+                    };
                     derivations.get(currentDerivation).add(type != null? type: splits[i]);
                 }
 

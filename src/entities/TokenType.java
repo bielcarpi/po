@@ -53,7 +53,6 @@ public enum TokenType {
     CLOSE_BRACE(Pattern.compile("^\\}$")),
     INT(Pattern.compile("^\\d+$")),
     FLOAT(Pattern.compile("^\\d+\\.\\d+$")),
-    CHAR(Pattern.compile("^'.'$")),
     STRING(Pattern.compile("^\".*\"$")),
     TRUE(Pattern.compile("^true$")),
     FALSE(Pattern.compile("^false$")),

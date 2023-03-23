@@ -3,7 +3,6 @@ package syntax_analysis;
 import entities.TokenType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Production {

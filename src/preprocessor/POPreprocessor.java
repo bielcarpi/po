@@ -32,6 +32,7 @@ public class POPreprocessor implements Preprocessor {
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
             // TODO: Handle exception
+            System.out.println("File not found");
         }
 
         return contentBuilder.toString();
@@ -49,7 +50,7 @@ public class POPreprocessor implements Preprocessor {
 
         for (int i = 0; i < content.length(); i++) {
             if (content.charAt(i) == '/' && content.charAt(i+1) == '/'){
-                // Short comment
+                // CORRECT SHORT COMMENT
                 i = i + 2; // We move to the begining of the comment
                 // Loop to skip all the content inside the comment
                 while(content.charAt(i) != '\n') {
@@ -60,17 +61,25 @@ public class POPreprocessor implements Preprocessor {
                 continue; // Back to the loop without adding another unusual char
             } else {
                 if (content.charAt(i) == '/' && content.charAt(i+1) == '*'){
-                    // Long comment
+                    // CORRECT LONG COMMENT
                     i = i + 2; // We move to the begining of the comment
-                    while(content.charAt(i) != '*') {
+
+                    // Search for the closing of the comment
+                    while(content.charAt(i) != '*' && content.charAt(i+1) != '/') {
+                        // 2n case: Find chars "/*" but then the long comment is not closed
+                        if (i > content.length()) break;
                         i++;
                     }
                     i = i + 2; // Jump both '*' and '/' characters
+                } else {
+                    // WRONG CODE -> Comment not formed correctly
+                    // 1r case: Find char "/" but then the short comment is omitted
+                    break;
+
                 }
             }
             cleanContentBuilder.append(content.charAt(i));
         }
-
         return cleanContentBuilder.toString();
     }
 }

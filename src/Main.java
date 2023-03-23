@@ -13,11 +13,10 @@ public class Main {
 
         Preprocessor preprocessor = new POPreprocessor();
         String pureHLL = preprocessor.generatePureHighLevelLanguage(file);
-        System.out.println(pureHLL);
 
-        //Parser parser = new POParser(pureHLL);
-        //ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());
+        Parser parser = new POParser(pureHLL);
+        ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());
 
-        //System.out.println(pt);
+        System.out.println(pt);
     }
 }

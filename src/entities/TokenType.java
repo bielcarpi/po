@@ -12,9 +12,54 @@ import java.util.regex.Pattern;
  * @see Token
  */
 public enum TokenType {
-    //TODO: Add all tokens, and regex correctly
     IF(Pattern.compile("^if$")),
-    WHILE(Pattern.compile("^while$"));
+    ELSE(Pattern.compile("^else$")),
+    ELSIF(Pattern.compile("^elsif$")),
+    SWITCH(Pattern.compile("^switch$")),
+    OPT(Pattern.compile("^opt$")),
+    ARROW(Pattern.compile("^->$")),
+    DEFAULT(Pattern.compile("^default$")),
+    WHILE(Pattern.compile("^while$")),
+    FOR(Pattern.compile("^for$")),
+    IN(Pattern.compile("^in$")),
+    CONTINUE(Pattern.compile("^continue$")),
+    BREAK(Pattern.compile("^break$")),
+    FUNC(Pattern.compile("^func$")),
+    RET(Pattern.compile("^ret$")),
+    MAIN(Pattern.compile("^main$")),
+    VAR(Pattern.compile("^var$")),
+    ADD(Pattern.compile("^\\+$")),
+    SUB(Pattern.compile("^-$")),
+    DIV(Pattern.compile("^/$")),
+    MULT(Pattern.compile("^\\*$")),
+    MOD(Pattern.compile("^%$")),
+    EQU(Pattern.compile("^=$")),
+    DIFF(Pattern.compile("^!=$")),
+    LT(Pattern.compile("^<$")),
+    GT(Pattern.compile("^>$")),
+    LTE(Pattern.compile("^<=$")),
+    GTE(Pattern.compile("^>=$")),
+    NOT(Pattern.compile("^not$")),
+    AND(Pattern.compile("^and$")),
+    OR(Pattern.compile("^or$")),
+    POINT(Pattern.compile("^\\.$")),
+    COMMA(Pattern.compile("^,$")),
+    SEMICOLON(Pattern.compile("^;$")),
+    OPEN_PAREN(Pattern.compile("^\\($")),
+    CLOSE_PAREN(Pattern.compile("^\\)$")),
+    OPEN_BRACKET(Pattern.compile("^\\[$")),
+    CLOSE_BRACKET(Pattern.compile("^\\]$")),
+    OPEN_BRACE(Pattern.compile("^\\{$")),
+    CLOSE_BRACE(Pattern.compile("^\\}$")),
+    INT(Pattern.compile("^\\d+$")),
+    FLOAT(Pattern.compile("^\\d+\\.\\d+$")),
+    CHAR(Pattern.compile("^'.'$")),
+    STRING(Pattern.compile("^\".*\"$")),
+    TRUE(Pattern.compile("^true$")),
+    FALSE(Pattern.compile("^false$")),
+    EOL(Pattern.compile("^\\n$")),
+    EOF(Pattern.compile("^$")),
+    ID(Pattern.compile("^[a-zA-Z_]\\w*$"));
 
     private final Pattern regex;
 
@@ -32,7 +77,7 @@ public enum TokenType {
      * @return Whether this TokenType matches the string provided
      */
     private boolean matches(String token){
-        return false;
+        return regex.matcher(token).matches();
     }
 
     /**
@@ -42,7 +87,13 @@ public enum TokenType {
      */
     @Nullable
     public static TokenType getMatch(String token){
-        return null;
+        TokenType match = null;
+        for(TokenType type : TokenType.values()){
+            if(type.matches(token)){
+                match = type;
+                break;
+            }
+        }
+        return match;
     }
-
 }

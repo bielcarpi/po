@@ -13,14 +13,42 @@ public class TokenStream {
 
     private Queue<Token> tokens;
 
+    /**
+     * Constructor to instance a new Token Stream.
+     */
     public TokenStream(){
+        tokens = new java.util.LinkedList<>();
     }
 
+    /**
+     * Gets the next token in the stream without removing it.
+     * @return The next token in the stream.
+     */
+    public Token peekToken(){
+        return tokens.peek();
+    }
 
+    /**
+     * Gets the next token in the stream and removes it.
+     * @return The next token in the stream.
+     */
     public Token nextToken(){
-        return null;
+        return tokens.poll();
     }
 
+    /**
+     * Adds a new token to the stream.
+     * @param token The token to be added.
+     */
     public void addNewToken(Token token){
+        tokens.add(token);
+    }
+
+    /**
+     * Checks if the stream is empty.
+     * @return {@code true} if the stream is empty, {@code false} otherwise.
+     */
+    public boolean isEmpty(){
+        return tokens.isEmpty();
     }
 }

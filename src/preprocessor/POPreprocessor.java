@@ -32,8 +32,8 @@ public class POPreprocessor implements Preprocessor {
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
             // TODO: Handle exception
+            // System.out.println("File not found");
         }
-
         return contentBuilder.toString();
     }
 
@@ -45,11 +45,12 @@ public class POPreprocessor implements Preprocessor {
      * @return clearContent: String with the representation of the content of the file once cleaned.
      */
     private String cleanFileContent(String content){
+
         StringBuilder cleanContentBuilder = new StringBuilder();
 
         for (int i = 0; i < content.length(); i++) {
             if (content.charAt(i) == '/' && content.charAt(i+1) == '/'){
-                // Short comment
+                // CORRECT SHORT COMMENT
                 i = i + 2; // We move to the begining of the comment
                 // Loop to skip all the content inside the comment
                 while(content.charAt(i) != '\n') {
@@ -60,9 +61,16 @@ public class POPreprocessor implements Preprocessor {
                 continue; // Back to the loop without adding another unusual char
             } else {
                 if (content.charAt(i) == '/' && content.charAt(i+1) == '*'){
-                    // Long comment
+                    // CORRECT LONG COMMENT
                     i = i + 2; // We move to the begining of the comment
-                    while(content.charAt(i) != '*') {
+
+                    // Search for the closing of the comment
+                    while(content.charAt(i) != '*' && content.charAt(i+1) != '/') {
+                        // 2n case: Find chars "/*" but then the long comment is not closed
+                        if (i > content.length()-3){
+                            // TODO: Handle error when long comment is not closed
+                            return cleanContentBuilder.toString();
+                        }
                         i++;
                     }
                     i = i + 2; // Jump both '*' and '/' characters
@@ -70,7 +78,6 @@ public class POPreprocessor implements Preprocessor {
             }
             cleanContentBuilder.append(content.charAt(i));
         }
-
         return cleanContentBuilder.toString();
     }
 }

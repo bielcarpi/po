@@ -1,0 +1,19 @@
+<programa> ::= <llistaDeclaracions> <declaracioFuncioMain>
+<llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
+<declaracio> ::= <declaracioVariable> | <declaracioFuncio>
+<declaracioVariable> ::= var <declaracioVariableMultiple> \n
+<declaracioVariableMultiple> ::= <declaracioVariableID> <declaracioVariableAssigned>
+<declaracioVariableAssigned> ::=  = <expressio> | ε
+<declaracioVariableID> ::= ID
+<declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
+<declaracioFuncioMain> ::= func main() <sentenciaComposta> \n
+<parametres> ::= <llistaParametres> | ε
+<llistaParametres> ::= <declaracioVariableParametre> <llistaParametresPrima>
+<llistaParametresPrima> ::= , <declaracioVariableParametre> <llistaParametresPrima> | ε
+<declaracioVariableParametre> ::= <declaracioVariableID>
+<sentencia> ::= <sentenciaExpressio> | <sentenciaCondicional> | <sentenciaWhile> | <sentenciaFor> | <sentenciaSwitch> | <sentenciaRetorn> | <sentenciaBreak>
+<sentenciaExpressio> ::= <expressio> \n
+<sentenciaComposta> ::= { <llistaComposta> }
+<llistaComposta> ::= <declaracioBloc> <llistaCompostaPrima> | ε
+<llistaCompostaPrima> ::= <declaracioBloc> <llistaCompostaPrima> | ε
+<declaracioBloc> ::= <declaracioVariable> | <sentencia>

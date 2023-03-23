@@ -6,7 +6,7 @@
 <declaracioVariableAssigned> ::=  = <expressio> | ε
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
-<declaracioFuncioMain> ::= func main() <sentenciaComposta> \n
+<declaracioFuncioMain> ::= func main ( ) <sentenciaComposta> \n
 <parametres> ::= <llistaParametres> | ε
 <llistaParametres> ::= <declaracioVariableParametre> <llistaParametresPrima>
 <llistaParametresPrima> ::= , <declaracioVariableParametre> <llistaParametresPrima> | ε

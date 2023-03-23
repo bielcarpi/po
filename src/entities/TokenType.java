@@ -58,8 +58,9 @@ public enum TokenType {
     TRUE(Pattern.compile("^true$")),
     FALSE(Pattern.compile("^false$")),
     EOL(Pattern.compile("^\\n$")),
-    EOF(Pattern.compile("^$")),
-    ID(Pattern.compile("^[a-zA-Z_]\\w*$"));
+    ID(Pattern.compile("^[a-zA-Z_]\\w*$")),
+    EOF(null),
+    VOID(null);
 
     private final Pattern regex;
 
@@ -77,6 +78,7 @@ public enum TokenType {
      * @return Whether this TokenType matches the string provided
      */
     private boolean matches(String token){
+        if(regex == null) return false;
         return regex.matcher(token).matches();
     }
 
@@ -87,13 +89,9 @@ public enum TokenType {
      */
     @Nullable
     public static TokenType getMatch(String token){
-        TokenType match = null;
-        for(TokenType type : TokenType.values()){
-            if(type.matches(token)){
-                match = type;
-                break;
-            }
-        }
-        return match;
+        for(TokenType type : TokenType.values())
+            if(type.matches(token)) return type;
+
+        return null;
     }
 }

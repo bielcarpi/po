@@ -68,9 +68,7 @@ public class POLexer implements Lexer {
         if(sb.length() > 0) errorFound(row, col - sb.length(), sb.toString());
 
         // Adding the EOF token
-        TokenType tokenType = TokenType.getMatch("");
-        if(tokenType != null)
-            ts.addNewToken(new Token(tokenType, null));
+        ts.addNewToken(new Token(TokenType.EOF, null));
 
         //Return the TokenStream or null if it's empty
         return ts.isEmpty()? null: ts;

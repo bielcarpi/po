@@ -3,7 +3,7 @@
 <declaracio> ::= <declaracioVariable> | <declaracioFuncio>
 <declaracioVariable> ::= var <declaracioVariableMultiple> \n
 <declaracioVariableMultiple> ::= <declaracioVariableID> <declaracioVariableAssigned>
-<declaracioVariableAssigned> ::=  = <expressio> | ε
+<declaracioVariableAssigned> ::= = <expressio> | ε
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
 <declaracioFuncioMain> ::= func main ( ) <sentenciaComposta> \n
@@ -13,7 +13,42 @@
 <declaracioVariableParametre> ::= <declaracioVariableID>
 <sentencia> ::= <sentenciaExpressio> | <sentenciaCondicional> | <sentenciaWhile> | <sentenciaFor> | <sentenciaSwitch> | <sentenciaRetorn> | <sentenciaBreak>
 <sentenciaExpressio> ::= <expressio> \n
-<sentenciaComposta> ::= { <llistaComposta> }
-<llistaComposta> ::= <declaracioBloc> <llistaCompostaPrima> | ε
-<llistaCompostaPrima> ::= <declaracioBloc> <llistaCompostaPrima> | ε
+<sentenciaComposta> ::= { \n <llistaComposta> }
+<llistaComposta> ::= <declaracioBloc> <llistaComposta> | ε
 <declaracioBloc> ::= <declaracioVariable> | <sentencia>
+<sentenciaCondicional> ::= if <expressio>  <sentenciaComposta> { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
+<sentenciaSwitch> ::= switch <expressio> <blocSwitch>
+<blocSwitch> ::= { \n <llistaOpt> [<blocDefault>] } \n
+<llistaOpt> ::= <blocOpt> <llistaOptPrima>
+<llistaOptPrima> ::= <blocOpt> <llistaOptPrima> | ε
+<blocOpt> ::= opt <expressio> -> <sentenciaComposta> \n
+<blocDefault> ::= default -> <sentenciaComposta> \n
+<sentenciaRetorn> ::= ret [ <expressio> ] \n
+<sentenciaBreak> ::= break \n
+<sentenciaWhile> ::= while <expressio> <sentenciaComposta> \n
+<sentenciaFor> ::= for <declararcioVariableID> <continuacioFor>
+<continuacioFor> ::= = <expressio> <fori> | <foreach>
+<fori> ::= ,  <expressio> , <expressio> <sentenciaComposta> \n
+<foreach> ::= in <expressio> <sentenciaComposta> \n
+<expressio> ::= <expressioAnd> <expressioPrima>
+<expressioPrima> ::= or <expressioAnd> <expressioPrima> | ε
+<expressioAnd> ::= <expressioNot> <expressioAndPrima>
+<expressioAndPrima> ::= and <expressioNot> <expressioAndPrima> | ε
+<expressioNot> ::= not <expressioNot> | <expressioRel>
+<expressioRel> ::= <expressioSuma> <continuacioRel>
+<continuacioRel> ::= <operador> <expressioSuma> | ε
+<operador> ::= < | > | <= | >= | == | !=
+<expressioSuma> ::= <expressioMul> <expressioSumaPrima>
+<expressioSumaPrima> ::= <operadorSuma> <expressioMul> <expressioSumaPrima> | ε
+<operadorSuma> ::= + | -
+<expressioMul> ::= <expressioUnaria> <expressioMulPrima>
+<expressioMulPrima> ::= <operadorMul> <expressioUnaria> <expressioMulPrima> | ε
+<operadorMul> ::= % | / | *
+<expressioUnaria> ::= - <expressioUnaria> | <factor>
+<factor> ::= <constant> | <mutable>
+<mutable> ::= ID <continuacioMutable>
+<continuacioMutable> ::= [ <expressio> ] | ( <arguments> ) | = <expressio> | ++ | -- | ε
+<arguments> ::= <llistaArguments> | ε
+<llistaArguments> ::= <expressio> <llistaArgumentsPrima>
+<llistaArgumentsPrima> ::= , <expressio> <llistaArgumentsPrima> | ε
+<constant> ::= NUMERO | STRING | true | false

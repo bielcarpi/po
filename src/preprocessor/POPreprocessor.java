@@ -32,9 +32,8 @@ public class POPreprocessor implements Preprocessor {
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
             // TODO: Handle exception
-            System.out.println("File not found");
+            // System.out.println("File not found");
         }
-
         return contentBuilder.toString();
     }
 
@@ -46,6 +45,7 @@ public class POPreprocessor implements Preprocessor {
      * @return clearContent: String with the representation of the content of the file once cleaned.
      */
     private String cleanFileContent(String content){
+
         StringBuilder cleanContentBuilder = new StringBuilder();
 
         for (int i = 0; i < content.length(); i++) {
@@ -67,15 +67,13 @@ public class POPreprocessor implements Preprocessor {
                     // Search for the closing of the comment
                     while(content.charAt(i) != '*' && content.charAt(i+1) != '/') {
                         // 2n case: Find chars "/*" but then the long comment is not closed
-                        if (i > content.length()) break;
+                        if (i > content.length()-3){
+                            // TODO: Handle error when long comment is not closed
+                            return cleanContentBuilder.toString();
+                        }
                         i++;
                     }
                     i = i + 2; // Jump both '*' and '/' characters
-                } else {
-                    // WRONG CODE -> Comment not formed correctly
-                    // 1r case: Find char "/" but then the short comment is omitted
-                    break;
-
                 }
             }
             cleanContentBuilder.append(content.charAt(i));

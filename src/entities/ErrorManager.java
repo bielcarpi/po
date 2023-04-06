@@ -17,9 +17,9 @@ public class ErrorManager {
         return instance;
     }
 
-    public void addError(ErrorType type, int line, int column) {
+    public void addError(ErrorType type, int line, int column, boolean isCritical) {
         String message = ErrorType.getMessage(type);
-        Error error = new Error(type, message, line, column);
+        Error error = new Error(type, message, line, column, isCritical);
         System.out.println(error.toString());
     }
 

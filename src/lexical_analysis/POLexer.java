@@ -48,7 +48,7 @@ public class POLexer implements Lexer {
                     TokenType tokenType = TokenType.getMatch(sb.toString());
                     if(tokenType == null) //Print an error. We won't add anything to the TokenStream
                         //errorFound(row, col - sb.length(), sb.toString());
-                        ErrorManager.getInstance().addError(TOKEN_LIST_ERROR, row, col);
+                        ErrorManager.getInstance().addError(TOKEN_LIST_ERROR, row, col, false);
                     else //Add the new token to the TokenStream
                         ts.addNewToken(new Token(tokenType, sb.toString()));
                 }
@@ -69,7 +69,7 @@ public class POLexer implements Lexer {
 
 
         //When everything ends, buffer length should be 0
-        if(sb.length() > 0) ErrorManager.getInstance().addError(BUFFER_LENTGH_ERROR, row, col);
+        if(sb.length() > 0) ErrorManager.getInstance().addError(BUFFER_LENTGH_ERROR, row, col, false);
             //errorFound(row, col - sb.length(), sb.toString());
 
         // Adding the EOF token

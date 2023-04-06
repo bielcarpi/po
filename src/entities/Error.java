@@ -5,12 +5,14 @@ public class Error {
     private String message;
     private int line;
     private int column;
+    private boolean isCritical;
 
-    public Error(ErrorType type, String message, int line, int column) {
+    public Error(ErrorType type, String message, int line, int column, boolean isCritical) {
         this.type = type;
         this.message = message;
         this.line = line;
         this.column = column;
+        this.isCritical = isCritical;
     }
 
     public ErrorType getType() {
@@ -27,6 +29,10 @@ public class Error {
 
     public int getColumn() {
         return column;
+    }
+
+    public boolean isCritical() {
+        return isCritical;
     }
 
     @Override

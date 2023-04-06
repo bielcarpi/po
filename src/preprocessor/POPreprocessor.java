@@ -1,5 +1,6 @@
 package preprocessor;
 
+import entities.ErrorManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -7,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
+import static entities.ErrorType.FILE_NOT_FOUND;
 
 
 public class POPreprocessor implements Preprocessor {
@@ -31,8 +34,7 @@ public class POPreprocessor implements Preprocessor {
             // Stream of data appended from the file
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
-            // TODO: Handle exception
-            // System.out.println("File not found");
+            ErrorManager.getInstance().addError(FILE_NOT_FOUND, 0, 0);
         }
         return contentBuilder.toString();
     }

@@ -28,4 +28,9 @@ public class Error {
     public int getColumn() {
         return column;
     }
+
+    @Override
+    public String toString() {
+        return "error: %s [%s], Column: %d. Row: %d\n".formatted(message, type, line, column);
+    }
 }

@@ -14,5 +14,6 @@ public class ErrorManager {
     }
 
     public void addError(Error error) {
+        System.out.println(error);
     }
 }

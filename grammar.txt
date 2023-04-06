@@ -1,9 +1,11 @@
-<programa> ::= <llistaDeclaracions> <declaracioFuncioMain>
+<programa> ::= <declaracioTipus> <llistaDeclaracions> <declaracioFuncioMain>
 <llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
 <declaracio> ::= <declaracioVariable> | <declaracioFuncio>
+<declaracioTipus> ::= type ID { \n <declaracioVariableTipus> }
+<declaracioVariableTipus> ::= var ID  \n
 <declaracioVariable> ::= var <declaracioVariableMultiple> \n
 <declaracioVariableMultiple> ::= <declaracioVariableID> <declaracioVariableAssigned>
-<declaracioVariableAssigned> ::= = <expressio> | ε
+<declaracioVariableAssigned> ::=  -> ID = <expressio> | ε
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
 <declaracioFuncioMain> ::= func main ( ) <sentenciaComposta> \n
@@ -16,7 +18,7 @@
 <sentenciaComposta> ::= { \n <llistaComposta> }
 <llistaComposta> ::= <declaracioBloc> <llistaComposta> | ε
 <declaracioBloc> ::= <declaracioVariable> | <sentencia>
-<sentenciaCondicional> ::= if <expressio>  <sentenciaComposta> { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
+<sentenciaCondicional> ::= if <expressio>  <sentenciaComposta>  { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
 <sentenciaSwitch> ::= switch <expressio> <blocSwitch>
 <blocSwitch> ::= { \n <llistaOpt> [<blocDefault>] } \n
 <llistaOpt> ::= <blocOpt> <llistaOptPrima>
@@ -26,7 +28,7 @@
 <sentenciaRetorn> ::= ret [ <expressio> ] \n
 <sentenciaBreak> ::= break \n
 <sentenciaWhile> ::= while <expressio> <sentenciaComposta> \n
-<sentenciaFor> ::= for <declararcioVariableID> <continuacioFor>
+<sentenciaFor> ::= for ID -> ID <continuacioFor>
 <continuacioFor> ::= = <expressio> <fori> | <foreach>
 <fori> ::= ,  <expressio> , <expressio> <sentenciaComposta> \n
 <foreach> ::= in <expressio> <sentenciaComposta> \n
@@ -47,7 +49,8 @@
 <expressioUnaria> ::= - <expressioUnaria> | <factor>
 <factor> ::= <constant> | <mutable>
 <mutable> ::= ID <continuacioMutable>
-<continuacioMutable> ::= [ <expressio> ] | ( <arguments> ) | = <expressio> | ++ | -- | ε
+<continuacioMutable> ::= ( <arguments> ) | -> ID <accessVariable> | ++ | -- | ε
+<accessVariable> ::= = <expressio> | [ <expressio> ]
 <arguments> ::= <llistaArguments> | ε
 <llistaArguments> ::= <expressio> <llistaArgumentsPrima>
 <llistaArgumentsPrima> ::= , <expressio> <llistaArgumentsPrima> | ε

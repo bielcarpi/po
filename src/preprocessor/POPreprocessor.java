@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
 
+import static entities.ErrorType.COMMENT_NOT_CLOSED;
 import static entities.ErrorType.FILE_NOT_FOUND;
 
 
@@ -70,7 +71,7 @@ public class POPreprocessor implements Preprocessor {
                     while(content.charAt(i) != '*' && content.charAt(i+1) != '/') {
                         // 2n case: Find chars "/*" but then the long comment is not closed
                         if (i > content.length()-3){
-                            // TODO: Handle error when long comment is not closed
+                            ErrorManager.getInstance().addError(COMMENT_NOT_CLOSED, 0, 0);
                             return cleanContentBuilder.toString();
                         }
                         i++;

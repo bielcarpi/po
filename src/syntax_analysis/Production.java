@@ -30,8 +30,8 @@ public class Production {
 
 
     public void setFirsts(ArrayList<TokenType> firstsFromDerivation, int derivation){
-            if(firsts == null) firsts = new ArrayList<>();
-            firsts.add(derivation, firstsFromDerivation);
+        if(firsts == null) firsts = new ArrayList<>();
+        firsts.add(derivation, firstsFromDerivation);
     }
 
     public void setFollows(ArrayList<TokenType> follows){
@@ -54,11 +54,19 @@ public class Production {
         StringBuilder sb = new StringBuilder();
         sb.append("Production ").append(producer).append(" {\n");
 
-        for(ArrayList<Object> al: derived){
+        for(int i = 0; i < derived.size(); i++){
             sb.append("\tor\n");
-            for(Object o: al){
+            for(Object o: derived.get(i)){
                 sb.append("\t\t");
                 sb.append(o instanceof String? "Non-terminal " + o: "Terminal " + ((TokenType)o).name());
+                sb.append("\n");
+            }
+            if(firsts != null){
+                sb.append("\t\t\tWith Firsts: ");
+                for(int j = 0; j < firsts.get(i).size(); j++){
+                    if(firsts.get(i) != null)
+                        sb.append(firsts.get(i).get(j)).append(" ");
+                }
                 sb.append("\n");
             }
         }

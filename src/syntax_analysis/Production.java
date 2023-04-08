@@ -5,13 +5,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Production {
 
     private final String producer;
     private final List<ArrayList<Object>> derived;
 
-    private ArrayList<TokenType> follows;
+    private List<TokenType> follows;
     private ArrayList<ArrayList<TokenType>> firsts;
 
     public Production(final String producer, ArrayList<ArrayList<Object>> derived){
@@ -35,7 +36,8 @@ public class Production {
     }
 
     public void setFollows(ArrayList<TokenType> follows){
-        this.follows = follows;
+        //Delete repeated folllows
+        this.follows = follows.stream().distinct().collect(Collectors.toList());
     }
 
     public @Nullable ArrayList<TokenType> getFirsts(int derivation){
@@ -43,7 +45,7 @@ public class Production {
         return firsts.get(derivation);
     }
 
-    public @Nullable ArrayList<TokenType> getFollows(){
+    public @Nullable List<TokenType> getFollows(){
         if(follows == null) return null;
         return follows;
     }
@@ -70,8 +72,34 @@ public class Production {
                 sb.append("\n");
             }
         }
+        if(follows != null){
+            sb.append("\tWith Follows: ");
+            for(TokenType t: follows)
+                sb.append(t.name()).append(" ");
+            sb.append("\n");
+        }
+
         sb.append("}");
 
         return sb.toString();
+    }
+
+    public boolean produces(String next) {
+        for(ArrayList<Object> al: derived){
+            for(Object o: al){
+                if(o instanceof String && next.equals(o))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public @Nullable ArrayList<TokenType> getAllFirsts() {
+        ArrayList<TokenType> allFirsts = new ArrayList<>();
+        for(ArrayList<TokenType> al: firsts)
+            allFirsts.addAll(al);
+
+        return allFirsts;
     }
 }

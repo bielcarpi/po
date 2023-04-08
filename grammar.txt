@@ -20,7 +20,7 @@
 <declaracioBloc> ::= <declaracioVariable> | <sentencia>
 <sentenciaCondicional> ::= if <expressio>  <sentenciaComposta>  { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
 <sentenciaSwitch> ::= switch <expressio> <blocSwitch>
-<blocSwitch> ::= { \n <llistaOpt> [<blocDefault>] } \n
+<blocSwitch> ::= { \n <llistaOpt> [ <blocDefault> ] } \n
 <llistaOpt> ::= <blocOpt> <llistaOptPrima>
 <llistaOptPrima> ::= <blocOpt> <llistaOptPrima> | ε
 <blocOpt> ::= opt <expressio> -> <sentenciaComposta> \n

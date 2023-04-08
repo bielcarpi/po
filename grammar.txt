@@ -33,7 +33,7 @@
 <fori> ::= ,  <expressio> , <expressio> <sentenciaComposta> \n
 <foreach> ::= in <expressio> <sentenciaComposta> \n
 <expressio> ::= <expressioAnd> <expressioPrima>
-<expressioPrima> ::= or <expressioAnd> <expressioPrima> | ε
+<expressioPrima> ::= or <expressioAnd> <expressioPrima>
 <expressioAnd> ::= <expressioNot> <expressioAndPrima>
 <expressioAndPrima> ::= and <expressioNot> <expressioAndPrima> | ε
 <expressioNot> ::= not <expressioNot> | <expressioRel>

@@ -32,9 +32,7 @@ public class FirstFollowAnalyzer {
         for(int i = 0; i < productions.size(); i++){
             ArrayList<TokenType> follows = new ArrayList<>();
             if(i == 0) follows.add(TokenType.EOF); //In the first rule, add $
-            System.out.println("Calculant Follows de " + productions.get(i).getProducer());
             getFollows(follows, productions.get(i).getProducer(), map);
-            System.out.println("Follows de " + productions.get(i).getProducer() + " --> " + follows);
             productions.get(i).setFollows(follows);
         }
 

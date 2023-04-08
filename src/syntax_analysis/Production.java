@@ -45,7 +45,7 @@ public class Production {
         return firsts.get(derivation);
     }
 
-    public @Nullable List<TokenType> getFollows(){
+    public List<TokenType> getFollows(){
         if(follows == null) return null;
         return follows;
     }

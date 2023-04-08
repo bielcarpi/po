@@ -12,9 +12,8 @@ public class FirstFollowAnalyzer {
      * Fills the provided Parsing Table, given the List of Productions
      * @param pt The ParsingTable to fill
      * @param productions The productions to analyze
-     * @return Whether grammar is ambiguous or not
      */
-    public static boolean fillParsingTable(ParsingTable pt, List<Production> productions){
+    public static void fillParsingTable(ParsingTable pt, List<Production> productions){
         HashMap<String, Production> map = new HashMap<>();
         for(Production p: productions) map.put(p.getProducer(), p);
 
@@ -36,7 +35,23 @@ public class FirstFollowAnalyzer {
             productions.get(i).setFollows(follows);
         }
 
-        return true;
+        //Now that we have first and follows, fill the parsing table
+        for(Production p: productions){ //For each Production
+            for(int i = 0; i < p.getDerived().size(); i++){ //For each derivation of the Production
+                if(p.getFirsts(i) != null){
+                    for(int j = 0; j < p.getFirsts(i).size(); j++){ //For each first of that derivation
+                        if(p.getFirsts(i).get(j) != TokenType.VOID){ //If it's not void, add it to the parsing table
+                            pt.addProduction(new ParsingTableKey(p.getProducer(), p.getFirsts(i).get(j)),
+                                        new ParsingTableValue(p, i));
+                        }
+                        else{ //If it's void, add all the follows to the parsing table
+                            for(TokenType t: p.getFollows())
+                                pt.addProduction(new ParsingTableKey(p.getProducer(), t), new ParsingTableValue(p, i));
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

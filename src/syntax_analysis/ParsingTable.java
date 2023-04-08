@@ -7,48 +7,50 @@ import java.util.Map;
 public class ParsingTable {
 
     /**
-     * Each ParsingTableTuple maps to a Production.
+     * Each ParsingTableTuple maps to a ParsingTableValue (Production + num of the derivation).
      * ParsingTableTuple has two values: The producer (String) and the terminal (TokenType)
      */
-    private HashMap<ParsingTableTuple, ArrayList<Object>> hashMap;
+    private final HashMap<ParsingTableKey, ParsingTableValue> map;
 
     /**
      * Default ParsingTable Constructor
      */
     public ParsingTable(){
-        hashMap = new HashMap<>();
+        map = new HashMap<>();
     }
 
     /**
-     * Adds the ParsingTableTuple with the Production to the ParsingTable
-     * @param tuple The tuple to add
-     * @param p The Production for that tuple
-     * @return Whether the tuple already existed or not. If it already existed, it won't be added
+     * Adds the ParsingTableKey with the Production to the ParsingTable
+     * @param key The Key to add
+     * @param value The Production for that tuple
      */
-    public boolean addProduction(ParsingTableTuple tuple, ArrayList<Object> p){
-        if(hashMap.containsKey(tuple)) return false;
+    public void addProduction(ParsingTableKey key, ParsingTableValue value){
+        if(map.containsKey(key)){
+            //TODO: Manage critical error
+            System.out.println("Error filling the Parsing Table. Grammar is ambiguous.");
+            return;
+        }
 
-        hashMap.put(tuple, p);
-        return true;
+        map.put(key, value);
     }
 
 
     /**
-     * Returns the Production for the ParsingTableTuple provided, or {@code null} if
-     *  there is no ParsingTableTuple like the one provided
+     * Returns the Production for the ParsingTableKey provided, or {@code null} if
+     *  there is no ParsingTableKey like the one provided
      * @param tuple The tuple that represents the Production to get
      * @return The Production for that ParsingTableTuple, or {@code null} if there is no entry
      */
-    public ArrayList<Object> getProduction(ParsingTableTuple tuple){
-        return hashMap.get(tuple);
+    public ParsingTableValue getProduction(ParsingTableKey tuple){
+        return map.get(tuple);
     }
 
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<ParsingTableTuple, ArrayList<Object>> e: hashMap.entrySet())
-            sb.append(e.getKey()).append("\n").append(e.getValue());
+        for(Map.Entry<ParsingTableKey, ParsingTableValue> e: map.entrySet())
+            sb.append(e.getKey()).append("\t").append(e.getValue()).append("\n");
 
         return sb.toString();
     }

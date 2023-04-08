@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class POParser implements Parser {
 
     private final String pureHLL;
-    private final String grammarFilePath = "grammar.txt";
+    private final String grammarFilePath = "grammarEasy.txt";
 
     public POParser(@NotNull final String pureHLL) {
         this.pureHLL = pureHLL;
@@ -35,13 +35,9 @@ public class POParser implements Parser {
 
 
         ParsingTable pt = new ParsingTable();
-        boolean ambiguous = FirstFollowAnalyzer.fillParsingTable(pt, productions);
-        if(ambiguous){
-            //TODO: Manage critical error
-            System.out.println("Error filling the Parsing Table. Grammar is ambiguous.");
-        }
-        System.out.println(pt);
+        FirstFollowAnalyzer.fillParsingTable(pt, productions);
         for(Production p: productions) System.out.println(p);
+        System.out.println(pt);
 
         //Now that we have built the ParsingTable and have the TokenStream, we can start the syntax analysis
 

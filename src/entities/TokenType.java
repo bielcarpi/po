@@ -19,6 +19,7 @@ public enum TokenType {
     OPT(Pattern.compile("^opt$")),
     ARROW(Pattern.compile("^->$")),
     DEFAULT(Pattern.compile("^default$")),
+    STRUCT(Pattern.compile("^struct$")),
     WHILE(Pattern.compile("^while$")),
     FOR(Pattern.compile("^for$")),
     IN(Pattern.compile("^in$")),
@@ -33,8 +34,11 @@ public enum TokenType {
     DIV(Pattern.compile("^/$")),
     MULT(Pattern.compile("^\\*$")),
     MOD(Pattern.compile("^%$")),
-    EQU(Pattern.compile("^=$")),
+    DOUBLE_EQU(Pattern.compile("^==$")),
+    DOUBLE_ADD(Pattern.compile("^\\+\\+$")),
+    DOUBLE_SUB(Pattern.compile("^--$")),
     DIFF(Pattern.compile("^!=$")),
+    EQU(Pattern.compile("^=$")),
     LT(Pattern.compile("^<$")),
     GT(Pattern.compile("^>$")),
     LTE(Pattern.compile("^<=$")),
@@ -53,13 +57,13 @@ public enum TokenType {
     CLOSE_BRACE(Pattern.compile("^\\}$")),
     INT(Pattern.compile("^\\d+$")),
     FLOAT(Pattern.compile("^\\d+\\.\\d+$")),
-    CHAR(Pattern.compile("^'.'$")),
     STRING(Pattern.compile("^\".*\"$")),
     TRUE(Pattern.compile("^true$")),
     FALSE(Pattern.compile("^false$")),
     EOL(Pattern.compile("^\\n$")),
-    EOF(Pattern.compile("^$")),
-    ID(Pattern.compile("^[a-zA-Z_]\\w*$"));
+    ID(Pattern.compile("^[a-zA-Z_]\\w*$")),
+    EOF(null),
+    VOID(null);
 
     private final Pattern regex;
 
@@ -77,6 +81,7 @@ public enum TokenType {
      * @return Whether this TokenType matches the string provided
      */
     private boolean matches(String token){
+        if(regex == null) return false;
         return regex.matcher(token).matches();
     }
 
@@ -87,13 +92,9 @@ public enum TokenType {
      */
     @Nullable
     public static TokenType getMatch(String token){
-        TokenType match = null;
-        for(TokenType type : TokenType.values()){
-            if(type.matches(token)){
-                match = type;
-                break;
-            }
-        }
-        return match;
+        for(TokenType type : TokenType.values())
+            if(type.matches(token)) return type;
+
+        return null;
     }
 }

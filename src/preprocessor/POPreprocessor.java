@@ -35,7 +35,7 @@ public class POPreprocessor implements Preprocessor {
             // Stream of data appended from the file
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
-            ErrorManager.getInstance().addError(FILE_NOT_FOUND, 0, 0, true);
+            ErrorManager.getInstance().addError(FILE_NOT_FOUND, 0, 0);
         }
         return contentBuilder.toString();
     }
@@ -71,7 +71,7 @@ public class POPreprocessor implements Preprocessor {
                     while(content.charAt(i) != '*' && content.charAt(i+1) != '/') {
                         // 2n case: Find chars "/*" but then the long comment is not closed
                         if (i > content.length()-3){
-                            ErrorManager.getInstance().addError(COMMENT_NOT_CLOSED, 0, 0, true);
+                            ErrorManager.getInstance().addError(COMMENT_NOT_CLOSED, 0, 0);
                             return cleanContentBuilder.toString();
                         }
                         i++;

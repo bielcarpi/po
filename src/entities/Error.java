@@ -5,14 +5,12 @@ public class Error {
     private String message;
     private int line;
     private int column;
-    private boolean isCritical;
 
-    public Error(ErrorType type, String message, int line, int column, boolean isCritical) {
+    public Error(ErrorType type, String message, int line, int column) {
         this.type = type;
         this.message = message;
         this.line = line;
         this.column = column;
-        this.isCritical = isCritical;
     }
 
     public ErrorType getType() {
@@ -31,12 +29,12 @@ public class Error {
         return column;
     }
 
-    public boolean isCritical() {
-        return isCritical;
-    }
-
     @Override
     public String toString() {
         return "error: %s [%s], Column: %d. Row: %d\n".formatted(message, type, line, column);
+    }
+
+    public boolean isCritical() {
+        return type == ErrorType.FILE_NOT_FOUND || type == ErrorType.SEGMENTATION_FAULT;
     }
 }

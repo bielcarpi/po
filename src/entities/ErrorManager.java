@@ -17,10 +17,14 @@ public class ErrorManager {
         return instance;
     }
 
-    public void addError(ErrorType type, int line, int column, boolean isCritical) {
+    public void addError(ErrorType type, int line, int column) {
         String message = ErrorType.getMessage(type);
-        Error error = new Error(type, message, line, column, isCritical);
+        Error error = new Error(type, message, line, column);
         System.out.println(error.toString());
+
+        if (error.isCritical())
+            System.exit(1);
+
     }
 
     public void printErrors() {
@@ -32,8 +36,4 @@ public class ErrorManager {
     public boolean hasErrors() {
         return errors.size() > 0;
     }
-
-
-
-
 }

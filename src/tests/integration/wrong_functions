@@ -1,0 +1,26 @@
+func badProcedure()
+    // Falten els corchetes
+
+func badRet(a) {
+    ret
+}
+
+func badParams(a b c) {
+    // Falten les comes
+    ret a + b + c
+}
+
+
+func main() {
+    type A {
+        var a
+    }
+    type B {
+        var b
+    }
+
+
+    A->a = badRet(42)
+    badProcedure()
+    A->a = badParams(1, 2, 3)
+}

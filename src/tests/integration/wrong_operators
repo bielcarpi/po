@@ -1,0 +1,35 @@
+func main() {
+    // Declaració de variables
+    type A {
+        var a = 1
+    }
+
+    type B {
+        var b = 2
+    }
+
+    type C {
+        var c = -2
+    }
+
+
+    C->c = 2           /* Aquest codi és erroni ja que l'expressió aritmètica que es vol avaluar ha d'estar en una única línia de
+            + 3         de codi, no pot haver-hi cap "\n" pel mig, ja que el salt de línia defineix el fi de l'expressió */
+            / 4
+
+    --A->a               /*No considerem com a vàlida la operació de increment o decrement en 1 abans de la variable*/
+
+    A->a = 1 2 3
+
+    if A->a == B->b AND A->a <= B->b {  // La and ha d'estar en minuscules!
+        // Code ...
+    }
+
+    if A->a == B->b OR A->a <= B->b {   // La or ha d'estar en minuscules!
+        // Code ...
+    }
+
+    if C->c = = 3 {  // No pot haver-hi espais entre signes d'igualtat
+        // Code ...
+    }
+}

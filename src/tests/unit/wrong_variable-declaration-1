@@ -1,0 +1,9 @@
+type A {
+    var a
+}
+
+func main() {
+    type A {
+        var b = 3.1415
+    }
+}

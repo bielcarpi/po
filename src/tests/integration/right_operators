@@ -1,0 +1,47 @@
+func main() {
+    // Declaració de variables
+    type A {
+        var a = 1
+    }
+
+    type B {
+        var b = 2
+    }
+
+    type C {
+        var c = -2
+    }
+
+    type D {
+        var d = 3
+    }
+
+    A->a = 4 + 2 * 3
+    B->b = A->a * (11 + B->b)
+    B->b--
+    A->a++
+    c = 3 - C->c // 3 -(-2) = 5
+
+    if A->a == b and A->a <= B->b {               /* En aquesta primera expressió utilitzant operadors lògics podem comprovar que per tal d'entrar dins l'if s'hauran de complir les
+        // Code ...                     dos condicions, és a dir que "a == b" i que "a <= b". */
+    }
+
+    while A->a != B->b or         A->a > B->b {      /* Aquesta altra expressió amb operadors lògics també és correcte, ja que en cas de voler entrar dins el bucle s'hauran de complir una o altre
+        // Code ...                     expressió, el que es pot comprovar en aquest cas és que els espais entre condicions i operadors lògics són omesos pel preprocessat. */
+        break
+    }
+
+    if A->a == b or B->b == 7 {               /* Finalment, aquesta última expressió utilitzant operadors lògics és incorrecte, ja que com s'ha mencionat anteriorment són "case-sensitive"
+        // Code ...                     de manera que s'han d'escriure amb minúscula per poder fer ús d'ells. */
+    }
+
+    if C->c =< D->d {                                  // Aquesta altra expressió és incorrecta, ja que l'operador que s'encarrega de comparar en aquest cas les dues variables està al revés.
+        // Code ...
+    }
+
+    while C->c >= D->d {                               /* Finalment, aquesta última expressió és correcta i comprova que el valor de "c" sigui més gran que el valor de "d" per tal de
+                                                  mantenir-se iterant dins el bucle "while". */
+        break
+    }
+
+}

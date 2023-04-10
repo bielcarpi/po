@@ -1,0 +1,7 @@
+func main() {
+    if 3 > 2 {
+        // 3 és més gran que 2
+    } else {
+        // 3 és més petit que 2
+    }
+}

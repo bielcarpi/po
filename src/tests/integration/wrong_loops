@@ -1,0 +1,23 @@
+func main() {
+    // Declaració de variables
+    type A {
+        var a = 1
+    }
+
+    type B {
+        var b = 2
+    }
+
+    // Bucle while que itera mentre el valor de la variable "a" sigui major al valor de "b"
+    while A->a > B->b // Falten els corchetes
+        A->a = A->a - 1       // Decrementem el valor de "a" en una unitat
+        if A->a == 3 {     // Sentencia condicional
+            break       // Surt del bucle quan es compleixi la condicio del condicional
+        }
+
+
+    // Bucle for que começa al 0, fins a 10 i incrementant d'un en un
+    for i = 0 i > 10 i++ {  // Falten les comes
+        B->b++     // Incrementem el valor de "b" en una unitat
+    }
+}

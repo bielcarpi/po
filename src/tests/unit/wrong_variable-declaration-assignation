@@ -1,0 +1,20 @@
+/**
+* Declaring Wrong types
+*/
+type Variables {
+     var variable = 6.5
+     var variable2 = "Variable 2"
+}
+
+type Variables2 {
+     var variable = 6.5, variable2 = "Variable 2"
+}
+
+type Var {
+    var variable = "Var"
+}
+
+func main(){
+    //Wrong assignation of the variables
+    Var.variable = false
+}

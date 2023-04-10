@@ -1,0 +1,3 @@
+func main(var argc, var argv){
+    // Incorrect Main function
+}

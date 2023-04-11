@@ -1,5 +1,6 @@
 package preprocessor;
 
+import entities.ErrorManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -7,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+
+import static entities.ErrorType.COMMENT_NOT_CLOSED;
+import static entities.ErrorType.FILE_NOT_FOUND;
 
 
 public class POPreprocessor implements Preprocessor {
@@ -31,8 +35,7 @@ public class POPreprocessor implements Preprocessor {
             // Stream of data appended from the file
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
-            // TODO: Handle exception
-            // System.out.println("File not found");
+            ErrorManager.getInstance().addError(FILE_NOT_FOUND, 0, 0);
         }
         return contentBuilder.toString();
     }
@@ -68,7 +71,7 @@ public class POPreprocessor implements Preprocessor {
                     while(content.charAt(i) != '*' && content.charAt(i+1) != '/') {
                         // 2n case: Find chars "/*" but then the long comment is not closed
                         if (i > content.length()-3){
-                            // TODO: Handle error when long comment is not closed
+                            ErrorManager.getInstance().addError(COMMENT_NOT_CLOSED, 0, 0);
                             return cleanContentBuilder.toString();
                         }
                         i++;

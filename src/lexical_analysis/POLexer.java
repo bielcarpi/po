@@ -1,5 +1,6 @@
 package lexical_analysis;
 
+import entities.ErrorManager;
 import entities.Token;
 import entities.TokenStream;
 import entities.TokenType;
@@ -7,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.regex.Pattern;
+
+import static entities.ErrorType.*;
 
 public class POLexer implements Lexer {
 
@@ -53,8 +56,7 @@ public class POLexer implements Lexer {
                 if(sb.length() > 0){
                     TokenType tokenType = TokenType.getMatch(sb.toString());
                     if(tokenType == null) //Print an error. We won't add anything to the TokenStream
-                        errorFound(row, col - sb.length(), sb.toString());
-
+                        ErrorManager.getInstance().addError(TOKEN_LIST_ERROR, row, col);
                     else //Add the new token to the TokenStream
                         ts.addNewToken(new Token(tokenType, sb.toString()));
                 }
@@ -85,7 +87,8 @@ public class POLexer implements Lexer {
 
 
         //When everything ends, buffer length should be 0
-        if(sb.length() > 0) errorFound(row, col - sb.length(), sb.toString());
+        if(sb.length() > 0) ErrorManager.getInstance().addError(BUFFER_LENGTH_ERROR, row, col);
+            //errorFound(row, col - sb.length(), sb.toString());
 
         // Adding the EOF token
         ts.addNewToken(new Token(TokenType.EOF, null));

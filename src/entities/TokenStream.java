@@ -11,7 +11,7 @@ import java.util.Queue;
  */
 public class TokenStream {
 
-    private Queue<Token> tokens;
+    private final Queue<Token> tokens;
 
     /**
      * Constructor to instance a new Token Stream.

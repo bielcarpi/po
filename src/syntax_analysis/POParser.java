@@ -2,16 +2,19 @@ package syntax_analysis;
 
 import entities.ParseTree;
 import entities.TokenStream;
+import entities.TokenType;
 import lexical_analysis.Lexer;
 import org.jetbrains.annotations.NotNull;
 import semantic_analysis.SemanticAnalyzer;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Stack;
 
 public class POParser implements Parser {
 
     private final String pureHLL;
-    private final String grammarFilePath = "grammarEasy.txt";
+    private final String grammarFilePath = "grammar.txt";
 
     public POParser(@NotNull final String pureHLL) {
         this.pureHLL = pureHLL;
@@ -40,6 +43,38 @@ public class POParser implements Parser {
         System.out.println(pt);
 
         //Now that we have built the ParsingTable and have the TokenStream, we can start the syntax analysis
+        Stack<Object> stack = new Stack<>();
+        stack.push(TokenType.EOF);
+        stack.push(productions.get(0).getProducer());
+
+        while(!stack.empty()){
+            //Si al stack hi tenim un no terminal
+            if(stack.peek() instanceof String){
+                ParsingTableValue ptv = pt.getProduction(new ParsingTableKey((String)stack.pop(), ts.peekToken().getType()));
+                if(ptv == null){    // ERROR
+                    System.out.println("Error. No hem trobat fila i columna");
+                    continue;
+                }
+
+                ArrayList<Object> derivation = ptv.production().getDerived().get(ptv.derivation());
+                ArrayList<Object> derivationCopy = new ArrayList<>(derivation);
+                Collections.reverse(derivationCopy);
+                for(Object o: derivationCopy){
+                    if(o == TokenType.VOID) continue;
+                    stack.push(o);
+                }
+            }
+            else{ //Si la stack hi tenim un terminal
+                TokenType stackTerminal = (TokenType) stack.pop();
+                TokenType inputTerminal = ts.nextToken().getType();
+                if(stackTerminal.equals(inputTerminal)) {   // MATCH
+                    System.out.println("Match");
+                } else {    // ERROR
+                    System.out.println("Error. Esperavem " + stackTerminal + " i hem trobat " + inputTerminal);
+                }
+            }
+        }
+
 
         return new ParseTree();
     }

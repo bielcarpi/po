@@ -1,4 +1,4 @@
-<programa> ::= <declaracioTipus> | <llistaDeclaracions> | <declaracioFuncioMain>
+<programa> ::= <declaracioFuncioMain>
 <llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
 <declaracio> ::= <declaracioVariable> | <declaracioFuncio>
 <declaracioTipus> ::= type ID { \n <declaracioVariableTipus> }

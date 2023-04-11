@@ -29,4 +29,12 @@ public class Token {
     public String toString() {
         return "Token {Type: %s, Data: %s}".formatted(type, data);
     }
+
+
+    public TokenType getType() {
+        return type;
+    }
+    public String getData() {
+        return data;
+    }
 }

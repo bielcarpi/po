@@ -1,10 +1,7 @@
-//Primer Fitxer a Compilar!
-
-/*
-    Comentaris
-*/
-
-
 func main(){
-    var a = 3
+    switch A->a {
+        opt 5 -> { // a es 5 }
+        opt 6 -> { // a es 6 }
+        default -> { // a no es ni 5 ni 6 }
+    }
 }

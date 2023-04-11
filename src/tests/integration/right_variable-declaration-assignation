@@ -1,0 +1,33 @@
+/**
+* Declaring all the global variables
+*/
+type VariableFloat {
+     var variable = 6.5
+}
+
+type VariableString {
+     var variable =                 "Variable 1"
+}
+
+func main(){
+    // Declaring the local variables
+    type VariableInt {
+         var variable = 5
+    }
+
+    type VariableBool {
+         var variable = true
+    }
+
+    // Assignation of the variables
+    VariableFloat->variable = 5.5
+    VariableString->variable = "Variable 2"
+    VariableInt->variable = 10
+    VariableBool->variable = false
+
+    // Assignation of the variables but changing the type
+    VariableFloat->variable = false
+    VariableString->variable = 5
+    VariableInt->variable = 5.5
+    VariableBool->variable = "Variable 4"
+}

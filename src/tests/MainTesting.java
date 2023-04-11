@@ -1,3 +1,5 @@
+package tests;
+
 import entities.ParseTree;
 import lexical_analysis.POLexer;
 import preprocessor.POPreprocessor;

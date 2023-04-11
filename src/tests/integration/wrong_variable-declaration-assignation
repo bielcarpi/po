@@ -1,0 +1,33 @@
+/**
+* Declaring Wrong global variables
+*/
+type Variables {
+     var variable = 6.5
+     var variable2 = "Variable 2"
+}
+
+type Variables2 {
+     var variable = 6.5, variable2 = "Variable 2"
+}
+
+func main(){
+    //Wrong assignation of the local variables
+    type Var {
+        var variable = "Var"
+    }
+
+    type Var2 {
+        var
+            variable
+    }
+
+    //Wrong assignation of the variables
+    Var->variable = false
+    variable2 = 777
+    LateVar->variable = 6
+
+    //Wrong assignation of a local variable
+    type LateVar {
+        var variable
+    }
+}

@@ -1,0 +1,6 @@
+func main() {
+    type A {
+        var a
+    }
+    a = 354.679
+}

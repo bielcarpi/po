@@ -19,7 +19,7 @@ public enum TokenType {
     OPT(Pattern.compile("^opt$")),
     ARROW(Pattern.compile("^->$")),
     DEFAULT(Pattern.compile("^default$")),
-    STRUCT(Pattern.compile("^struct$")),
+    TYPE(Pattern.compile("^type$")),
     WHILE(Pattern.compile("^while$")),
     FOR(Pattern.compile("^for$")),
     IN(Pattern.compile("^in$")),

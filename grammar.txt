@@ -1,4 +1,4 @@
-<programa> ::= <declaracioTipus> <llistaDeclaracions> <declaracioFuncioMain>
+<programa> ::= <declaracioTipus> | <llistaDeclaracions> | <declaracioFuncioMain>
 <llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
 <declaracio> ::= <declaracioVariable> | <declaracioFuncio>
 <declaracioTipus> ::= type ID { \n <declaracioVariableTipus> }
@@ -20,7 +20,7 @@
 <declaracioBloc> ::= <declaracioVariable> | <sentencia>
 <sentenciaCondicional> ::= if <expressio>  <sentenciaComposta>  { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
 <sentenciaSwitch> ::= switch <expressio> <blocSwitch>
-<blocSwitch> ::= { \n <llistaOpt> [<blocDefault>] } \n
+<blocSwitch> ::= { \n <llistaOpt> [ <blocDefault> ] } \n
 <llistaOpt> ::= <blocOpt> <llistaOptPrima>
 <llistaOptPrima> ::= <blocOpt> <llistaOptPrima> | ε
 <blocOpt> ::= opt <expressio> -> <sentenciaComposta> \n
@@ -33,7 +33,7 @@
 <fori> ::= ,  <expressio> , <expressio> <sentenciaComposta> \n
 <foreach> ::= in <expressio> <sentenciaComposta> \n
 <expressio> ::= <expressioAnd> <expressioPrima>
-<expressioPrima> ::= or <expressioAnd> <expressioPrima> | ε
+<expressioPrima> ::= or <expressioAnd> <expressioPrima>
 <expressioAnd> ::= <expressioNot> <expressioAndPrima>
 <expressioAndPrima> ::= and <expressioNot> <expressioAndPrima> | ε
 <expressioNot> ::= not <expressioNot> | <expressioRel>
@@ -54,4 +54,4 @@
 <arguments> ::= <llistaArguments> | ε
 <llistaArguments> ::= <expressio> <llistaArgumentsPrima>
 <llistaArgumentsPrima> ::= , <expressio> <llistaArgumentsPrima> | ε
-<constant> ::= NUMERO | STRING | true | false
+<constant> ::= 1 | STRING | true | false

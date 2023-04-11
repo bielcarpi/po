@@ -1,12 +1,10 @@
 package syntax_analysis;
 
 
-import entities.Token;
 import entities.TokenType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.processing.Filer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,7 +13,7 @@ import java.util.ArrayList;
 public class GrammarFactory {
 
     @Nullable
-    public ArrayList<Production> getGrammar(@NotNull String filePath) {
+    public static ArrayList<Production> getGrammar(@NotNull String filePath) {
 
         try {
             ArrayList<Production> productions = new ArrayList<>();

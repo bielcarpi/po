@@ -98,14 +98,6 @@ public class FirstFollowAnalyzer {
                 }
             }
         }
-
-        /**
-         * 1 - recorrer tot el file buscant les possibles produccions que poden donar el no termial que li estem buscant el follow
-         * 2.1 - Si darrere té un terminal aquell serà un dels follows
-         * 2.2 - Si darrere no té res, tindrà com a part del follow el follow del no terminal que ho ha produit
-         * 2.3 - Si darrere té un no terminal, el follow que busquem tindrà el first del no terminal següent
-         *       - Si a més, el first té el simbol epsilon, haurem d'afegir el follow del no terminal que ho ha produit en el follow que estem buscan
-         */
     }
 
     private static void getFirsts(ArrayList<TokenType> firsts, Object next, HashMap<String, Production> map){
@@ -119,5 +111,4 @@ public class FirstFollowAnalyzer {
                 getFirsts(firsts, derivation.get(0), map);
         }
     }
-
 }

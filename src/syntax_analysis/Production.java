@@ -36,7 +36,7 @@ public class Production {
     }
 
     public void setFollows(ArrayList<TokenType> follows){
-        //Delete repeated folllows
+        //Delete repeated follows
         this.follows = follows.stream().distinct().collect(Collectors.toList());
     }
 

@@ -45,6 +45,14 @@ public class ParsingTable {
         return map.get(tuple);
     }
 
+    public Production getProduction(String production){
+        for(Map.Entry<ParsingTableKey, ParsingTableValue> e: map.entrySet())
+            if(e.getValue().production().getProducer().equals(production))
+                return e.getValue().production();
+
+        return null;
+    }
+
 
     @Override
     public String toString() {

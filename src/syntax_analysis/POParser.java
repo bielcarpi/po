@@ -9,6 +9,7 @@ import semantic_analysis.SemanticAnalyzer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 public class POParser implements Parser {
@@ -49,6 +50,7 @@ public class POParser implements Parser {
         stack.push(TokenType.EOF); //Add EOF & Axiom to the stack
         stack.push(productions.get(0).getProducer());
 
+        Production latestProduction = null;
         while(!stack.empty()){
             //Si al stack hi tenim un no terminal
             if(stack.peek() instanceof String){
@@ -56,9 +58,18 @@ public class POParser implements Parser {
                 ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
                 if(ptv == null){    // ERROR
                     System.out.println("Error. No hem trobat fila i columna per " + production + " amb " + ts.peekToken().getType());
+                    //Ens recuperem de l'error fent skip fins a trobar el seguent follow
+                    if(latestProduction == null) break;
+                    List<TokenType> follows = pt.getProduction(production).getFollows();
+                    while(!stack.isEmpty()){
+                        if(follows.contains(ts.peekToken().getType())) break;
+                        ts.nextToken();
+                    }
+
                     continue;
                 }
 
+                latestProduction = ptv.production();
                 ArrayList<Object> derivation = ptv.production().getDerived().get(ptv.derivation());
                 ArrayList<Object> derivationCopy = new ArrayList<>(derivation);
                 Collections.reverse(derivationCopy);
@@ -71,9 +82,17 @@ public class POParser implements Parser {
                 TokenType stackTerminal = (TokenType) stack.pop();
                 TokenType inputTerminal = ts.nextToken().getType();
                 if(stackTerminal.equals(inputTerminal)) {   // MATCH
-                    System.out.println("Match");
-                } else {    // ERROR
+                    System.out.println("Match de " + stackTerminal + " amb " + inputTerminal);
+                }
+                else {    // ERROR
                     System.out.println("Error. Esperavem " + stackTerminal + " i hem trobat " + inputTerminal);
+                    //Ens recuperem de l'error fent skip fins a trobar un dels follows
+                    if(latestProduction == null) break;
+                    List<TokenType> follows = latestProduction.getFollows();
+                    while(!stack.isEmpty()){
+                        if(follows.contains(ts.peekToken().getType())) break;
+                        ts.nextToken();
+                    }
                 }
             }
         }

@@ -1,8 +1,8 @@
 <programa> ::= <declaracioFuncioMain>
 <llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
 <declaracio> ::= <declaracioVariable> | <declaracioFuncio>
-<declaracioTipus> ::= type ID { \n <declaracioVariableTipus> }
-<declaracioVariableTipus> ::= var ID  \n
+<declaracioTipus> ::= type ID { \n <declaracioVariableTipus> } \n
+<declaracioVariableTipus> ::= var ID \n
 <declaracioVariable> ::= var <declaracioVariableMultiple> \n
 <declaracioVariableMultiple> ::= <declaracioVariableID> <declaracioVariableAssigned>
 <declaracioVariableAssigned> ::=  -> ID = <expressio> | ε
@@ -17,7 +17,7 @@
 <sentenciaExpressio> ::= <expressio> \n
 <sentenciaComposta> ::= { \n <llistaComposta> }
 <llistaComposta> ::= <declaracioBloc> <llistaComposta> | ε
-<declaracioBloc> ::= <declaracioVariable> | <sentencia>
+<declaracioBloc> ::= <declaracioTipus> | <sentencia>
 <sentenciaCondicional> ::= if <expressio>  <sentenciaComposta>  { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
 <sentenciaSwitch> ::= switch <expressio> <blocSwitch>
 <blocSwitch> ::= { \n <llistaOpt> [ <blocDefault> ] } \n
@@ -50,7 +50,7 @@
 <factor> ::= <constant> | <mutable>
 <mutable> ::= ID <continuacioMutable>
 <continuacioMutable> ::= ( <arguments> ) | -> ID <accessVariable> | ++ | -- | ε
-<accessVariable> ::= = <expressio> | [ <expressio> ]
+<accessVariable> ::= = <expressio> | ε
 <arguments> ::= <llistaArguments> | ε
 <llistaArguments> ::= <expressio> <llistaArgumentsPrima>
 <llistaArgumentsPrima> ::= , <expressio> <llistaArgumentsPrima> | ε

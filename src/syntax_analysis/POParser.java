@@ -51,6 +51,7 @@ public class POParser implements Parser {
         stack.push(productions.get(0).getProducer());
 
         Production latestProduction = null;
+        outerLoop:
         while(!stack.empty()){
             //Si al stack hi tenim un no terminal
             if(stack.peek() instanceof String){
@@ -64,6 +65,7 @@ public class POParser implements Parser {
                     while(!stack.isEmpty()){
                         if(follows.contains(ts.peekToken().getType())) break;
                         ts.nextToken();
+                        if(ts.isEmpty()) break outerLoop;
                     }
 
                     continue;
@@ -92,6 +94,7 @@ public class POParser implements Parser {
                     while(!stack.isEmpty()){
                         if(follows.contains(ts.peekToken().getType())) break;
                         ts.nextToken();
+                        if(ts.isEmpty()) break outerLoop;
                     }
                 }
             }

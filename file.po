@@ -1,5 +1,12 @@
 func main(){
     type a {
-        b int
+        var b
     }
+    a->x = 3+5
+}
+func hola(a, b, c){
+    while a->b < c->d {
+        a->b = a->b + 1
+    }
+    ret 5
 }

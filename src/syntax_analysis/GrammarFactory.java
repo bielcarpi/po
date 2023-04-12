@@ -27,8 +27,10 @@ public class GrammarFactory {
                 int currentDerivation = 0;
 
                 // Check if valid format
-                if (splits.length <= 1 || !splits[1].equals("::="))
+                if (splits.length <= 1 || !splits[1].equals("::=")){
+                    System.out.println("Error parsing grammar on line " + line);
                     return null;
+                }
 
                 for (int i = 2; i < splits.length; i++) {
 

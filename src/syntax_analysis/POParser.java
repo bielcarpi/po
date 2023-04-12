@@ -42,17 +42,20 @@ public class POParser implements Parser {
         for(Production p: productions) System.out.println(p);
         System.out.println(pt);
 
+        ts.printStream();
+
         //Now that we have built the ParsingTable and have the TokenStream, we can start the syntax analysis
         Stack<Object> stack = new Stack<>();
-        stack.push(TokenType.EOF);
+        stack.push(TokenType.EOF); //Add EOF & Axiom to the stack
         stack.push(productions.get(0).getProducer());
 
         while(!stack.empty()){
             //Si al stack hi tenim un no terminal
             if(stack.peek() instanceof String){
-                ParsingTableValue ptv = pt.getProduction(new ParsingTableKey((String)stack.pop(), ts.peekToken().getType()));
+                String production = (String) stack.pop();
+                ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
                 if(ptv == null){    // ERROR
-                    System.out.println("Error. No hem trobat fila i columna");
+                    System.out.println("Error. No hem trobat fila i columna per " + production + " amb " + ts.peekToken().getType());
                     continue;
                 }
 
@@ -74,7 +77,6 @@ public class POParser implements Parser {
                 }
             }
         }
-
 
         return new ParseTree();
     }

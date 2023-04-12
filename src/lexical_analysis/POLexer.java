@@ -14,7 +14,7 @@ import static entities.ErrorType.*;
 public class POLexer implements Lexer {
 
     private final static Pattern specialCharacters = Pattern.compile("([ \\t,(){}=\\[\\]+\\-*/\\n<>;])");
-    private final static Pattern doubleOperators = Pattern.compile("([=+\\-])");
+    private final static Pattern doubleOperators = Pattern.compile("([=+\\->])");
     private final static String error = "Error on line %d column %d. %s is not a valid token.\n";
 
     @Override
@@ -50,6 +50,7 @@ public class POLexer implements Lexer {
                 continue;
             }
 
+
             //If a special character is found
             if(specialCharacters.matcher(Character.toString(chars[i])).matches()){
                 //Check the token in the buffer
@@ -64,7 +65,7 @@ public class POLexer implements Lexer {
                 //Check whether this special character found is a token itself
                 TokenType tokenType = TokenType.getMatch(Character.toString(chars[i]));
                 if(tokenType != null) {
-                    // If the next character is a double operator (==, ++ or --), add it as a whole token
+                    // If the next character is a double operator (==, ++, -- or ->), add it as a whole token
                     if (tokenType != TokenType.EOL && i + 1 < chars.length && doubleOperators.matcher(Character.toString(chars[i + 1])).matches()) {
                         sb.setLength(0);
                         sb.append(chars[i]).append(chars[i+1]);
@@ -95,9 +96,5 @@ public class POLexer implements Lexer {
 
         //Return the TokenStream or null if it's empty
         return ts.isEmpty()? null: ts;
-    }
-
-    private void errorFound(int row, int col, String token){
-        System.out.printf(error, row, col, token);
     }
 }

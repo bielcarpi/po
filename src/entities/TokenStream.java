@@ -51,4 +51,13 @@ public class TokenStream {
     public boolean isEmpty(){
         return tokens.isEmpty();
     }
+
+    /**
+     * Prints the stream to the console.
+     */
+    public void printStream(){
+        for(Token t: tokens){
+            System.out.println(t);
+        }
+    }
 }

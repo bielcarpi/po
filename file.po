@@ -1,5 +1,5 @@
 func main(){
-    switch A->a {
+    switch a->b {
         opt 5 -> { // a es 5 }
         opt 6 -> { // a es 6 }
         default -> { // a no es ni 5 ni 6 }

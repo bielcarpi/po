@@ -15,10 +15,10 @@
 <sentenciaComposta> ::= { \n <llistaComposta> }
 <llistaComposta> ::= <declaracioBloc> <llistaComposta> | ε
 <declaracioBloc> ::= <declaracioTipus> | <sentencia>
-<sentenciaCondicional> ::= if <expressio>  <sentenciaComposta> <llistaElsif> <blocElse> \n
-<llistaElsif> ::= <blocElsif> <llistaElsif> | ε
-<blocElsif> ::= elsif  <expressio> <sentenciaComposta>
-<blocElse> ::= else <sentenciaComposta> | ε
+<sentenciaCondicional> ::= if <expressio> <sentenciaComposta> \n <llistaElsif> <blocElse>
+<llistaElsif> ::= <blocElsif> \n <llistaElsif> | ε
+<blocElsif> ::= elsif <expressio> <sentenciaComposta>
+<blocElse> ::= else <sentenciaComposta> \n | ε
 <sentenciaSwitch> ::= switch <expressio> <blocSwitch>
 <blocSwitch> ::= { \n <llistaOpt> <blocDefault> } \n
 <llistaOpt> ::= <blocOpt> <llistaOptPrima>

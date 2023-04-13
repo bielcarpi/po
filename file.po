@@ -1,12 +1,5 @@
-func main(){
-    type a {
-        var b
+func main() {
+    if 3 > 2 AND 2 > 1 {
+        // Code ...
     }
-    a->x = 3+5
-}
-func hola(a, b, c){
-    while a->b < c->d {
-        a->b = a->b + 1
-    }
-    ret 5
 }

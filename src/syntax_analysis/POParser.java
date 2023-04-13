@@ -62,6 +62,7 @@ public class POParser implements Parser {
                     //Ens recuperem de l'error fent skip fins a trobar el seguent follow
                     if(latestProduction == null) break;
                     List<TokenType> follows = pt.getProduction(production).getFollows();
+                    System.out.println(follows);
                     while(!stack.isEmpty()){
                         if(follows.contains(ts.peekToken().getType())) break;
                         ts.nextToken();

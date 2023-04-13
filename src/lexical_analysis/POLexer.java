@@ -43,7 +43,7 @@ public class POLexer implements Lexer {
 
             //If we find a !, check if a = comes later (! is not a valid token, but != it is)
             if (chars[i] == '!' && i + 1 < chars.length && chars[i + 1] == '=') {
-                ts.addNewToken(new Token(TokenType.DIFF, null));
+                ts.addNewToken(new Token(TokenType.DIFF, null, row, col));
                 i++;
                 col++;
                 continue;
@@ -56,9 +56,9 @@ public class POLexer implements Lexer {
                 if(sb.length() > 0){
                     TokenType tokenType = TokenType.getMatch(sb.toString());
                     if(tokenType == null) //Print an error. We won't add anything to the TokenStream
-                        ErrorManager.getInstance().addError(TOKEN_LIST_ERROR, row, col);
+                        ErrorManager.getInstance().addError(new entities.Error(TOKEN_LIST_ERROR, row, col));
                     else //Add the new token to the TokenStream
-                        ts.addNewToken(new Token(tokenType, sb.toString()));
+                        ts.addNewToken(new Token(tokenType, sb.toString(), row, col));
                 }
 
                 //Check whether this special character found is a token itself
@@ -73,7 +73,7 @@ public class POLexer implements Lexer {
                         tokenType = TokenType.getMatch(sb.toString());
                     }
                     if (tokenType != null)
-                        ts.addNewToken(new Token(tokenType, null));
+                        ts.addNewToken(new Token(tokenType, null, row, col));
                 }
 
                 sb.setLength(0); //Clear buffer
@@ -87,11 +87,10 @@ public class POLexer implements Lexer {
 
 
         //When everything ends, buffer length should be 0
-        if(sb.length() > 0) ErrorManager.getInstance().addError(BUFFER_LENGTH_ERROR, row, col);
-            //errorFound(row, col - sb.length(), sb.toString());
+        if(sb.length() > 0) ErrorManager.getInstance().addError(new entities.Error(BUFFER_LENGTH_ERROR, row, col));
 
         // Adding the EOF token
-        ts.addNewToken(new Token(TokenType.EOF, null));
+        ts.addNewToken(new Token(TokenType.EOF, null, row, 0));
 
         //Return the TokenStream or null if it's empty
         return ts.isEmpty()? null: ts;

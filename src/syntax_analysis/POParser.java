@@ -1,12 +1,11 @@
 package syntax_analysis;
 
-import entities.ParseTree;
-import entities.TokenStream;
-import entities.TokenType;
+import entities.*;
 import lexical_analysis.Lexer;
 import org.jetbrains.annotations.NotNull;
 import semantic_analysis.SemanticAnalyzer;
 
+import java.lang.Error;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +50,7 @@ public class POParser implements Parser {
         stack.push(productions.get(0).getProducer());
 
         Production latestProduction = null;
+        boolean errorDetected = false;
         outerLoop:
         while(!stack.empty()){
             //Si al stack hi tenim un no terminal
@@ -58,9 +58,15 @@ public class POParser implements Parser {
                 String production = (String) stack.pop();
                 ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
                 if(ptv == null){    // ERROR
-                    System.out.println("Error. No hem trobat fila i columna per " + production + " amb " + ts.peekToken().getType());
+                    if(!errorDetected){
+                        String err = "Error. No hem trobat fila i columna per " + production + " amb " + ts.peekToken().getType();
+                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, ts.peekToken().getLine(), ts.peekToken().getColumn()));
+                        System.out.println(err);
+                    }
+
                     //Ens recuperem de l'error fent skip fins a trobar el seguent follow
                     if(latestProduction == null) break;
+                    errorDetected = true;
                     List<TokenType> follows = pt.getProduction(production).getFollows();
                     System.out.println(follows);
                     while(!stack.isEmpty()){
@@ -83,14 +89,20 @@ public class POParser implements Parser {
             }
             else{ //Si la stack hi tenim un terminal
                 TokenType stackTerminal = (TokenType) stack.pop();
-                TokenType inputTerminal = ts.nextToken().getType();
-                if(stackTerminal.equals(inputTerminal)) {   // MATCH
-                    System.out.println("Match de " + stackTerminal + " amb " + inputTerminal);
+                Token input = ts.nextToken();
+                if(stackTerminal.equals(input.getType())) {   // MATCH
+                    System.out.println("Match de " + stackTerminal + " amb " + input.getType());
+                    errorDetected = false; //If there was an error, it ends now
                 }
                 else {    // ERROR
-                    System.out.println("Error. Esperavem " + stackTerminal + " i hem trobat " + inputTerminal);
+                    if(!errorDetected){
+                        String err = "Error. Esperavem " + stackTerminal + " i hem trobat " + input.getType();
+                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, input.getLine(), input.getColumn()));
+                        System.out.println(err);
+                    }
                     //Ens recuperem de l'error fent skip fins a trobar un dels follows
                     if(latestProduction == null) break;
+                    errorDetected = true;
                     List<TokenType> follows = latestProduction.getFollows();
                     while(!stack.isEmpty()){
                         if(follows.contains(ts.peekToken().getType())) break;
@@ -101,6 +113,7 @@ public class POParser implements Parser {
             }
         }
 
+        ErrorManager.getInstance().printErrors();
         return new ParseTree();
     }
 }

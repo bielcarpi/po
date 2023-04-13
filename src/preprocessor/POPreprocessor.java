@@ -63,7 +63,8 @@ public class POPreprocessor implements Preprocessor {
                 // Addition of the '\n' character to the string builder
                 cleanContentBuilder.append(content.charAt(i));
                 continue; // Back to the loop without adding another unusual char
-            } else {
+            }
+            else {
                 if (content.charAt(i) == '/' && content.charAt(i+1) == '*'){
                     // CORRECT LONG COMMENT
                     i = i + 2; // We move to the begining of the comment
@@ -80,6 +81,7 @@ public class POPreprocessor implements Preprocessor {
                     i = i + 2; // Jump both '*' and '/' characters
                 }
             }
+
             cleanContentBuilder.append(content.charAt(i));
         }
         return cleanContentBuilder.toString();

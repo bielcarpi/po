@@ -3,6 +3,7 @@ package syntax_analysis;
 import entities.ParseTree;
 import lexical_analysis.Lexer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import semantic_analysis.SemanticAnalyzer;
 
 /**
@@ -23,7 +24,7 @@ public interface Parser {
      * @param semanticAnalyzer The semantic analyzer to be used
      * @return The ParseTree semantically validated
      */
-    @NotNull
+    @Nullable
     ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer);
 
 }

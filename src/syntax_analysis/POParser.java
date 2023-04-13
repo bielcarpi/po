@@ -3,6 +3,7 @@ package syntax_analysis;
 import entities.*;
 import lexical_analysis.Lexer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import semantic_analysis.SemanticAnalyzer;
 
 import java.lang.Error;
@@ -21,19 +22,19 @@ public class POParser implements Parser {
     }
 
     @Override
-    public @NotNull ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer) {
+    public @Nullable ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer) {
         TokenStream ts = lexer.generateTokenStream(pureHLL);
         if(ts == null){
             //TODO: Manage critical error
             System.out.println("Error generating the token stream");
-            return new ParseTree();
+            return null;
         }
 
         ArrayList<Production> productions = GrammarFactory.getGrammar(grammarFilePath);
         if(productions == null){
             //TODO: Manage critical error
             System.out.println("Error parsing the grammar");
-            return new ParseTree();
+            return null;
         }
 
 
@@ -48,6 +49,8 @@ public class POParser implements Parser {
         Stack<Object> stack = new Stack<>();
         stack.push(TokenType.EOF); //Add EOF & Axiom to the stack
         stack.push(productions.get(0).getProducer());
+        ParseTree tree = new ParseTree(new ParseTreeNode(null, productions.get(0).getProducer(), new ArrayList<>()));
+        ParseTreeNode currentNode = tree.getRoot();
 
         Production latestProduction = null;
         boolean errorDetected = false;
@@ -56,6 +59,13 @@ public class POParser implements Parser {
             //Si al stack hi tenim un no terminal
             if(stack.peek() instanceof String){
                 String production = (String) stack.pop();
+                for(ParseTreeNode child: currentNode.getChildren()){
+                    if(child.getSelf().equals(production)){
+                        currentNode = child;
+                        break;
+                    }
+                }
+
                 ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
                 if(ptv == null){    // ERROR
                     if(!errorDetected){
@@ -83,9 +93,11 @@ public class POParser implements Parser {
                 ArrayList<Object> derivationCopy = new ArrayList<>(derivation);
                 Collections.reverse(derivationCopy);
                 for(Object o: derivationCopy){
+                    currentNode.addChild(new ParseTreeNode(currentNode, o, o instanceof TokenType? null: new ArrayList<>()));
                     if(o == TokenType.VOID) continue;
                     stack.push(o);
                 }
+                Collections.reverse(currentNode.getChildren());
             }
             else{ //Si la stack hi tenim un terminal
                 TokenType stackTerminal = (TokenType) stack.pop();
@@ -113,7 +125,8 @@ public class POParser implements Parser {
             }
         }
 
+        tree.print();
         ErrorManager.getInstance().printErrors();
-        return new ParseTree();
+        return tree;
     }
 }

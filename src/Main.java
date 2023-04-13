@@ -16,7 +16,5 @@ public class Main {
 
         Parser parser = new POParser(pureHLL);
         ParseTree pt = parser.generateParseTree(new POLexer(), new POSemanticAnalyzer());
-
-        System.out.println(pt);
     }
 }

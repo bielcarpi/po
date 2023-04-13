@@ -1,11 +1,9 @@
-<programa> ::= <declaracioTipus> | <llistaDeclaracions> | <declaracioFuncioMain>
+<programa> ::= <declaracioFuncioMain> <llistaDeclaracions>
 <llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
-<declaracio> ::= <declaracioVariable> | <declaracioFuncio>
-<declaracioTipus> ::= type ID { \n <declaracioVariableTipus> }
-<declaracioVariableTipus> ::= var ID  \n
-<declaracioVariable> ::= var <declaracioVariableMultiple> \n
-<declaracioVariableMultiple> ::= <declaracioVariableID> <declaracioVariableAssigned>
-<declaracioVariableAssigned> ::=  -> ID = <expressio> | ε
+<declaracio> ::= <declaracioTipus> | <declaracioFuncio>
+<declaracioTipus> ::= type ID { \n <declaracioVariableTipus> } \n
+<declaracioVariableTipus> ::= var ID \n
+<assignacioVariable> ::= ID -> ID = <expressio> \n
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
 <declaracioFuncioMain> ::= func main ( ) <sentenciaComposta> \n
@@ -13,19 +11,21 @@
 <llistaParametres> ::= <declaracioVariableParametre> <llistaParametresPrima>
 <llistaParametresPrima> ::= , <declaracioVariableParametre> <llistaParametresPrima> | ε
 <declaracioVariableParametre> ::= <declaracioVariableID>
-<sentencia> ::= <sentenciaExpressio> | <sentenciaCondicional> | <sentenciaWhile> | <sentenciaFor> | <sentenciaSwitch> | <sentenciaRetorn> | <sentenciaBreak>
-<sentenciaExpressio> ::= <expressio> \n
+<sentencia> ::= <assignacioVariable> | <sentenciaCondicional> | <sentenciaWhile> | <sentenciaFor> | <sentenciaSwitch> | <sentenciaRetorn> | <sentenciaBreak>
 <sentenciaComposta> ::= { \n <llistaComposta> }
 <llistaComposta> ::= <declaracioBloc> <llistaComposta> | ε
-<declaracioBloc> ::= <declaracioVariable> | <sentencia>
-<sentenciaCondicional> ::= if <expressio>  <sentenciaComposta>  { elsif  <expressio> <sentenciaComposta> } [ else <sentenciaComposta> ] \n
+<declaracioBloc> ::= <declaracioTipus> | <sentencia>
+<sentenciaCondicional> ::= if <expressio> <sentenciaComposta> \n <llistaElsif> <blocElse>
+<llistaElsif> ::= <blocElsif> \n <llistaElsif> | ε
+<blocElsif> ::= elsif <expressio> <sentenciaComposta>
+<blocElse> ::= else <sentenciaComposta> \n | ε
 <sentenciaSwitch> ::= switch <expressio> <blocSwitch>
-<blocSwitch> ::= { \n <llistaOpt> [ <blocDefault> ] } \n
+<blocSwitch> ::= { \n <llistaOpt> <blocDefault> } \n
 <llistaOpt> ::= <blocOpt> <llistaOptPrima>
 <llistaOptPrima> ::= <blocOpt> <llistaOptPrima> | ε
 <blocOpt> ::= opt <expressio> -> <sentenciaComposta> \n
-<blocDefault> ::= default -> <sentenciaComposta> \n
-<sentenciaRetorn> ::= ret [ <expressio> ] \n
+<blocDefault> ::= default -> <sentenciaComposta> \n | ε
+<sentenciaRetorn> ::= ret <expressio> \n
 <sentenciaBreak> ::= break \n
 <sentenciaWhile> ::= while <expressio> <sentenciaComposta> \n
 <sentenciaFor> ::= for ID -> ID <continuacioFor>
@@ -33,7 +33,7 @@
 <fori> ::= ,  <expressio> , <expressio> <sentenciaComposta> \n
 <foreach> ::= in <expressio> <sentenciaComposta> \n
 <expressio> ::= <expressioAnd> <expressioPrima>
-<expressioPrima> ::= or <expressioAnd> <expressioPrima>
+<expressioPrima> ::= or <expressioAnd> <expressioPrima> | ε
 <expressioAnd> ::= <expressioNot> <expressioAndPrima>
 <expressioAndPrima> ::= and <expressioNot> <expressioAndPrima> | ε
 <expressioNot> ::= not <expressioNot> | <expressioRel>
@@ -49,8 +49,8 @@
 <expressioUnaria> ::= - <expressioUnaria> | <factor>
 <factor> ::= <constant> | <mutable>
 <mutable> ::= ID <continuacioMutable>
-<continuacioMutable> ::= ( <arguments> ) | -> ID <accessVariable> | ++ | -- | ε
-<accessVariable> ::= = <expressio> | [ <expressio> ]
+<continuacioMutable> ::= ( <arguments> ) | -> ID <continuacioMutablePrima>
+<continuacioMutablePrima> ::= ++ | -- | ε
 <arguments> ::= <llistaArguments> | ε
 <llistaArguments> ::= <expressio> <llistaArgumentsPrima>
 <llistaArgumentsPrima> ::= , <expressio> <llistaArgumentsPrima> | ε

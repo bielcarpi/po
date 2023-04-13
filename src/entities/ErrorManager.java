@@ -17,20 +17,26 @@ public class ErrorManager {
         return instance;
     }
 
-    public void addError(ErrorType type, int line, int column) {
-        String message = ErrorType.getMessage(type);
-        Error error = new Error(type, message, line, column);
-        System.out.println(error.toString());
+    public void addError(Error e) {
+        errors.add(e);
 
-        if (error.isCritical())
+        if (ErrorType.isCritical(e.getType())){
+            printErrors();
+            System.out.println("Critical error detected. Exiting...");
             System.exit(1);
+        }
 
     }
 
     public void printErrors() {
-        for (Error error : errors) {
-            System.out.println(error.toString());
+        if (errors.size() == 0){
+            System.out.println("\n\nNo errors found.");
+            return;
         }
+
+        System.out.println("\n\n" + errors.size() + " Errors found:");
+        for (Error error: errors)
+            System.out.println(error.toString());
     }
 
     public boolean hasErrors() {

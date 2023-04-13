@@ -11,7 +11,7 @@ import java.util.Queue;
  */
 public class TokenStream {
 
-    private Queue<Token> tokens;
+    private final Queue<Token> tokens;
 
     /**
      * Constructor to instance a new Token Stream.
@@ -50,5 +50,14 @@ public class TokenStream {
      */
     public boolean isEmpty(){
         return tokens.isEmpty();
+    }
+
+    /**
+     * Prints the stream to the console.
+     */
+    public void printStream(){
+        for(Token t: tokens){
+            System.out.println(t);
+        }
     }
 }

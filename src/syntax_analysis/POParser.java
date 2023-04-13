@@ -1,36 +1,40 @@
 package syntax_analysis;
 
-import entities.ParseTree;
-import entities.TokenStream;
+import entities.*;
 import lexical_analysis.Lexer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import semantic_analysis.SemanticAnalyzer;
 
+import java.lang.Error;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
 public class POParser implements Parser {
 
     private final String pureHLL;
-    private final String grammarFilePath = "grammarEasy.txt";
+    private final String grammarFilePath = "grammar.txt";
 
     public POParser(@NotNull final String pureHLL) {
         this.pureHLL = pureHLL;
     }
 
     @Override
-    public @NotNull ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer) {
+    public @Nullable ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer) {
         TokenStream ts = lexer.generateTokenStream(pureHLL);
         if(ts == null){
             //TODO: Manage critical error
             System.out.println("Error generating the token stream");
-            return new ParseTree();
+            return null;
         }
 
         ArrayList<Production> productions = GrammarFactory.getGrammar(grammarFilePath);
         if(productions == null){
             //TODO: Manage critical error
             System.out.println("Error parsing the grammar");
-            return new ParseTree();
+            return null;
         }
 
 
@@ -39,8 +43,90 @@ public class POParser implements Parser {
         for(Production p: productions) System.out.println(p);
         System.out.println(pt);
 
-        //Now that we have built the ParsingTable and have the TokenStream, we can start the syntax analysis
+        ts.printStream();
 
-        return new ParseTree();
+        //Now that we have built the ParsingTable and have the TokenStream, we can start the syntax analysis
+        Stack<Object> stack = new Stack<>();
+        stack.push(TokenType.EOF); //Add EOF & Axiom to the stack
+        stack.push(productions.get(0).getProducer());
+        ParseTree tree = new ParseTree(new ParseTreeNode(null, productions.get(0).getProducer(), new ArrayList<>()));
+        ParseTreeNode currentNode = tree.getRoot();
+
+        Production latestProduction = null;
+        boolean errorDetected = false;
+        outerLoop:
+        while(!stack.empty()){
+            //Si al stack hi tenim un no terminal
+            if(stack.peek() instanceof String){
+                String production = (String) stack.pop();
+                for(ParseTreeNode child: currentNode.getChildren()){
+                    if(child.getSelf().equals(production)){
+                        currentNode = child;
+                        break;
+                    }
+                }
+
+                ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
+                if(ptv == null){    // ERROR
+                    if(!errorDetected){
+                        String err = "Error. No hem trobat fila i columna per " + production + " amb " + ts.peekToken().getType();
+                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, ts.peekToken().getLine(), ts.peekToken().getColumn()));
+                        System.out.println(err);
+                    }
+
+                    //Ens recuperem de l'error fent skip fins a trobar el seguent follow
+                    if(latestProduction == null) break;
+                    errorDetected = true;
+                    List<TokenType> follows = pt.getProduction(production).getFollows();
+                    System.out.println(follows);
+                    while(!stack.isEmpty()){
+                        if(follows.contains(ts.peekToken().getType())) break;
+                        ts.nextToken();
+                        if(ts.isEmpty()) break outerLoop;
+                    }
+
+                    continue;
+                }
+
+                latestProduction = ptv.production();
+                ArrayList<Object> derivation = ptv.production().getDerived().get(ptv.derivation());
+                ArrayList<Object> derivationCopy = new ArrayList<>(derivation);
+                Collections.reverse(derivationCopy);
+                for(Object o: derivationCopy){
+                    currentNode.addChild(new ParseTreeNode(currentNode, o, o instanceof TokenType? null: new ArrayList<>()));
+                    if(o == TokenType.VOID) continue;
+                    stack.push(o);
+                }
+                Collections.reverse(currentNode.getChildren());
+            }
+            else{ //Si la stack hi tenim un terminal
+                TokenType stackTerminal = (TokenType) stack.pop();
+                Token input = ts.nextToken();
+                if(stackTerminal.equals(input.getType())) {   // MATCH
+                    System.out.println("Match de " + stackTerminal + " amb " + input.getType());
+                    errorDetected = false; //If there was an error, it ends now
+                }
+                else {    // ERROR
+                    if(!errorDetected){
+                        String err = "Error. Esperavem " + stackTerminal + " i hem trobat " + input.getType();
+                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, input.getLine(), input.getColumn()));
+                        System.out.println(err);
+                    }
+                    //Ens recuperem de l'error fent skip fins a trobar un dels follows
+                    if(latestProduction == null) break;
+                    errorDetected = true;
+                    List<TokenType> follows = latestProduction.getFollows();
+                    while(!stack.isEmpty()){
+                        if(follows.contains(ts.peekToken().getType())) break;
+                        ts.nextToken();
+                        if(ts.isEmpty()) break outerLoop;
+                    }
+                }
+            }
+        }
+
+        tree.print();
+        ErrorManager.getInstance().printErrors();
+        return tree;
     }
 }

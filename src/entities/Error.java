@@ -1,10 +1,10 @@
 package entities;
 
 public class Error {
-    private ErrorType type;
-    private String message;
-    private int line;
-    private int column;
+    private final ErrorType type;
+    private final String message;
+    private final int line;
+    private final int column;
 
     public Error(ErrorType type, String message, int line, int column) {
         this.type = type;
@@ -12,6 +12,14 @@ public class Error {
         this.line = line;
         this.column = column;
     }
+
+    public Error(ErrorType type, int line, int column) {
+        this.type = type;
+        this.message = ErrorType.getMessage(type);
+        this.line = line;
+        this.column = column;
+    }
+
 
     public ErrorType getType() {
         return type;
@@ -31,10 +39,6 @@ public class Error {
 
     @Override
     public String toString() {
-        return "error: %s [%s], Column: %d. Row: %d\n".formatted(message, type, line, column);
-    }
-
-    public boolean isCritical() {
-        return type == ErrorType.FILE_NOT_FOUND || type == ErrorType.SEGMENTATION_FAULT;
+        return "Error on line %d column %d: [%s] %s".formatted(line, column, type, message);
     }
 }

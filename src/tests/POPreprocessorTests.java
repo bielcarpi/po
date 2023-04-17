@@ -16,7 +16,6 @@ class POPreprocessorTests {
         String actual = this.poPreprocessor.generatePureHighLevelLanguage("src/tests/unit/po_preprocessor/inputs/func-main-empty.po");
         try {
             String expected = Files.readString(Path.of("src/tests/unit/po_preprocessor/outputs/func-main-empty.po"));
-            //expected = expected.replaceAll("\\r\\n", "\n");
             assertEquals(expected, actual);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -27,7 +26,6 @@ class POPreprocessorTests {
         String actual = this.poPreprocessor.generatePureHighLevelLanguage("src/tests/unit/po_preprocessor/inputs/func-main-inline-comment.po");
         try {
             String expected = Files.readString(Path.of("src/tests/unit/po_preprocessor/outputs/func-main-inline-comment.po"));
-            //expected = content.replaceAll("\\r\\n", "\n");
             assertEquals(expected, actual);
         } catch (IOException e) {
             throw new RuntimeException(e);

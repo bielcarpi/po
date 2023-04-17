@@ -1,8 +1,6 @@
 func main() {
-    type A {
-        var a
+    if 3 > 2 {
     }
-    type B {
-        var b
+    else {
     }
 }

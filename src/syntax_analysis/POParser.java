@@ -62,7 +62,7 @@ public class POParser implements Parser {
                 String production = (String) stack.pop();
                 while(true){ //Update currentNodeChanged
                     for(ParseTreeNode child: currentNode.getChildren()){
-                        if(child.getSelf().equals(production)){
+                        if(child.getSelf().equals(production) && child.getChildren().isEmpty()){
                             currentNode = child;
                             currentNodeChanged = true;
                             break;

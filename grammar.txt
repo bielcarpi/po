@@ -3,7 +3,9 @@
 <declaracio> ::= <declaracioTipus> | <declaracioFuncio>
 <declaracioTipus> ::= type ID { \n <declaracioVariableTipus> } \n
 <declaracioVariableTipus> ::= var ID \n
-<assignacioVariable> ::= ID -> ID = <expressio> \n
+<assignacioVariable> ::= ID -> ID <assignacioVariablePrima> \n
+<assignacioVariablePrima> ::= = <expressio> | <operacioUnariaVariable>
+<operacioUnariaVariable> ::= ++ | --
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
 <declaracioFuncioMain> ::= func main ( ) <sentenciaComposta> \n

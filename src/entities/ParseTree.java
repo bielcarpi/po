@@ -24,33 +24,37 @@ public class ParseTree {
     }
 
     /**
-     * Prints the Parse Tree
+     * Returns a String representation of the Parse Tree
+     * @return A String representation of the Parse Tree
      */
-    public void print() {
+    @Override
+    public String toString() {
         Function<ParseTreeNode, List<ParseTreeNode>> getChildrenFunc = ParseTreeNode::getChildren;
-        printTreeRec("", root, getChildrenFunc, true);
+        StringBuilder sb = new StringBuilder();
+        printTreeRec("", root, getChildrenFunc, true, sb);
+        return sb.toString();
     }
 
 
     /**
      * Print a tree structure in a pretty ASCII fromat.
      * Extracted from <a href="https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java">...</a>
-     * @param prefix Currnet previx. Use "" in initial call!
+     * @param prefix Current prefix. Use "" in initial call!
      * @param node The current node. Pass the root node of your tree in initial call.
      * @param getChildrenFunc A {@link Function} that returns the children of a given node.
-     * @param isTail Is node the last of its sibblings. Use true in initial call. (This is needed for pretty printing.)
+     * @param isTail Is node the last of its siblings. Use true in initial call. (This is needed for pretty printing.)
      * @param <T> The type of your nodes. Anything that has a toString can be used.
      */
-    private <T> void printTreeRec(String prefix, T node, Function<T, List<T>> getChildrenFunc, boolean isTail) {
+    private <T> void printTreeRec(String prefix, T node, Function<T, List<T>> getChildrenFunc, boolean isTail, StringBuilder sb) {
         String nodeName = node.toString();
         String nodeConnection = isTail ? "└── " : "├── ";
-        System.out.println(prefix + nodeConnection + nodeName);
+        sb.append(prefix).append(nodeConnection).append(nodeName).append("\n");
         List<T> children = getChildrenFunc.apply(node);
         if(children == null || children.isEmpty())
             return;
         for (int i = 0; i < children.size(); i++) {
             String newPrefix = prefix + (isTail ? "    " : "│   ");
-            printTreeRec(newPrefix, children.get(i), getChildrenFunc, i == children.size()-1);
+            printTreeRec(newPrefix, children.get(i), getChildrenFunc, i == children.size() - 1, sb);
         }
     }
 }

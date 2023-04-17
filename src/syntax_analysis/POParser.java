@@ -54,17 +54,25 @@ public class POParser implements Parser {
 
         Production latestProduction = null;
         boolean errorDetected = false;
+        boolean currentNodeChanged = true;
         outerLoop:
         while(!stack.empty()){
             //Si al stack hi tenim un no terminal
             if(stack.peek() instanceof String){
                 String production = (String) stack.pop();
-                for(ParseTreeNode child: currentNode.getChildren()){
-                    if(child.getSelf().equals(production)){
-                        currentNode = child;
-                        break;
+                while(true){ //Update currentNodeChanged
+                    for(ParseTreeNode child: currentNode.getChildren()){
+                        if(child.getSelf().equals(production)){
+                            currentNode = child;
+                            currentNodeChanged = true;
+                            break;
+                        }
                     }
+
+                    if(!currentNodeChanged) currentNode = currentNode.getParent();
+                    else break;
                 }
+                currentNodeChanged = false;
 
                 ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
                 if(ptv == null){    // ERROR
@@ -125,7 +133,7 @@ public class POParser implements Parser {
             }
         }
 
-        tree.print();
+        System.out.println(tree);
         ErrorManager.getInstance().printErrors();
         return tree;
     }

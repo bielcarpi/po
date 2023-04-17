@@ -120,6 +120,9 @@ public class POParser implements Parser {
                         ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, input.getLine(), input.getColumn()));
                         System.out.println(err);
                     }
+                    //TODO: Provem de recuperar-nos trobant el seguent terminal de la produccio que ha fallat, en el cas de que aquest terminal no fos l'ultim de la produccio
+                    //TODO: Cada terminal s'hauria de guardar a quina derivacio pertany, per poder fer el skip fins al seguent terminal de la mateixa derivacio
+
                     //Ens recuperem de l'error fent skip fins a trobar un dels follows
                     if(latestProduction == null) break;
                     errorDetected = true;

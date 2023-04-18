@@ -1,3 +1,6 @@
+type A {
+    var a
+}
 func hola(){
     A->a++
     ret 3

@@ -57,6 +57,14 @@ public class ParseTreeNode {
         children.add(parseTreeNode);
     }
 
+    /**
+     * Sets the self of the node
+     * @param self The self of the node
+     */
+    public void setSelf(Object self) {
+        this.self = self;
+    }
+
     @Override
     public String toString() {
         return self.toString();
@@ -67,4 +75,5 @@ public class ParseTreeNode {
     public boolean equals(Object obj) {
         return obj == this;
     }
+
 }

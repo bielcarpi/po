@@ -43,10 +43,14 @@ public class ParseTree {
         return sb.toString();
     }
 
+    /**
+     * Cleans the Parse Tree
+     */
     public void cleanTree(){
         cleanUselessNodes(root);
         cleanProductionsWithTerminals(root);
         cleanProductionsWithAsterisc(root);
+        cleanProductionsWithAmpersand(root);
     }
 
     /**
@@ -143,6 +147,33 @@ public class ParseTree {
         for(ParseTreeNode child: node.getChildren())
             if(!childsAux.contains(child)) cleanProductionsWithAsterisc(child);
     }
+
+    /**
+     * Removes nodes that have a & in their name, and substitutes them with its first child (a terminal)
+     * The nodes with a & in their name (ex. <sentenciaWhile&>) can be substituted by its first child (in this
+     *  particular case, the terminal "while")
+     * @param node The node to clean
+     */
+    private void cleanProductionsWithAmpersand(ParseTreeNode node){
+        //Top-Down Recursive
+
+        if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
+
+        if(node.getSelf() instanceof String && node.getSelf().toString().contains("&")){
+            node.setSelf(node.getChildren().get(0).getSelf());
+            node.getChildren().remove(0);
+
+            //If now that we removed we have only one child, and it is non-terminal, we can remove that node and move its childs up
+            if(node.getChildren().size() == 1 && node.getChildren().get(0).getSelf() instanceof String){
+                node.getChildren().addAll(node.getChildren().get(0).getChildren());
+                node.getChildren().remove(0);
+            }
+        }
+
+        for(ParseTreeNode child: node.getChildren())
+            cleanProductionsWithAmpersand(child);
+    }
+
 
 
 

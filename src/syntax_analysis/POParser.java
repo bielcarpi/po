@@ -54,17 +54,25 @@ public class POParser implements Parser {
 
         Production latestProduction = null;
         boolean errorDetected = false;
+        boolean currentNodeChanged = true;
         outerLoop:
         while(!stack.empty()){
             //Si al stack hi tenim un no terminal
             if(stack.peek() instanceof String){
                 String production = (String) stack.pop();
-                for(ParseTreeNode child: currentNode.getChildren()){
-                    if(child.getSelf().equals(production)){
-                        currentNode = child;
-                        break;
+                while(true){ //Update currentNodeChanged
+                    for(ParseTreeNode child: currentNode.getChildren()){
+                        if(child.getSelf().equals(production) && child.getChildren().isEmpty()){
+                            currentNode = child;
+                            currentNodeChanged = true;
+                            break;
+                        }
                     }
+
+                    if(!currentNodeChanged) currentNode = currentNode.getParent();
+                    else break;
                 }
+                currentNodeChanged = false;
 
                 ParsingTableValue ptv = pt.getProduction(new ParsingTableKey(production, ts.peekToken().getType()));
                 if(ptv == null){    // ERROR
@@ -112,6 +120,9 @@ public class POParser implements Parser {
                         ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, input.getLine(), input.getColumn()));
                         System.out.println(err);
                     }
+                    //TODO: Provem de recuperar-nos trobant el seguent terminal de la produccio que ha fallat, en el cas de que aquest terminal no fos l'ultim de la produccio
+                    //TODO: Cada terminal s'hauria de guardar a quina derivacio pertany, per poder fer el skip fins al seguent terminal de la mateixa derivacio
+
                     //Ens recuperem de l'error fent skip fins a trobar un dels follows
                     if(latestProduction == null) break;
                     errorDetected = true;
@@ -125,7 +136,7 @@ public class POParser implements Parser {
             }
         }
 
-        tree.print();
+        System.out.println(tree);
         ErrorManager.getInstance().printErrors();
         return tree;
     }

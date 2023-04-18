@@ -1,8 +1,12 @@
-func main() {
-    type A {
-        var a
-    }
-    type B {
-        var b
-    }
+type A {
+    var a
+}
+func hola(){
+    A->a++
+    ret 3
+}
+main() {
+    A->a = 3+5
+    B->b = hola()
+    hola()
 }

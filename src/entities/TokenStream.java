@@ -60,4 +60,17 @@ public class TokenStream {
             System.out.println(t);
         }
     }
+
+    /**
+     * Returns a string representation of the stream.
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < tokens.size(); i++){
+            sb.append(tokens.toArray()[i]);
+            if(i != tokens.size() - 1) sb.append("\n");
+        }
+        return sb.toString();
+    }
 }

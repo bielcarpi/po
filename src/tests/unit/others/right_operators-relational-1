@@ -8,6 +8,5 @@ func main() {
     type C {
         var c
     }
-
     C->c = A->a == B->b
 }

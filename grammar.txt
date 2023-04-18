@@ -1,11 +1,10 @@
 <programa> ::= <llistaDeclaracions> <declaracioFuncioMain> | <declaracioFuncioMain>
 <llistaDeclaracions> ::= <declaracio> <llistaDeclaracions> | ε
 <declaracio> ::= <declaracioTipus> | <declaracioFuncio>
-<declaracioTipus> ::= type ID { \n <declaracioVariableTipus> } \n
-<declaracioVariableTipus> ::= var ID \n
+<declaracioTipus> ::= type ID { \n <declaracioTipusVariable> } \n
+<declaracioTipusVariable> ::= var ID \n
 <assignacioVariable> ::= -> ID <assignacioVariablePrima> \n
-<assignacioVariablePrima> ::= = <expressio> | <operacioUnariaVariable>
-<operacioUnariaVariable> ::= ++ | --
+<assignacioVariablePrima> ::= = <expressio> | ++ | --
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
 <cridaFuncio> ::= ( <arguments> ) \n

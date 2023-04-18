@@ -62,13 +62,9 @@ public class ParseTreeNode {
         return self.toString();
     }
 
+
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof ParseTreeNode node)
-            return node.getSelf().equals(self) &&
-                    (node.getChildren() == null? null == children: node.getChildren().equals(children)) &&
-                    (node.getParent() == null? null == parent: node.getParent().equals(parent));
-
-        return false;
+        return obj == this;
     }
 }

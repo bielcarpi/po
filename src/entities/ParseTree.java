@@ -1,6 +1,7 @@
 package entities;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -42,18 +43,18 @@ public class ParseTree {
     }
 
     public void cleanTree(){
-        cleanTree(root);
-        cleanTree(root);
+        cleanTreeBottomUp(root);
+        cleanTreeTopDown(root);
     }
 
-    private void cleanTree(ParseTreeNode node){
+    private void cleanTreeBottomUp(ParseTreeNode node){
         if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
 
         ArrayList<ParseTreeNode> childrenDone = new ArrayList<>();
         while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
             for(ParseTreeNode child: node.getChildren()){
                 if(!childrenDone.contains(child)){
-                    cleanTree(child);
+                    cleanTreeBottomUp(child);
                     childrenDone.add(child);
                     break;
                 }
@@ -62,7 +63,9 @@ public class ParseTree {
 
 
         //If we have childs that are VOID or EOL tokens, we can remove them
-        node.getChildren().removeIf(child -> (child.getSelf() == TokenType.EOL) || (child.getSelf() == TokenType.VOID));
+        List<TokenType> tokensToRemove = Arrays.asList(TokenType.EOL, TokenType.VOID, TokenType.OPEN_BRACE,
+                TokenType.CLOSE_BRACE, TokenType.OPEN_PAREN, TokenType.CLOSE_PAREN, TokenType.COMMA);
+        node.getChildren().removeIf(child -> tokensToRemove.contains(child.getSelf()));
 
         //If we have only one child, we can remove this node and move the child up
         if(node.getChildren().size() == 1){
@@ -79,9 +82,28 @@ public class ParseTree {
             node.getParent().getChildren().remove(node);
     }
 
+    private void cleanTreeTopDown(ParseTreeNode node){
+        if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
+
+        //If one of our childs only has terminals as its childs, we can remove this node and move the childs up
+        List<ParseTreeNode> childsAux = new ArrayList<>(node.getChildren());
+        for(ParseTreeNode child: childsAux){
+            if(child.getSelf() instanceof TokenType) continue; //We found a token, so we don't need to clean this node
+            if(child.getChildren().stream().allMatch(c -> c.getSelf() instanceof TokenType)){
+                node.getChildren().addAll(node.getChildren().indexOf(child), child.getChildren());
+                node.getChildren().remove(child);
+            }
+
+            //If the node still exists, we can clean it
+            if(node.getChildren().contains(child))
+                cleanTreeTopDown(child);
+        }
+
+    }
+
 
     /**
-     * Print a tree structure in a pretty ASCII fromat.
+     * Print a tree structure in a pretty ASCII format.
      * Extracted from <a href="https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java">...</a>
      * @param prefix Current prefix. Use "" in initial call!
      * @param node The current node. Pass the root node of your tree in initial call.

@@ -1,11 +1,17 @@
 package entities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Represents a Parse Tree
+ *
+ * @see ParseTreeNode
+ */
 public class ParseTree {
 
-    private final ParseTreeNode root;
+    private ParseTreeNode root;
 
     /**
      * Creates a Parse Tree with a given root
@@ -33,6 +39,44 @@ public class ParseTree {
         StringBuilder sb = new StringBuilder();
         printTreeRec("", root, getChildrenFunc, true, sb);
         return sb.toString();
+    }
+
+    public void cleanTree(){
+        cleanTree(root);
+        cleanTree(root);
+    }
+
+    private void cleanTree(ParseTreeNode node){
+        if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
+
+        ArrayList<ParseTreeNode> childrenDone = new ArrayList<>();
+        while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
+            for(ParseTreeNode child: node.getChildren()){
+                if(!childrenDone.contains(child)){
+                    cleanTree(child);
+                    childrenDone.add(child);
+                    break;
+                }
+            }
+        }
+
+
+        //If we have childs that are VOID or EOL tokens, we can remove them
+        node.getChildren().removeIf(child -> (child.getSelf() == TokenType.EOL) || (child.getSelf() == TokenType.VOID));
+
+        //If we have only one child, we can remove this node and move the child up
+        if(node.getChildren().size() == 1){
+            if(node.getParent() == null){ //If we are the root, we can just replace the root
+                root = node.getChildren().get(0);
+                return;
+            }
+
+            node.getParent().getChildren().set(node.getParent().getChildren().indexOf(node), node.getChildren().get(0));
+        }
+
+        //If we have no childs, we can remove this node
+        if(node.getChildren().isEmpty())
+            node.getParent().getChildren().remove(node);
     }
 
 

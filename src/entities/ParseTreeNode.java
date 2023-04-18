@@ -2,6 +2,11 @@ package entities;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a node of the Parse Tree
+ *
+ * @see ParseTree
+ */
 public class ParseTreeNode {
 
     private ParseTreeNode parent;
@@ -52,9 +57,18 @@ public class ParseTreeNode {
         children.add(parseTreeNode);
     }
 
-
     @Override
     public String toString() {
         return self.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof ParseTreeNode node)
+            return node.getSelf().equals(self) &&
+                    (node.getChildren() == null? null == children: node.getChildren().equals(children)) &&
+                    (node.getParent() == null? null == parent: node.getParent().equals(parent));
+
+        return false;
     }
 }

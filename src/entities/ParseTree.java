@@ -44,24 +44,30 @@ public class ParseTree {
     }
 
     public void cleanTree(){
-        cleanTreeBottomUp(root);
-        cleanTreeTopDown(root);
+        cleanUselessNodes(root);
+        cleanProductionsWithTerminals(root);
+        cleanProductionsWithAsterisc(root);
     }
 
-    private void cleanTreeBottomUp(ParseTreeNode node){
+    /**
+     * Removes nodes that are not needed
+     * @param node The node to clean
+     */
+    private void cleanUselessNodes(ParseTreeNode node){
+        //Bottom-up Recursive
+
         if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
 
         ArrayList<ParseTreeNode> childrenDone = new ArrayList<>();
         while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
             for(ParseTreeNode child: node.getChildren()){
                 if(!childrenDone.contains(child)){
-                    cleanTreeBottomUp(child);
+                    cleanUselessNodes(child);
                     childrenDone.add(child);
                     break;
                 }
             }
         }
-
 
         //If we have childs that are VOID or EOL tokens, we can remove them
         List<TokenType> tokensToRemove = Arrays.asList(TokenType.EOL, TokenType.VOID, TokenType.OPEN_BRACE,
@@ -83,7 +89,13 @@ public class ParseTree {
             node.getParent().getChildren().remove(node);
     }
 
-    private void cleanTreeTopDown(ParseTreeNode node){
+    /**
+     * Removes nodes that only have terminals as childs
+     * @param node The node to clean
+     */
+    private void cleanProductionsWithTerminals(ParseTreeNode node){
+        //Top-Down Recursive
+
         if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
 
         //If one of our childs only has terminals as its childs, we can remove this node and move the childs up
@@ -97,10 +109,41 @@ public class ParseTree {
 
             //If the node still exists, we can clean it
             if(node.getChildren().contains(child))
-                cleanTreeTopDown(child);
+                cleanProductionsWithTerminals(child);
         }
 
     }
+
+
+    /**
+     * Removes nodes that have a * in their name
+     * These nodes are not needed to be in the tree (marked with *), so we can remove them
+     * @param node The node to clean
+     */
+    private void cleanProductionsWithAsterisc(ParseTreeNode node){
+        //Top-Down Recursive
+
+        if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
+
+        //If a child is non-terminal but has a * in its name, we can remove this node and move the childs up
+        List<ParseTreeNode> childsAux = new ArrayList<>(node.getChildren());
+        for(ParseTreeNode child: childsAux){
+            if(child.getSelf() instanceof TokenType) continue; //We found a token, so we don't need to clean this node
+            if(child.getSelf() instanceof String && child.getSelf().toString().contains("*")){
+                node.getChildren().addAll(node.getChildren().indexOf(child), child.getChildren());
+                node.getChildren().remove(child);
+            }
+
+            //If the node still exists, we can clean it
+            if(node.getChildren().contains(child))
+                cleanProductionsWithAsterisc(child);
+        }
+
+        //If we added new childs in the process, do the same for them
+        for(ParseTreeNode child: node.getChildren())
+            if(!childsAux.contains(child)) cleanProductionsWithAsterisc(child);
+    }
+
 
 
     /**

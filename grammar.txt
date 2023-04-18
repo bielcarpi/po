@@ -3,8 +3,8 @@
 <declaracio> ::= <declaracioTipus> | <declaracioFuncio>
 <declaracioTipus> ::= type ID { \n <declaracioTipusVariable> } \n
 <declaracioTipusVariable> ::= var ID \n
-<assignacioVariable> ::= -> ID <assignacioVariablePrima> \n
-<assignacioVariablePrima> ::= = <expressio> | ++ | --
+<assignacioVariable> ::= -> ID <assignacioVariablePrima*> \n
+<assignacioVariablePrima*> ::= = <expressio> | ++ | --
 <declaracioVariableID> ::= ID
 <declaracioFuncio> ::= func ID ( <parametres> ) <sentenciaComposta> \n
 <cridaFuncio> ::= ( <arguments> ) \n
@@ -43,11 +43,11 @@
 <expressioRel> ::= <expressioSuma> <continuacioRel>
 <continuacioRel> ::= <operador> <expressioSuma> | ε
 <operador> ::= < | > | <= | >= | == | !=
-<expressioSuma> ::= <expressioMul> <expressioSumaPrima>
-<expressioSumaPrima> ::= <operadorSuma> <expressioMul> <expressioSumaPrima> | ε
+<expressioSuma> ::= <expressioMul> <expressioSumaPrima*>
+<expressioSumaPrima*> ::= <operadorSuma> <expressioMul> <expressioSumaPrima*> | ε
 <operadorSuma> ::= + | -
-<expressioMul> ::= <expressioUnaria> <expressioMulPrima>
-<expressioMulPrima> ::= <operadorMul> <expressioUnaria> <expressioMulPrima> | ε
+<expressioMul> ::= <expressioUnaria> <expressioMulPrima*>
+<expressioMulPrima*> ::= <operadorMul> <expressioUnaria> <expressioMulPrima*> | ε
 <operadorMul> ::= % | / | *
 <expressioUnaria> ::= - <expressioUnaria> | <factor>
 <factor> ::= <constant> | <mutable>

@@ -1,3 +1,13 @@
+func hola(){
+    A->a++
+    ret 3
+}
 main() {
-    A->b = 3 * 4 / 6 + 8 and 5
+    hola(3+4*6, 6)
+    while 1 > 2 {
+        a->b++
+        hola()
+    }
+    hola(a->b, 3)
+    a->b++
 }

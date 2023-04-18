@@ -39,6 +39,7 @@ public class ParseTree {
         Function<ParseTreeNode, List<ParseTreeNode>> getChildrenFunc = ParseTreeNode::getChildren;
         StringBuilder sb = new StringBuilder();
         printTreeRec("", root, getChildrenFunc, true, sb);
+        sb.deleteCharAt(sb.length() - 1); //Remove last newline
         return sb.toString();
     }
 

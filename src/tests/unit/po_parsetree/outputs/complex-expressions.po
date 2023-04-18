@@ -1,0 +1,22 @@
+└── <declaracioFuncioMain>
+    ├── MAIN
+    └── <sentencia>
+        ├── ID
+        └── <assignacioVariable>
+            ├── ARROW
+            ├── ID
+            └── <assignacioVariablePrima>
+                ├── EQU
+                └── <expressioAnd>
+                    ├── <expressioSuma>
+                    │   ├── <expressioMul>
+                    │   │   ├── INT
+                    │   │   └── <expressioMulPrima>
+                    │   │       ├── MULT
+                    │   │       ├── INT
+                    │   │       ├── DIV
+                    │   │       └── INT
+                    │   ├── ADD
+                    │   └── INT
+                    ├── AND
+                    └── INT

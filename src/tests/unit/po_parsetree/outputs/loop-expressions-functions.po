@@ -1,0 +1,55 @@
+└── <programa>
+    ├── <declaracioFuncio>
+    │   ├── FUNC
+    │   ├── ID
+    │   └── <llistaComposta>
+    │       ├── <sentencia>
+    │       │   ├── ID
+    │       │   ├── ARROW
+    │       │   ├── ID
+    │       │   └── DOUBLE_ADD
+    │       ├── RET
+    │       └── INT
+    └── <declaracioFuncioMain>
+        ├── MAIN
+        └── <llistaComposta>
+            ├── <sentencia>
+            │   ├── ID
+            │   └── <llistaArguments>
+            │       ├── <expressioSuma>
+            │       │   ├── INT
+            │       │   └── <expressioSumaPrima>
+            │       │       ├── ADD
+            │       │       └── <expressioMul>
+            │       │           ├── INT
+            │       │           ├── MULT
+            │       │           └── INT
+            │       └── INT
+            └── <llistaComposta>
+                ├── <sentenciaWhile>
+                │   ├── WHILE
+                │   ├── <expressioRel>
+                │   │   ├── INT
+                │   │   ├── GT
+                │   │   └── INT
+                │   └── <llistaComposta>
+                │       ├── <sentencia>
+                │       │   ├── ID
+                │       │   ├── ARROW
+                │       │   ├── ID
+                │       │   └── DOUBLE_ADD
+                │       └── ID
+                └── <llistaComposta>
+                    ├── <sentencia>
+                    │   ├── ID
+                    │   └── <llistaArguments>
+                    │       ├── <mutable>
+                    │       │   ├── ID
+                    │       │   ├── ARROW
+                    │       │   └── ID
+                    │       └── INT
+                    └── <sentencia>
+                        ├── ID
+                        ├── ARROW
+                        ├── ID
+                        └── DOUBLE_ADD

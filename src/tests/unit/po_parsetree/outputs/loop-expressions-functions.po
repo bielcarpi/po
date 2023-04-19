@@ -1,0 +1,55 @@
+└── <programa>
+    ├── <llistaDeclaracions>
+    │   ├── TYPE
+    │   │   ├── ID
+    │   │   ├── VAR
+    │   │   └── ID
+    │   └── FUNC
+    │       ├── ID
+    │       └── <llistaComposta>
+    │           ├── <sentencia>
+    │           │   ├── ID
+    │           │   ├── ARROW
+    │           │   ├── ID
+    │           │   └── DOUBLE_ADD
+    │           ├── RET
+    │           └── INT
+    └── MAIN
+        ├── <sentencia>
+        │   ├── ID
+        │   └── <llistaArguments>
+        │       ├── <expressioSuma>
+        │       │   ├── INT
+        │       │   ├── ADD
+        │       │   └── <expressioMul>
+        │       │       ├── INT
+        │       │       ├── MULT
+        │       │       └── INT
+        │       └── INT
+        └── <llistaComposta>
+            ├── WHILE
+            │   ├── <expressioRel>
+            │   │   ├── INT
+            │   │   ├── GT
+            │   │   └── INT
+            │   └── <llistaComposta>
+            │       ├── <sentencia>
+            │       │   ├── ID
+            │       │   ├── ARROW
+            │       │   ├── ID
+            │       │   └── DOUBLE_ADD
+            │       └── ID
+            └── <llistaComposta>
+                ├── <sentencia>
+                │   ├── ID
+                │   └── <llistaArguments>
+                │       ├── <mutable>
+                │       │   ├── ID
+                │       │   ├── ARROW
+                │       │   └── ID
+                │       └── INT
+                └── <sentencia>
+                    ├── ID
+                    ├── ARROW
+                    ├── ID
+                    └── DOUBLE_ADD

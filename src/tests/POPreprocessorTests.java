@@ -10,22 +10,11 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 class POPreprocessorTests {
-    private final POPreprocessor poPreprocessor = new POPreprocessor();
-    @Test
-    void funcMainEmpty() {
-        String actual = this.poPreprocessor.generatePureHighLevelLanguage("src/tests/unit/po_preprocessor/inputs/func-main-empty.po");
+
+    private void test(String input, String output) {
+        String actual = new POPreprocessor().generatePureHighLevelLanguage(input);
         try {
-            String expected = Files.readString(Path.of("src/tests/unit/po_preprocessor/outputs/func-main-empty.po"));
-            assertEquals(expected, actual);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-    @Test
-    void funcMainInlineComment() {
-        String actual = this.poPreprocessor.generatePureHighLevelLanguage("src/tests/unit/po_preprocessor/inputs/func-main-inline-comment.po");
-        try {
-            String expected = Files.readString(Path.of("src/tests/unit/po_preprocessor/outputs/func-main-inline-comment.po"));
+            String expected = Files.readString(Path.of(output));
             assertEquals(expected, actual);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -33,13 +22,16 @@ class POPreprocessorTests {
     }
 
     @Test
+    void funcMainEmpty() {
+        test("src/tests/unit/po_preprocessor/inputs/func-main-empty.po", "src/tests/unit/po_preprocessor/outputs/func-main-empty.po");
+    }
+    @Test
+    void funcMainInlineComment() {
+        test("src/tests/unit/po_preprocessor/inputs/func-main-inline-comment.po", "src/tests/unit/po_preprocessor/outputs/func-main-inline-comment.po");
+    }
+
+    @Test
     void funcMainInlineComments() {
-        String actual = this.poPreprocessor.generatePureHighLevelLanguage("src/tests/unit/po_preprocessor/inputs/func-main-inline-comments.po");
-        try {
-            String expected = Files.readString(Path.of("src/tests/unit/po_preprocessor/outputs/func-main-inline-comments.po"));
-            assertEquals(expected, actual);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        test("src/tests/unit/po_preprocessor/inputs/func-main-inline-comments.po", "src/tests/unit/po_preprocessor/outputs/func-main-inline-comments.po");
     }
 }

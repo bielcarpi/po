@@ -1,0 +1,16 @@
+type A {
+    var a
+}
+func hola(){
+    A->a++
+    ret 3
+}
+main() {
+    hola(3+4*6, 6)
+    while 1 > 2 {
+        a->b++
+        hola()
+    }
+    hola(a->b, 3)
+    a->b++
+}

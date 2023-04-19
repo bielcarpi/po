@@ -137,6 +137,8 @@ public class POParser implements Parser {
         }
 
         System.out.println(tree);
+        tree.cleanTree();
+        System.out.println(tree);
         ErrorManager.getInstance().printErrors();
         return tree;
     }

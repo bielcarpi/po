@@ -2,6 +2,11 @@ package entities;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a node of the Parse Tree
+ *
+ * @see ParseTree
+ */
 public class ParseTreeNode {
 
     private ParseTreeNode parent;
@@ -52,9 +57,23 @@ public class ParseTreeNode {
         children.add(parseTreeNode);
     }
 
+    /**
+     * Sets the self of the node
+     * @param self The self of the node
+     */
+    public void setSelf(Object self) {
+        this.self = self;
+    }
 
     @Override
     public String toString() {
         return self.toString();
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this;
+    }
+
 }

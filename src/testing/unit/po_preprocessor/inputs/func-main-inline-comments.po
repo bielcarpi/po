@@ -1,0 +1,9 @@
+//hello
+func main(){
+/*
+    hello
+    multiline
+    comment
+*/
+}
+//hi

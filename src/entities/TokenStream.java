@@ -12,12 +12,14 @@ import java.util.Queue;
 public class TokenStream {
 
     private final Queue<Token> tokens;
+    private TokenType lastToken;
 
     /**
      * Constructor to instance a new Token Stream.
      */
     public TokenStream(){
         tokens = new java.util.LinkedList<>();
+        lastToken = null;
     }
 
     /**
@@ -41,6 +43,9 @@ public class TokenStream {
      * @param token The token to be added.
      */
     public void addNewToken(Token token){
+        if((lastToken == null || lastToken == TokenType.EOL) && token.getType() == TokenType.EOL) return;
+
+        lastToken = token.getType();
         tokens.add(token);
     }
 

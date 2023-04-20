@@ -1,4 +1,4 @@
-package tests;
+package testing;
 
 import entities.TokenStream;
 import lexical_analysis.POLexer;
@@ -9,8 +9,6 @@ import preprocessor.POPreprocessor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static org.junit.Assert.assertEquals;
 
 class POLexerTests {
 

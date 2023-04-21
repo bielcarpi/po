@@ -1,9 +1,9 @@
-var a = 5
+var a
+type A {
+    var a
+}
 func hola(a, b, c){
     a++
-    for i = 3, i < 5, i++ {
-        a++
-    }
     ret 3
 }
 main() {

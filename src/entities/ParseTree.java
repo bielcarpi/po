@@ -45,19 +45,18 @@ public class ParseTree {
 
     /**
      * Cleans the Parse Tree
+     * @param pt The Parse Tree to clean
      */
-    public void cleanTree(){
-        cleanUselessNodes(root);
-        //cleanProductionsWithTerminals(root);
-        //cleanProductionsWithAsterisc(root);
-        cleanProductions(root);
+    public static void cleanTree(ParseTree pt){
+        cleanUselessNodes(pt.root, pt);
+        cleanProductions(pt.root);
     }
 
     /**
      * Removes nodes that are not needed
      * @param node The node to clean
      */
-    private void cleanUselessNodes(ParseTreeNode node){
+    private static void cleanUselessNodes(ParseTreeNode node, ParseTree pt){
         //Bottom-up Recursive
 
         if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
@@ -66,7 +65,7 @@ public class ParseTree {
         while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
             for(ParseTreeNode child: node.getChildren()){
                 if(!childrenDone.contains(child)){
-                    cleanUselessNodes(child);
+                    cleanUselessNodes(child, pt);
                     childrenDone.add(child);
                     break;
                 }
@@ -81,7 +80,7 @@ public class ParseTree {
         //If we have only one child, we can remove this node and move the child up
         if(node.getChildren().size() == 1){
             if(node.getParent() == null){ //If we are the root, we can just replace the root
-                root = node.getChildren().get(0);
+                pt.root = node.getChildren().get(0);
                 return;
             }
 
@@ -96,12 +95,16 @@ public class ParseTree {
 
 
     /**
-     * Removes nodes that have a & in their name, and substitutes them with its first child (a terminal)
+     * Cleans productions with the following rules:
+     *  - Removes nodes that have a & in their name, and substitutes them with its first child (a terminal)
+     *  - Removes nodes that are non-terminals and contain the name of their parent + Prima in their name
+     *  - Removes assignacioVariable
+     *
      * The nodes with a & in their name (ex. <sentenciaWhile&>) can be substituted by its first child (in this
      *  particular case, the terminal "while")
      * @param node The node to clean
      */
-    private void cleanProductions(ParseTreeNode node){
+    private static void cleanProductions(ParseTreeNode node){
         //Top-Down Recursive
 
         if(node.getSelf() instanceof TokenType) return; //We found a token, so we don't need to clean this node
@@ -127,6 +130,9 @@ public class ParseTree {
         if(node.getSelf() instanceof String && node.getSelf().toString().equals("<assignacioVariable>"))
             node.getParent().replaceChild(node, node.getChildren());
 
+        //TODO: If the node is <llistaArguments>, we can remove it and move its childs to the previous child
+
+
         ArrayList<ParseTreeNode> childrenDone = new ArrayList<>();
         while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
             for(ParseTreeNode child: node.getChildren()){
@@ -140,11 +146,93 @@ public class ParseTree {
     }
 
 
+    /**
+     * Runs the TAC Optimization on the provided Parse Tree.
+     * The modified Parse Tree will be called TACOTree (Three Address Code Optimized Tree), as
+     *  it will have a maximum of 3 branches per node on operations.
+     * @param pt The Parse Tree to optimize
+     */
+    public static void runTACOptimization(ParseTree pt){
+        innerTACOptimization(pt.root, pt);
+    }
+
+    private static void innerTACOptimization(ParseTreeNode node, ParseTree pt){
+        //Top-Down Recursive
+
+        //If we have a VAR or TYPE node, we can remove it entirely
+        if(node.getSelf().equals(TokenType.VAR) || node.getSelf().equals(TokenType.TYPE)){
+            //TODO: Add the variable to the symbol table
+            node.getParent().getChildren().remove(node);
+            if(node.getParent().getChildren().size() == 1)
+                node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
+            return;
+        }
+
+
+        //If we have a FUNC token, we can substitute it for its first child (ID: the name of the FUNC) and remove the second child (the parameters)
+        if(node.getSelf().equals(TokenType.FUNC)){
+            //TODO: Add the function to the symbol table, with num of parameters (num of childs of its second child)
+            node.setSelf(node.getChildren().get(0).getSelf());
+            node.getChildren().remove(0);
+            node.getChildren().remove(0);
+            //Only one child is left, so substitute it with its childs
+            node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
+            return;
+        }
+
+
+        //If we are llistaComposta and the parent is llistaComposta too, move ourselves to the level of our parent
+        if(node.getSelf().equals("<llistaComposta>") && node.getParent().getSelf().equals("<llistaComposta>")){
+            node.getParent().getChildren().remove(node);
+            node.getParent().getParent().addChild(node);
+            node.setParent(node.getParent().getParent());
+        }
+
+
+        //If we have some exp, replace the name with exp
+        if(node.getSelf() instanceof String && node.getSelf().toString().contains("exp")){
+            node.setSelf("exp");
+        }
+
+        //If an exp has more than 3 children, transform it into exp + 2 last children (the new exp = all children - the latest 2)
+        if(node.getSelf().equals("exp") && node.getChildren().size() > 3){
+            ArrayList<ParseTreeNode> newNodeChildren = new ArrayList<>();
+            while(node.getChildren().size() != 2){
+                newNodeChildren.add(node.getChildren().get(0));
+                node.getChildren().remove(0);
+            }
+
+            node.getChildren().add(0, new ParseTreeNode(node, "exp", newNodeChildren));
+        }
+
+        if(node.getChildren() == null || node.getChildren().isEmpty())
+            return;
+
+        ArrayList<ParseTreeNode> childrenDone = new ArrayList<>();
+        while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
+            for(ParseTreeNode child: node.getChildren()){
+                if(!childrenDone.contains(child)){
+                    innerTACOptimization(child, pt);
+                    childrenDone.add(child);
+                    break;
+                }
+            }
+        }
+
+
+        //TODO: No eliminar <llistaComposta> dins de, per exemple, el while
+        //If we're <llistaComposta>, delete ourselves and put our children in our level
+        if(node.getSelf().equals("<llistaComposta>")) //TODO && node.getSelf() != TokenType.WHILE, IF, etc...
+            node.getParent().replaceChild(node, node.getChildren());
+
+        //TODO: See line 133 TODO
+    }
+
 
 
     /**
      * Print a tree structure in a pretty ASCII format.
-     * Extracted from <a href="https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java">...</a>
+     * Extracted from <a href="https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram-in-java">StackOverflow</a>
      * @param prefix Current prefix. Use "" in initial call!
      * @param node The current node. Pass the root node of your tree in initial call.
      * @param getChildrenFunc A {@link Function} that returns the children of a given node.

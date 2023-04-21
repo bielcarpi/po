@@ -89,4 +89,11 @@ public class ParseTreeNode {
         return obj == this;
     }
 
+    /**
+     * Sets the parent of the node
+     * @param parent The parent of the node
+     */
+    public void setParent(ParseTreeNode parent) {
+        this.parent = parent;
+    }
 }

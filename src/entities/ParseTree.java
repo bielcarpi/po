@@ -48,8 +48,8 @@ public class ParseTree {
      */
     public void cleanTree(){
         cleanUselessNodes(root);
-        cleanProductionsWithTerminals(root);
-        cleanProductionsWithAsterisc(root);
+        //cleanProductionsWithTerminals(root);
+        //cleanProductionsWithAsterisc(root);
         cleanProductionsWithAmpersand(root);
     }
 
@@ -89,7 +89,7 @@ public class ParseTree {
         }
 
         //If we have no childs, we can remove this node
-        if(node.getChildren().isEmpty())
+        if(node.getChildren().isEmpty() && node.getParent() != null)
             node.getParent().getChildren().remove(node);
     }
 

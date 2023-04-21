@@ -1,3 +1,17 @@
+var a = 5
+func hola(a, b, c){
+    a++
+    for i = 3, i < 5, i++ {
+        a++
+    }
+    ret 3
+}
 main() {
-    A->b = 3 * 4 / 6 + 8 and 5
+    hola(3+4*6, 6)
+    while 1 > 2 {
+        b++
+        hola()
+    }
+    hola(b, 3)
+    b++
 }

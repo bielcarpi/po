@@ -58,6 +58,19 @@ public class ParseTreeNode {
     }
 
     /**
+     * Replaces a child of the node
+     * @param childToReplace The child to replace
+     * @param children The children to replace with
+     */
+    public void replaceChild(ParseTreeNode childToReplace, ArrayList<ParseTreeNode> children) {
+        for(ParseTreeNode child: children)
+            child.parent = this;
+
+        this.children.addAll(this.children.indexOf(childToReplace), children);
+        this.children.remove(childToReplace);
+    }
+
+    /**
      * Sets the self of the node
      * @param self The self of the node
      */

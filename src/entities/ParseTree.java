@@ -74,7 +74,7 @@ public class ParseTree {
 
         //If we have childs that are VOID or EOL tokens, we can remove them
         List<TokenType> tokensToRemove = Arrays.asList(TokenType.EOL, TokenType.VOID, TokenType.OPEN_BRACE,
-                TokenType.CLOSE_BRACE, TokenType.OPEN_PAREN, TokenType.CLOSE_PAREN, TokenType.COMMA);
+                TokenType.CLOSE_BRACE, TokenType.OPEN_PAREN, TokenType.CLOSE_PAREN, TokenType.COMMA, TokenType.ARROW);
         node.getChildren().removeIf(child -> tokensToRemove.contains(child.getSelf()));
 
         //If we have only one child, we can remove this node and move the child up
@@ -117,7 +117,7 @@ public class ParseTree {
 
             //If now that we removed we have only one child, and it is non-terminal, we can remove that node and move its childs up
             if(node.getChildren().size() == 1 && node.getChildren().get(0).getSelf() instanceof String &&
-                    !(node.getChildren().get(0).getChildren().size() == 2 && node.getChildren().get(0).getChildren().get(1).getSelf().toString().contains("assignacio")))
+                    !node.getChildren().get(0).toString().contains("sentencia"))
                 node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
         }
 
@@ -243,17 +243,14 @@ public class ParseTree {
 
 
         //If we're <llistaComposta>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaComposta>") && node.getParent() != null && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID))
+        if(node.getSelf().equals("<llistaComposta>") && node.getParent() != null && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID || node.getParent().getSelf() == TokenType.OPT))
             node.getParent().replaceChild(node, node.getChildren());
         else if(node.getSelf().equals("<llistaComposta>"))
             node.setSelf("llista");
 
-        //If we're <llistaDeclaracions>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaDeclaracions>") && node.getParent() != null)
-            node.getParent().replaceChild(node, node.getChildren());
-
-        //If we're <llistaElsif>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaElsif>") && node.getParent() != null)
+        //If we're <llistaDeclaracions>, <llistaElsif> or <llistaOpt> delete ourselves and put our children in our level
+        if((node.getSelf().equals("<llistaDeclaracions>") || node.getSelf().equals("<llistaElsif>") ||
+            node.getSelf().equals("<llistaOpt>")) && node.getParent() != null)
             node.getParent().replaceChild(node, node.getChildren());
 
         //If we're FOR or WHILE and our last child is not a llista, substitute it with a llista and put it inside the llista
@@ -266,8 +263,8 @@ public class ParseTree {
             llista.addChild(aux);
         }
 
-        //If we're IF and our second child is not a llista, substitute it with a llista and put it inside the llista
-        if(node.getSelf().equals(TokenType.IF) && !node.getChildren().get(1).getSelf().equals("llista")){
+        //If we're IF or OPT and our second child is not a llista, substitute it with a llista and put it inside the llista
+        if((node.getSelf().equals(TokenType.IF) || node.getSelf().equals(TokenType.OPT)) && !node.getChildren().get(1).getSelf().equals("llista")){
             ParseTreeNode llista = new ParseTreeNode(node, "llista", new ArrayList<>());
             ParseTreeNode aux = node.getChildren().get(1);
             node.getChildren().remove(aux);

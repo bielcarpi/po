@@ -1,3 +1,14 @@
 main() {
-    b = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
+    switch z {
+        opt 1 -> {
+            print("1, 2, or 3")
+        }
+        opt 2 -> {
+            print("1, 2, or 3")
+            a++
+        }
+        default -> {
+            print("else")
+        }
+    }
 }

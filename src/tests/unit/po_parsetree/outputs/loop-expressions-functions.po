@@ -1,55 +1,64 @@
 └── <programa>
-    ├── <llistaDeclaracions>
-    │   ├── TYPE
+    ├── ID
+    │   ├── assignacio
     │   │   ├── ID
-    │   │   ├── VAR
-    │   │   └── ID
-    │   └── FUNC
-    │       ├── ID
-    │       └── <llistaComposta>
-    │           ├── <sentencia>
-    │           │   ├── ID
-    │           │   ├── ARROW
-    │           │   ├── ID
-    │           │   └── DOUBLE_ADD
-    │           ├── RET
-    │           └── INT
+    │   │   └── DOUBLE_ADD
+    │   ├── FOR
+    │   │   ├── ID
+    │   │   ├── EQU
+    │   │   ├── INT
+    │   │   ├── exp
+    │   │   │   ├── ID
+    │   │   │   ├── LT
+    │   │   │   └── exp
+    │   │   │       ├── INT
+    │   │   │       ├── ADD
+    │   │   │       └── exp
+    │   │   │           ├── exp
+    │   │   │           │   ├── INT
+    │   │   │           │   ├── MULT
+    │   │   │           │   └── INT
+    │   │   │           ├── DIV
+    │   │   │           └── INT
+    │   │   ├── assignacio
+    │   │   │   ├── ID
+    │   │   │   └── DOUBLE_ADD
+    │   │   └── llista
+    │   │       ├── ID
+    │   │       │   └── STRING
+    │   │       └── BREAK
+    │   └── RET
+    │       └── INT
     └── MAIN
-        ├── <sentencia>
-        │   ├── ID
-        │   └── <llistaArguments>
-        │       ├── <expressioSuma>
-        │       │   ├── INT
-        │       │   ├── ADD
-        │       │   └── <expressioMul>
-        │       │       ├── INT
-        │       │       ├── MULT
-        │       │       └── INT
-        │       └── INT
-        └── <llistaComposta>
-            ├── WHILE
-            │   ├── <expressioRel>
-            │   │   ├── INT
-            │   │   ├── GT
-            │   │   └── INT
-            │   └── <llistaComposta>
-            │       ├── <sentencia>
-            │       │   ├── ID
-            │       │   ├── ARROW
-            │       │   ├── ID
-            │       │   └── DOUBLE_ADD
-            │       └── ID
-            └── <llistaComposta>
-                ├── <sentencia>
-                │   ├── ID
-                │   └── <llistaArguments>
-                │       ├── <mutable>
-                │       │   ├── ID
-                │       │   ├── ARROW
-                │       │   └── ID
-                │       └── INT
-                └── <sentencia>
-                    ├── ID
-                    ├── ARROW
-                    ├── ID
-                    └── DOUBLE_ADD
+        ├── ID
+        │   ├── exp
+        │   │   ├── exp
+        │   │   │   ├── INT
+        │   │   │   ├── ADD
+        │   │   │   └── INT
+        │   │   ├── ADD
+        │   │   └── exp
+        │   │       ├── INT
+        │   │       ├── MULT
+        │   │       └── INT
+        │   └── exp
+        │       ├── INT
+        │       ├── DIV
+        │       └── ID
+        ├── WHILE
+        │   ├── exp
+        │   │   ├── INT
+        │   │   ├── GT
+        │   │   └── INT
+        │   └── llista
+        │       ├── assignacio
+        │       │   ├── ID
+        │       │   └── DOUBLE_ADD
+        │       └── ID
+        └── llista
+            ├── ID
+            │   ├── ID
+            │   └── INT
+            └── assignacio
+                ├── ID
+                └── DOUBLE_ADD

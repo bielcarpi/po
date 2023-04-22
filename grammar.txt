@@ -39,11 +39,11 @@
 <expressioRel> ::= <expressioSuma> <expressioRelPrima>
 <expressioRelPrima> ::= <operador> <expressioSuma> | ε
 <operador> ::= < | > | <= | >= | == | !=
-<expressioSuma> ::= <expressioMul> <expressioSumaPrima*>
-<expressioSumaPrima*> ::= <operadorSuma> <expressioMul> <expressioSumaPrima*> | ε
+<expressioSuma> ::= <expressioMul> <expressioSumaPrima>
+<expressioSumaPrima> ::= <operadorSuma> <expressioMul> <expressioSumaPrima> | ε
 <operadorSuma> ::= + | -
-<expressioMul> ::= <expressioUnaria> <expressioMulPrima*>
-<expressioMulPrima*> ::= <operadorMul> <expressioUnaria> <expressioMulPrima*> | ε
+<expressioMul> ::= <expressioUnaria> <expressioMulPrima>
+<expressioMulPrima> ::= <operadorMul> <expressioUnaria> <expressioMulPrima> | ε
 <operadorMul> ::= % | / | *
 <expressioUnaria> ::= - <expressioUnaria> | <factor>
 <factor> ::= <constant> | <mutable>

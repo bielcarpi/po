@@ -78,7 +78,7 @@ public class ParseTree {
         node.getChildren().removeIf(child -> tokensToRemove.contains(child.getSelf()));
 
         //If we have only one child, we can remove this node and move the child up
-        if(node.getChildren().size() == 1){
+        if(node.getChildren().size() == 1 && !node.getSelf().equals("<llistaArguments>")){
             if(node.getParent() == null){ //If we are the root, we can just replace the root
                 pt.root = node.getChildren().get(0);
                 return;
@@ -130,7 +130,15 @@ public class ParseTree {
         if(node.getSelf() instanceof String && node.getSelf().toString().equals("<assignacioVariable>"))
             node.getParent().replaceChild(node, node.getChildren());
 
-        //TODO: If the node is <llistaArguments>, we can remove it and move its childs to the previous child
+        //If the node is <llistaArguments>, we can remove it and move its childs to the previous child
+        if(node.getSelf().equals("<llistaArguments>")){
+            node.setSelf(node.getParent().getChildren().get(0).getSelf());
+            node.getParent().getChildren().remove(node.getParent().getChildren().indexOf(node) - 1);
+
+            //If the parent node has a single child now, we can remove it and move its childs up
+            if(node.getParent().getChildren().size() == 1)
+                node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
+        }
 
 
         ArrayList<ParseTreeNode> childrenDone = new ArrayList<>();
@@ -174,7 +182,9 @@ public class ParseTree {
             //TODO: Add the function to the symbol table, with num of parameters (num of childs of its second child)
             node.setSelf(node.getChildren().get(0).getSelf());
             node.getChildren().remove(0);
-            node.getChildren().remove(0);
+            if(node.getChildren().get(0).getSelf().equals("<llistaParametres>")) //If we have parameters, remove them
+                node.getChildren().remove(0);
+
             //Only one child is left, so substitute it with its childs
             node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
             return;
@@ -205,6 +215,10 @@ public class ParseTree {
             node.getChildren().add(0, new ParseTreeNode(node, "exp", newNodeChildren));
         }
 
+        //If the node is <sentencia>, change name to assignacio (<sentencia> can now only be assignacio: = <exp> | ++ | --)
+        if(node.getSelf().equals("<sentencia>") || node.getSelf().equals("<assignacioFor>"))
+            node.setSelf("assignacio");
+
         if(node.getChildren() == null || node.getChildren().isEmpty())
             return;
 
@@ -220,12 +234,22 @@ public class ParseTree {
         }
 
 
-        //TODO: No eliminar <llistaComposta> dins de, per exemple, el while
         //If we're <llistaComposta>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaComposta>")) //TODO && node.getSelf() != TokenType.WHILE, IF, etc...
+        if(node.getSelf().equals("<llistaComposta>") && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID))
             node.getParent().replaceChild(node, node.getChildren());
+        else if(node.getSelf().equals("<llistaComposta>"))
+            node.setSelf("llista");
 
-        //TODO: See line 133 TODO
+        //If we're FOR or WHILE and our last child is not a llista, substitute it with a llista and put it inside the llista
+        if((node.getSelf().equals(TokenType.FOR) || node.getSelf().equals(TokenType.WHILE))
+                && !node.getChildren().get(node.getChildren().size() - 1).getSelf().equals("llista")){
+            ParseTreeNode llista = new ParseTreeNode(node, "llista", new ArrayList<>());
+            ParseTreeNode aux = node.getChildren().get(node.getChildren().size() - 1);
+            node.getChildren().remove(aux);
+            node.getChildren().add(llista);
+            llista.addChild(aux);
+        }
+
     }
 
 

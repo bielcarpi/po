@@ -1,6 +1,5 @@
 package tests;
 
-import entities.TokenStream;
 import lexical_analysis.POLexer;
 import org.junit.jupiter.api.Test;
 import preprocessor.POPreprocessor;

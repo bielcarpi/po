@@ -55,6 +55,7 @@ public class ParseTreeNode {
      */
     public void addChild(ParseTreeNode parseTreeNode) {
         children.add(parseTreeNode);
+        parseTreeNode.parent = this;
     }
 
     /**

@@ -1,13 +1,17 @@
-var a
-type A {
-    var a
+var a = 3*5
+type Z {
+    var z
 }
-func hola(a, b, c){
+func hola(){
     a++
+    for i = 0, i < 3+4*5/6, i++ {
+        print("hola")
+        break
+    }
     ret 3
 }
 main() {
-    hola(3+4*6, 6)
+    hola(3+4+5*6, 6/c)
     while 1 > 2 {
         b++
         hola()

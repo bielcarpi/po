@@ -15,7 +15,7 @@
 <sentenciaId> ::= <assignacioVariable> \n | <cridaFuncio>
 <sentenciaComposta> ::= { \n <llistaComposta> }
 <llistaComposta> ::= <declaracioBloc> <llistaComposta> | ε
-<declaracioBloc> ::= <declaracioTipus&> | <sentencia>
+<declaracioBloc> ::= <declaracioTipus&> | <declaracioVariable&> | <sentencia>
 <sentenciaCondicional&> ::= if <expressio> <sentenciaComposta> \n <llistaElsif> <blocElse&>
 <llistaElsif> ::= <blocElsif&> \n <llistaElsif> | ε
 <blocElsif&> ::= elsif <expressio> <sentenciaComposta>

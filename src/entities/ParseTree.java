@@ -81,6 +81,7 @@ public class ParseTree {
         if(node.getChildren().size() == 1 && !node.getSelf().equals("<llistaArguments>")){
             if(node.getParent() == null){ //If we are the root, we can just replace the root
                 pt.root = node.getChildren().get(0);
+                pt.root.setParent(null);
                 return;
             }
 
@@ -170,10 +171,15 @@ public class ParseTree {
         //If we have a VAR or TYPE node, we can remove it entirely
         if(node.getSelf().equals(TokenType.VAR) || node.getSelf().equals(TokenType.TYPE)){
             //TODO: Add the variable to the symbol table
-            node.getParent().getChildren().remove(node);
-            if(node.getParent().getChildren().size() == 1)
-                node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
-            return;
+            //If VAR has only one child, it means it's a declaration so we can remove it. If not, it's an assignation
+            if(node.getChildren().size() == 1){
+                node.getParent().getChildren().remove(node);
+                if(node.getParent().getChildren().size() == 1 && node.getParent().getParent() != null)
+                    node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
+                return;
+            }
+
+            node.setSelf("assignacio");
         }
 
 
@@ -240,13 +246,26 @@ public class ParseTree {
         else if(node.getSelf().equals("<llistaComposta>"))
             node.setSelf("llista");
 
+        //If we're <llistaElsif>, delete ourselves and put our children in our level
+        if(node.getSelf().equals("<llistaElsif>"))
+            node.getParent().replaceChild(node, node.getChildren());
+
         //If we're FOR or WHILE and our last child is not a llista, substitute it with a llista and put it inside the llista
-        if((node.getSelf().equals(TokenType.FOR) || node.getSelf().equals(TokenType.WHILE))
+        if((node.getSelf().equals(TokenType.FOR) || node.getSelf().equals(TokenType.WHILE) || node.getSelf().equals(TokenType.ELSIF))
                 && !node.getChildren().get(node.getChildren().size() - 1).getSelf().equals("llista")){
             ParseTreeNode llista = new ParseTreeNode(node, "llista", new ArrayList<>());
             ParseTreeNode aux = node.getChildren().get(node.getChildren().size() - 1);
             node.getChildren().remove(aux);
             node.getChildren().add(llista);
+            llista.addChild(aux);
+        }
+
+        //If we're IF and our second child is not a llista, substitute it with a lllista and put it inside the llista
+        if(node.getSelf().equals(TokenType.IF) && !node.getChildren().get(1).getSelf().equals("llista")){
+            ParseTreeNode llista = new ParseTreeNode(node, "llista", new ArrayList<>());
+            ParseTreeNode aux = node.getChildren().get(1);
+            node.getChildren().remove(aux);
+            node.getChildren().add(1, llista);
             llista.addChild(aux);
         }
 

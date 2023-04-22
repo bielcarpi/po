@@ -1,21 +1,23 @@
-var a = 3*5
-type Z {
-    var z
-}
-func hola(){
-    a++
-    for i = 0, i < 3+4*5/6, i++ {
-        print("hola")
-        break
-    }
-    ret 3
-}
 main() {
-    hola(3+4+5*6, 6/c)
-    while 1 > 2 {
-        b++
-        hola()
+    var a = 3+4*5
+    a = 5
+    if a == 5 {
+        print("a is 5")
     }
-    hola(b, 3)
-    b++
+    elsif 4 < 3 {
+        print("4 is less than 3")
+    }
+    elsif 4 == 3 {
+        print("4 is 3")
+    }
+    elsif 4 == 3 {
+        print("4 is 3")
+    }
+    elsif 4 == 3 {
+        print("4 is 3")
+    }
+    else {
+        print("else")
+        ret 3
+    }
 }

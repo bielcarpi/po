@@ -27,6 +27,11 @@ class POParseTreeTests {
     }
 
     @Test
+    void longSum() {
+        test("src/tests/unit/po_parsetree/inputs/long-sum.po", "src/tests/unit/po_parsetree/outputs/long-sum.po");
+    }
+
+    @Test
     void loopExpressionsFunctions() {
         test("src/tests/unit/po_parsetree/inputs/loop-expressions-functions.po", "src/tests/unit/po_parsetree/outputs/loop-expressions-functions.po");
     }
@@ -34,5 +39,15 @@ class POParseTreeTests {
     @Test
     void complexExpressions() {
         test("src/tests/unit/po_parsetree/inputs/complex-expressions.po", "src/tests/unit/po_parsetree/outputs/complex-expressions.po");
+    }
+
+    @Test
+    void conditionalsIf() {
+        test("src/tests/unit/po_parsetree/inputs/conditionals-if.po", "src/tests/unit/po_parsetree/outputs/conditionals-if.po");
+    }
+
+    @Test
+    void conditionalsSwitch() {
+        test("src/tests/unit/po_parsetree/inputs/conditionals-switch.po", "src/tests/unit/po_parsetree/outputs/conditionals-switch.po");
     }
 }

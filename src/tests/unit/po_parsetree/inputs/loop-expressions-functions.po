@@ -1,10 +1,11 @@
-var a = 3*5
+var a = 3*4
+var b = 3*4/6+8
 type Z {
     var z
 }
 func hola(){
     a++
-    for i = 0, i < 3+4*5/6, i++ {
+    for i = 123*3+8 and 6, i < 3+4*5/6, i++ {
         print("hola")
         break
     }

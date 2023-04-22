@@ -1,0 +1,60 @@
+└── MAIN
+    ├── assignacio
+    │   ├── ID
+    │   ├── EQU
+    │   └── exp
+    │       ├── INT
+    │       ├── ADD
+    │       └── exp
+    │           ├── INT
+    │           ├── MULT
+    │           └── INT
+    ├── assignacio
+    │   ├── ID
+    │   ├── EQU
+    │   └── INT
+    └── IF
+        ├── exp
+        │   ├── ID
+        │   ├── DOUBLE_EQU
+        │   └── INT
+        ├── llista
+        │   └── ID
+        │       └── STRING
+        ├── ELSIF
+        │   ├── exp
+        │   │   ├── INT
+        │   │   ├── LT
+        │   │   └── INT
+        │   └── llista
+        │       └── ID
+        │           └── STRING
+        ├── ELSIF
+        │   ├── exp
+        │   │   ├── INT
+        │   │   ├── DOUBLE_EQU
+        │   │   └── INT
+        │   └── llista
+        │       └── ID
+        │           └── STRING
+        ├── ELSIF
+        │   ├── exp
+        │   │   ├── INT
+        │   │   ├── DOUBLE_EQU
+        │   │   └── INT
+        │   └── llista
+        │       └── ID
+        │           └── STRING
+        ├── ELSIF
+        │   ├── exp
+        │   │   ├── INT
+        │   │   ├── DOUBLE_EQU
+        │   │   └── INT
+        │   └── llista
+        │       └── ID
+        │           └── STRING
+        └── ELSE
+            ├── ID
+            │   └── STRING
+            └── RET
+                └── INT

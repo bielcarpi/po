@@ -1,0 +1,23 @@
+main() {
+    var a = 3+4*5
+    a = 5
+    if a == 5 {
+        print("a is 5")
+    }
+    elsif 4 < 3 {
+        print("4 is less than 3")
+    }
+    elsif 4 == 3 {
+        print("4 is 3")
+    }
+    elsif 4 == 3 {
+        print("4 is 3")
+    }
+    elsif 4 == 3 {
+        print("4 is 3")
+    }
+    else {
+        print("else")
+        ret 3
+    }
+}

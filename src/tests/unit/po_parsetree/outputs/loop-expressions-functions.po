@@ -1,12 +1,42 @@
 └── <programa>
+    ├── assignacio
+    │   ├── ID
+    │   ├── EQU
+    │   └── exp
+    │       ├── INT
+    │       ├── MULT
+    │       └── INT
+    ├── assignacio
+    │   ├── ID
+    │   ├── EQU
+    │   └── exp
+    │       ├── exp
+    │       │   ├── exp
+    │       │   │   ├── INT
+    │       │   │   ├── MULT
+    │       │   │   └── INT
+    │       │   ├── DIV
+    │       │   └── INT
+    │       ├── ADD
+    │       └── INT
     ├── ID
     │   ├── assignacio
     │   │   ├── ID
     │   │   └── DOUBLE_ADD
     │   ├── FOR
-    │   │   ├── ID
-    │   │   ├── EQU
-    │   │   ├── INT
+    │   │   ├── assignacio
+    │   │   │   ├── ID
+    │   │   │   ├── EQU
+    │   │   │   └── exp
+    │   │   │       ├── exp
+    │   │   │       │   ├── exp
+    │   │   │       │   │   ├── INT
+    │   │   │       │   │   ├── MULT
+    │   │   │       │   │   └── INT
+    │   │   │       │   ├── ADD
+    │   │   │       │   └── INT
+    │   │   │       ├── AND
+    │   │   │       └── INT
     │   │   ├── exp
     │   │   │   ├── ID
     │   │   │   ├── LT

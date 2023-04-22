@@ -29,8 +29,9 @@
 <sentenciaRetorn&> ::= ret <expressio> \n
 <sentenciaBreak> ::= break \n
 <sentenciaWhile&> ::= while <expressio> <sentenciaComposta> \n
-<sentenciaFor&> ::= for ID = <expressio> , <expressio> , <assignacioFor> <sentenciaComposta> \n
-<assignacioFor> ::= ID <assignacioVariable>
+<sentenciaFor&> ::= for <assignacioFor> , <expressio> , <assignacioForPrima> <sentenciaComposta> \n
+<assignacioFor> ::= ID = <expressio>
+<assignacioForPrima> ::= ID <assignacioVariable>
 <expressio> ::= <expressioAnd> <expressioPrima>
 <expressioPrima> ::= or <expressioAnd> <expressioPrima> | ε
 <expressioAnd> ::= <expressioNot> <expressioAndPrima>

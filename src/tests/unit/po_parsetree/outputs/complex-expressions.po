@@ -1,16 +1,17 @@
 └── MAIN
-    ├── ID
-    ├── EQU
-    └── exp
-        ├── exp
-        │   ├── exp
-        │   │   ├── exp
-        │   │   │   ├── INT
-        │   │   │   ├── MULT
-        │   │   │   └── INT
-        │   │   ├── DIV
-        │   │   └── INT
-        │   ├── ADD
-        │   └── INT
-        ├── AND
-        └── INT
+    └── assignacio
+        ├── ID
+        ├── EQU
+        └── exp
+            ├── exp
+            │   ├── exp
+            │   │   ├── exp
+            │   │   │   ├── INT
+            │   │   │   ├── MULT
+            │   │   │   └── INT
+            │   │   ├── DIV
+            │   │   └── INT
+            │   ├── ADD
+            │   └── INT
+            ├── AND
+            └── INT

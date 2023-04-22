@@ -64,6 +64,9 @@ public class ParseTreeNode {
      * @param children The children to replace with
      */
     public void replaceChild(ParseTreeNode childToReplace, ArrayList<ParseTreeNode> children) {
+        if(!this.children.contains(childToReplace))
+            return;
+
         for(ParseTreeNode child: children)
             child.parent = this;
 

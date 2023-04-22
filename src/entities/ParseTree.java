@@ -116,9 +116,9 @@ public class ParseTree {
             node.getChildren().remove(0);
 
             //If now that we removed we have only one child, and it is non-terminal, we can remove that node and move its childs up
-            if(node.getChildren().size() == 1 && node.getChildren().get(0).getSelf() instanceof String){
+            if(node.getChildren().size() == 1 && node.getChildren().get(0).getSelf() instanceof String &&
+                    !(node.getChildren().get(0).getChildren().size() == 2 && node.getChildren().get(0).getChildren().get(1).getSelf().toString().contains("assignacio")))
                 node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
-            }
         }
 
         //If the node is a non-terminal and contains the name of his parent + Prima in his own name, we can remove it (example, <expressioMulPrima> contains <expressioMul>)
@@ -172,8 +172,10 @@ public class ParseTree {
         if(node.getSelf().equals(TokenType.VAR) || node.getSelf().equals(TokenType.TYPE)){
             //TODO: Add the variable to the symbol table
             //If VAR has only one child, it means it's a declaration so we can remove it. If not, it's an assignation
-            if(node.getChildren().size() == 1){
+            if(node.getChildren().size() == 1 || node.getSelf().equals(TokenType.TYPE)){
                 node.getParent().getChildren().remove(node);
+
+                //If the parent node has a single child now, we can remove it and move its childs up
                 if(node.getParent().getChildren().size() == 1 && node.getParent().getParent() != null)
                     node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
                 return;
@@ -222,7 +224,7 @@ public class ParseTree {
         }
 
         //If the node is <sentencia>, change name to assignacio (<sentencia> can now only be assignacio: = <exp> | ++ | --)
-        if(node.getSelf().equals("<sentencia>") || node.getSelf().equals("<assignacioFor>"))
+        if(node.getSelf().equals("<sentencia>") || node.getSelf().toString().contains("assignacioFor"))
             node.setSelf("assignacio");
 
         if(node.getChildren() == null || node.getChildren().isEmpty())
@@ -241,13 +243,17 @@ public class ParseTree {
 
 
         //If we're <llistaComposta>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaComposta>") && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID))
+        if(node.getSelf().equals("<llistaComposta>") && node.getParent() != null && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID))
             node.getParent().replaceChild(node, node.getChildren());
         else if(node.getSelf().equals("<llistaComposta>"))
             node.setSelf("llista");
 
+        //If we're <llistaDeclaracions>, delete ourselves and put our children in our level
+        if(node.getSelf().equals("<llistaDeclaracions>") && node.getParent() != null)
+            node.getParent().replaceChild(node, node.getChildren());
+
         //If we're <llistaElsif>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaElsif>"))
+        if(node.getSelf().equals("<llistaElsif>") && node.getParent() != null)
             node.getParent().replaceChild(node, node.getChildren());
 
         //If we're FOR or WHILE and our last child is not a llista, substitute it with a llista and put it inside the llista
@@ -260,7 +266,7 @@ public class ParseTree {
             llista.addChild(aux);
         }
 
-        //If we're IF and our second child is not a llista, substitute it with a lllista and put it inside the llista
+        //If we're IF and our second child is not a llista, substitute it with a llista and put it inside the llista
         if(node.getSelf().equals(TokenType.IF) && !node.getChildren().get(1).getSelf().equals("llista")){
             ParseTreeNode llista = new ParseTreeNode(node, "llista", new ArrayList<>());
             ParseTreeNode aux = node.getChildren().get(1);

@@ -1,4 +1,4 @@
-package tests;
+package testing;
 
 import lexical_analysis.POLexer;
 import org.junit.jupiter.api.Test;

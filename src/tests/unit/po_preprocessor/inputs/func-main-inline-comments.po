@@ -1,8 +1,0 @@
-func main(){
-    // asda
-    // okhbb
-
-    // asdasd
-
-    //asdasdad
-}

@@ -40,10 +40,7 @@ public class POParser implements Parser {
 
         ParsingTable pt = new ParsingTable();
         FirstFollowAnalyzer.fillParsingTable(pt, productions);
-        for(Production p: productions) System.out.println(p);
-        System.out.println(pt);
 
-        ts.printStream();
 
         //Now that we have built the ParsingTable and have the TokenStream, we can start the syntax analysis
         Stack<Object> stack = new Stack<>();
@@ -79,14 +76,12 @@ public class POParser implements Parser {
                     if(!errorDetected){
                         String err = "Error. No hem trobat fila i columna per " + production + " amb " + ts.peekToken().getType();
                         ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, ts.peekToken().getLine(), ts.peekToken().getColumn()));
-                        System.out.println(err);
                     }
 
                     //Ens recuperem de l'error fent skip fins a trobar el seguent follow
                     if(latestProduction == null) break;
                     errorDetected = true;
                     List<TokenType> follows = pt.getProduction(production).getFollows();
-                    System.out.println(follows);
                     while(!stack.isEmpty()){
                         if(follows.contains(ts.peekToken().getType())) break;
                         ts.nextToken();
@@ -111,14 +106,12 @@ public class POParser implements Parser {
                 TokenType stackTerminal = (TokenType) stack.pop();
                 Token input = ts.nextToken();
                 if(stackTerminal.equals(input.getType())) {   // MATCH
-                    System.out.println("Match de " + stackTerminal + " amb " + input.getType());
                     errorDetected = false; //If there was an error, it ends now
                 }
                 else {    // ERROR
                     if(!errorDetected){
                         String err = "Error. Esperavem " + stackTerminal + " i hem trobat " + input.getType();
                         ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, input.getLine(), input.getColumn()));
-                        System.out.println(err);
                     }
                     //TODO: Provem de recuperar-nos trobant el seguent terminal de la produccio que ha fallat, en el cas de que aquest terminal no fos l'ultim de la produccio
                     //TODO: Cada terminal s'hauria de guardar a quina derivacio pertany, per poder fer el skip fins al seguent terminal de la mateixa derivacio
@@ -136,9 +129,10 @@ public class POParser implements Parser {
             }
         }
 
+        ParseTree.cleanTree(tree);
+        ParseTree.runTACOptimization(tree);
         System.out.println(tree);
-        tree.cleanTree();
-        System.out.println(tree);
+
         ErrorManager.getInstance().printErrors();
         return tree;
     }

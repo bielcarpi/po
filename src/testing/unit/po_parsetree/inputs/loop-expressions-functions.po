@@ -1,16 +1,22 @@
-type A {
-    var a
+var a = 3*4
+var b = 3*4/6+8
+type Z {
+    var z
 }
 func hola(){
-    A->a++
+    a++
+    for i = 123*3+8 and 6, i < 3+4*5/6, i++ {
+        print("hola")
+        break
+    }
     ret 3
 }
 main() {
-    hola(3+4*6, 6)
+    hola(3+4+5*6, 6/c)
     while 1 > 2 {
-        a->b++
+        b++
         hola()
     }
-    hola(a->b, 3)
-    a->b++
+    hola(b, 3)
+    b++
 }

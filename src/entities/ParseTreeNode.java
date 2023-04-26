@@ -55,6 +55,23 @@ public class ParseTreeNode {
      */
     public void addChild(ParseTreeNode parseTreeNode) {
         children.add(parseTreeNode);
+        parseTreeNode.parent = this;
+    }
+
+    /**
+     * Replaces a child of the node
+     * @param childToReplace The child to replace
+     * @param children The children to replace with
+     */
+    public void replaceChild(ParseTreeNode childToReplace, ArrayList<ParseTreeNode> children) {
+        if(!this.children.contains(childToReplace))
+            return;
+
+        for(ParseTreeNode child: children)
+            child.parent = this;
+
+        this.children.addAll(this.children.indexOf(childToReplace), children);
+        this.children.remove(childToReplace);
     }
 
     /**
@@ -76,4 +93,11 @@ public class ParseTreeNode {
         return obj == this;
     }
 
+    /**
+     * Sets the parent of the node
+     * @param parent The parent of the node
+     */
+    public void setParent(ParseTreeNode parent) {
+        this.parent = parent;
+    }
 }

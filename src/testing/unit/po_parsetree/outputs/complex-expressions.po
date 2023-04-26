@@ -1,15 +1,14 @@
 └── MAIN
-    ├── ID
-    └── <assignacioVariable>
-        ├── ARROW
+    └── assignacio
         ├── ID
         ├── EQU
-        └── <expressioAnd>
-            ├── <expressioSuma>
-            │   ├── <expressioMul>
-            │   │   ├── INT
-            │   │   ├── MULT
-            │   │   ├── INT
+        └── exp
+            ├── exp
+            │   ├── exp
+            │   │   ├── exp
+            │   │   │   ├── INT
+            │   │   │   ├── MULT
+            │   │   │   └── INT
             │   │   ├── DIV
             │   │   └── INT
             │   ├── ADD

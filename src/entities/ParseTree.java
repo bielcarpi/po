@@ -14,6 +14,7 @@ import java.util.function.Function;
 public class ParseTree {
 
     private ParseTreeNode root;
+    private static String scope = "global"; //Aux variable to keep track of the current scope
 
     /**
      * Creates a Parse Tree with a given root
@@ -163,12 +164,10 @@ public class ParseTree {
      * @param pt The Parse Tree to optimize
      */
     public static void runTACOptimization(ParseTree pt){
-        Stack<String> scope = new Stack<>();
-        scope.push("global");
-        innerTACOptimization(pt.root, pt, scope);
+        innerTACOptimization(pt.root, pt);
     }
 
-    private static void innerTACOptimization(ParseTreeNode node, ParseTree pt, Stack<String> scope){
+    private static void innerTACOptimization(ParseTreeNode node, ParseTree pt){
         //Top-Down Recursive
 
         //If we have a VAR or TYPE node, we can remove it entirely
@@ -177,11 +176,11 @@ public class ParseTree {
             SymbolTable.getInstance().insert(
                     new SymbolTableVariableEntry(
                             node.getChildren().get(0).getToken().getData(),
-                            scope.peek(),
+                            scope,
                             TokenType.UNKNOWN,
                             1));
 
-            //If VAR has only one child, it means it's a declaration so we can remove it. If not, it's an assignation
+            //If VAR has only one child, it means it's a declaration, so we can remove it. If not, it's an assignation
             if(node.getChildren().size() == 1 || node.getSelf().equals(TokenType.TYPE)){
                 node.getParent().getChildren().remove(node);
 
@@ -200,7 +199,6 @@ public class ParseTree {
             SymbolTable.getInstance().insert(
                     new SymbolTableFunctionEntry(
                             node.getChildren().get(0).getToken().getData(),
-                            scope.peek(),
                             TokenType.UNKNOWN,
                             // If function has params, there will be 3 childs (ID, llistaParams, sentencies)
                             // If number of childs equals 2, there are no params to the function
@@ -210,14 +208,15 @@ public class ParseTree {
                     ));
 
             // Change the current scope to the new function. The first child of the FUNC will always be the ID
-            scope.push(node.getChildren().get(0).getToken().getData());
+            scope = node.getChildren().get(0).getToken().getData();
+
             // If the function has params, we need to add them to the symbol table
             if (node.getChildren().size() == 3) { // If number of childs equals 3, there are params to the function
                 for (ParseTreeNode param : node.getChildren().get(1).getChildren()) {
                     SymbolTable.getInstance().insert(
                             new SymbolTableVariableEntry(
                                     param.getToken().getData(),
-                                    scope.peek(),
+                                    scope,
                                     TokenType.UNKNOWN,
                                     1));
                 }
@@ -273,15 +272,12 @@ public class ParseTree {
         while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
             for(ParseTreeNode child: node.getChildren()){
                 if(!childrenDone.contains(child)){
-                    innerTACOptimization(child, pt, scope);
+                    innerTACOptimization(child, pt);
                     childrenDone.add(child);
                     break;
                 }
             }
         }
-
-        // If flag inFunc is activated we need to pop the scope as we have already cleaned all components inside
-        if (scope.size() == 2) scope.pop();
 
 
         //If we're <llistaComposta>, delete ourselves and put our children in our level
@@ -314,8 +310,9 @@ public class ParseTree {
             llista.addChild(aux);
         }
 
-        // Check if scope changed
-
+        //Check if scope changed
+        if(node.getSelf().equals(TokenType.ID) && node.getToken().getData().equals(scope))
+            scope = "global"; //Return to global scope
     }
 
 

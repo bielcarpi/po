@@ -15,11 +15,11 @@ public class SymbolTableFunctionEntry extends SymbolTableEntry{
     /**
      * SymbolTableFunctionEntry Constructor
      * @param id The ID of the entry
-     * @param scope The scope of the Function
+     * @param type The return type of the function
      * @param arguments The number of arguments in the Function
      */
-    public SymbolTableFunctionEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type, final int arguments) {
-        super(id, scope, type);
+    public SymbolTableFunctionEntry(final @NotNull String id, final @NotNull TokenType type, final int arguments) {
+        super(id, "global", type);
         this.arguments = arguments;
     }
 

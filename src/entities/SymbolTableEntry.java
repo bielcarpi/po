@@ -12,6 +12,7 @@ public abstract class SymbolTableEntry {
 
     private final String id;
     private final String scope;
+    private final TokenType type;
 
     /**
      * SymbolTableEntry Constructor
@@ -21,6 +22,18 @@ public abstract class SymbolTableEntry {
     public SymbolTableEntry(@NotNull final String id, @NotNull final String scope){
         this.id = id;
         this.scope = scope;
+        this.type = null;  //null init
+    }
+
+    /**
+     * SymbolTableEntry Constructor
+     * @param id The ID of the entry
+     * @param scope The scope of the entry
+     */
+    public SymbolTableEntry(@NotNull final String id, @NotNull final String scope, @NotNull final TokenType type){
+        this.id = id;
+        this.scope = scope;
+        this.type = type;
     }
 
     /**
@@ -39,5 +52,13 @@ public abstract class SymbolTableEntry {
     @NotNull
     public String getScope() {
         return scope;
+    }
+
+    /**
+     * Returns the type of the entry
+     * @return The type of the entry
+     */
+    public TokenType getType() {
+        return type;
     }
 }

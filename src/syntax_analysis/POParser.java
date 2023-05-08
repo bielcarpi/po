@@ -105,7 +105,12 @@ public class POParser implements Parser {
             else{ //Si la stack hi tenim un terminal
                 TokenType stackTerminal = (TokenType) stack.pop();
                 Token input = ts.nextToken();
-                if(stackTerminal.equals(input.getType())) {   // MATCH
+                if(stackTerminal.equals(input.getType())) {
+                    for (ParseTreeNode ptn : currentNode.getChildren()) {
+                        if (ptn.getSelf() instanceof TokenType && input.getType().equals(ptn.getSelf())) {
+                            ptn.setToken(input); //MATCH
+                        }
+                    }
                     errorDetected = false; //If there was an error, it ends now
                 }
                 else {    // ERROR
@@ -132,7 +137,7 @@ public class POParser implements Parser {
         ParseTree.cleanTree(tree);
         ParseTree.runTACOptimization(tree);
         System.out.println(tree);
-
+        System.out.println(SymbolTable.getInstance());
         ErrorManager.getInstance().printErrors();
         return tree;
     }

@@ -1,14 +1,14 @@
+var a = 2 + 2 + -1
+var c
+
+func hola(a, b, c) {
+    c = 2
+    c = 3
+}
+
+func hola2(d, e, f) {
+}
+
 main() {
-    switch z {
-        opt 1 -> {
-            print("1, 2, or 3")
-        }
-        opt 2 -> {
-            print("1, 2, or 3")
-            a++
-        }
-        default -> {
-            print("else")
-        }
-    }
+    a = 3 +3 -3
 }

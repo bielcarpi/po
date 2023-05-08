@@ -15,11 +15,11 @@ public class SymbolTableFunctionEntry extends SymbolTableEntry{
     /**
      * SymbolTableFunctionEntry Constructor
      * @param id The ID of the entry
-     * @param scope The scope of the Function
+     * @param type The return type of the function
      * @param arguments The number of arguments in the Function
      */
-    public SymbolTableFunctionEntry(final @NotNull String id, final @NotNull String scope, final int arguments) {
-        super(id, scope);
+    public SymbolTableFunctionEntry(final @NotNull String id, final @NotNull TokenType type, final int arguments) {
+        super(id, "global", type);
         this.arguments = arguments;
     }
 
@@ -30,5 +30,10 @@ public class SymbolTableFunctionEntry extends SymbolTableEntry{
      */
     public int getArguments() {
         return arguments;
+    }
+
+    @Override
+    public String toString() {
+        return "[Function] ID: " + super.getId() + ", Num. Args: " + this.arguments + ", Ret. Type: " + super.getType() + ", Scope: " + super.getScope();
     }
 }

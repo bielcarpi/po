@@ -11,6 +11,7 @@ public class ParseTreeNode {
 
     private ParseTreeNode parent;
     private Object self;
+    private Token token;
     private ArrayList<ParseTreeNode> children;
 
     /**
@@ -23,6 +24,7 @@ public class ParseTreeNode {
         this.parent = parent;
         this.self = self;
         this.children = children;
+        this.token = null;
     }
 
     /**
@@ -78,8 +80,17 @@ public class ParseTreeNode {
      * Sets the self of the node
      * @param self The self of the node
      */
-    public void setSelf(Object self) {
+    public void setSelf(Object self, Token token) {
         this.self = self;
+        this.token = token;
+    }
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
+
+    public Token getToken() {
+        return token;
     }
 
     @Override

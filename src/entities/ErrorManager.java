@@ -2,6 +2,13 @@ package entities;
 
 import java.util.ArrayList;
 
+/**
+ * The ErrorManager class represents a manager for errors that occurred during the compilation process.
+ * It contains a list of errors, and methods to add and print them.
+ *
+ * @see Error
+ * @see ErrorType
+ */
 public class ErrorManager {
     private static ErrorManager instance = null;
     private static ArrayList<Error> errors;

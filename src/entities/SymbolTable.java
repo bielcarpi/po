@@ -3,6 +3,7 @@ package entities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -13,22 +14,24 @@ import java.util.HashMap;
  */
 public class SymbolTable {
 
-    private final HashMap<String, SymbolTableEntry> map;
+    private static SymbolTable instance = null;
+    private static HashMap<String, SymbolTableEntry> map = null;
 
-    /**
-     * Symbol Table Constructor
-     */
-    public SymbolTable(){
-        map = new HashMap<>();
+    public static SymbolTable getInstance() {
+        if (instance == null) {
+            instance = new SymbolTable();
+            map = new HashMap<>();
+        }
+        return instance;
     }
 
     /**
      * Inserts a SymbolTableEntry to this SymbolTable
      * @param entry The entry to insert
      */
-    public void insert(@NotNull SymbolTableEntry entry) throws DuplicateEntryException{
-        if(map.containsKey(entry.getId())) throw new DuplicateEntryException(entry.getId());
-        map.put(entry.getId(), entry);
+    public void insert(@NotNull SymbolTableEntry entry) {
+        //TODO: check if exists and put to error manager
+        map.put(entry.getId() + entry.getScope(), entry);
     }
 
     /**
@@ -49,5 +52,15 @@ public class SymbolTable {
     @Nullable
     public SymbolTableEntry lookup(@NotNull String entryId){
         return map.get(entryId);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (SymbolTableEntry entry : map.values()) {
+
+            sb.append(entry.toString()).append("\n");
+        }
+        return sb.toString();
     }
 }

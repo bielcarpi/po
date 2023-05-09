@@ -18,8 +18,8 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      * @param scope The scope of the Variable
      * @param size The size of the variable (or 1 if it is not an array)
      */
-    public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final int size) {
-        super(id, scope);
+    public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type, final int size) {
+        super(id, scope, type);
         this.size = size;
     }
 
@@ -29,5 +29,10 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      */
     public int getSize() {
         return size;
+    }
+
+    @Override
+    public String toString() {
+        return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope();
     }
 }

@@ -3,6 +3,7 @@ package entities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 import java.util.function.Function;
 
 /**
@@ -13,6 +14,7 @@ import java.util.function.Function;
 public class ParseTree {
 
     private ParseTreeNode root;
+    private static String scope = "global"; //Aux variable to keep track of the current scope
 
     /**
      * Creates a Parse Tree with a given root
@@ -112,7 +114,7 @@ public class ParseTree {
 
         //If the node has a & in its name, we can substitute it with its first child
         if(node.getSelf() instanceof String && node.getSelf().toString().contains("&")){
-            node.setSelf(node.getChildren().get(0).getSelf());
+            node.setSelf(node.getChildren().get(0).getSelf(), node.getChildren().get(0).getToken());
             node.getChildren().remove(0);
 
             //If now that we removed we have only one child, and it is non-terminal, we can remove that node and move its childs up
@@ -133,7 +135,7 @@ public class ParseTree {
 
         //If the node is <llistaArguments>, we can remove it and move its childs to the previous child
         if(node.getSelf().equals("<llistaArguments>")){
-            node.setSelf(node.getParent().getChildren().get(0).getSelf());
+            node.setSelf(node.getParent().getChildren().get(0).getSelf(), node.getParent().getChildren().get(0).getToken());
             node.getParent().getChildren().remove(node.getParent().getChildren().indexOf(node) - 1);
 
             //If the parent node has a single child now, we can remove it and move its childs up
@@ -170,8 +172,15 @@ public class ParseTree {
 
         //If we have a VAR or TYPE node, we can remove it entirely
         if(node.getSelf().equals(TokenType.VAR) || node.getSelf().equals(TokenType.TYPE)){
-            //TODO: Add the variable to the symbol table
-            //If VAR has only one child, it means it's a declaration so we can remove it. If not, it's an assignation
+            // Add variable to the symbol table, without type assigned yet
+            SymbolTable.getInstance().insert(
+                    new SymbolTableVariableEntry(
+                            node.getChildren().get(0).getToken().getData(),
+                            scope,
+                            TokenType.UNKNOWN,
+                            1));
+
+            //If VAR has only one child, it means it's a declaration, so we can remove it. If not, it's an assignation
             if(node.getChildren().size() == 1 || node.getSelf().equals(TokenType.TYPE)){
                 node.getParent().getChildren().remove(node);
 
@@ -181,20 +190,49 @@ public class ParseTree {
                 return;
             }
 
-            node.setSelf("assignacio");
+            node.setSelf("assignacio", null);
         }
-
 
         //If we have a FUNC token, we can substitute it for its first child (ID: the name of the FUNC) and remove the second child (the parameters)
         if(node.getSelf().equals(TokenType.FUNC)){
-            //TODO: Add the function to the symbol table, with num of parameters (num of childs of its second child)
-            node.setSelf(node.getChildren().get(0).getSelf());
+            // Insert function entry to the symbol table with unknown type for now.
+            SymbolTable.getInstance().insert(
+                    new SymbolTableFunctionEntry(
+                            node.getChildren().get(0).getToken().getData(),
+                            TokenType.UNKNOWN,
+                            // If function has params, there will be 3 childs (ID, llistaParams, sentencies)
+                            // If number of childs equals 2, there are no params to the function
+                            // Careful with case where function is void
+                            node.getChildren().size() == 2 && !node.getChildren().get(1).getSelf().equals("<llistaParametres>")?
+                                    0 : node.getChildren().get(1).getChildren().size()
+                    ));
+
+            // Change the current scope to the new function. The first child of the FUNC will always be the ID
+            scope = node.getChildren().get(0).getToken().getData();
+
+            // If the function has params, we need to add them to the symbol table
+            if (node.getChildren().size() == 3) { // If number of childs equals 3, there are params to the function
+                for (ParseTreeNode param : node.getChildren().get(1).getChildren()) {
+                    SymbolTable.getInstance().insert(
+                            new SymbolTableVariableEntry(
+                                    param.getToken().getData(),
+                                    scope,
+                                    TokenType.UNKNOWN,
+                                    1));
+                }
+            }
+
+            // Replace the FUNC node with the ID (which is the first child) because we don't need the FUNC keyword
+            node.setSelf(node.getChildren().get(0).getSelf(), node.getChildren().get(0).getToken());
+            // The node has been switched, and we need to remove the node itself from the children (which is the first node)
             node.getChildren().remove(0);
             if(node.getChildren().get(0).getSelf().equals("<llistaParametres>")) //If we have parameters, remove them
                 node.getChildren().remove(0);
 
-            //Only one child is left, so substitute it with its childs
-            node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
+            // Only one child is left, so substitute it with its childs.
+            if (node.getChildren().size() != 0) // Make sure first the function is not void
+                node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
+
             return;
         }
 
@@ -207,9 +245,9 @@ public class ParseTree {
         }
 
 
-        //If we have some exp, replace the name with exp
+        //If we have some expression, replace the name with exp
         if(node.getSelf() instanceof String && node.getSelf().toString().contains("exp")){
-            node.setSelf("exp");
+            node.setSelf("exp", null);
         }
 
         //If an exp has more than 3 children, transform it into exp + 2 last children (the new exp = all children - the latest 2)
@@ -225,7 +263,7 @@ public class ParseTree {
 
         //If the node is <sentencia>, change name to assignacio (<sentencia> can now only be assignacio: = <exp> | ++ | --)
         if(node.getSelf().equals("<sentencia>") || node.getSelf().toString().contains("assignacioFor"))
-            node.setSelf("assignacio");
+            node.setSelf("assignacio", null);
 
         if(node.getChildren() == null || node.getChildren().isEmpty())
             return;
@@ -246,7 +284,7 @@ public class ParseTree {
         if(node.getSelf().equals("<llistaComposta>") && node.getParent() != null && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID || node.getParent().getSelf() == TokenType.OPT))
             node.getParent().replaceChild(node, node.getChildren());
         else if(node.getSelf().equals("<llistaComposta>"))
-            node.setSelf("llista");
+            node.setSelf("llista", null);
 
         //If we're <llistaDeclaracions>, <llistaElsif> or <llistaOpt> delete ourselves and put our children in our level
         if((node.getSelf().equals("<llistaDeclaracions>") || node.getSelf().equals("<llistaElsif>") ||
@@ -272,6 +310,9 @@ public class ParseTree {
             llista.addChild(aux);
         }
 
+        //Check if scope changed
+        if(node.getSelf().equals(TokenType.ID) && node.getToken().getData().equals(scope))
+            scope = "global"; //Return to global scope
     }
 
 

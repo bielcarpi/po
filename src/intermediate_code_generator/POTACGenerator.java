@@ -54,50 +54,86 @@ public class POTACGenerator implements TACGenerator{
     }
 
     private void generateTACAssignacio(@NotNull ParseTreeNode node, @NotNull StringBuilder tac){
-        if(node.getSelf().equals("assignacio")){
-            if(node.getChildren().get(2).getSelf().equals("exp")){
-                tac.append(node.getChildren().get(0).getSelf().toString())
-                        .append(" = ")
-                        .append("t")
-                        .append(tTimes++)
-                        .append("\n");
-
-                generateTACAssignacio(node.getChildren().get(2), tac);
-            }
-            else{
-                tac.append(node.getChildren().get(0).getSelf().toString())
-                        .append(" = ")
-                        .append(node.getChildren().get(2).getSelf().toString())
-                        .append("\n");
-            }
-        }
-        else{ //If exp
-            if(!node.getChildren().get(0).getSelf().equals("exp")){
-                tac.append("t")
-                        .append(tTimes++)
-                        .append(" = ")
-                        .append(node.getChildren().get(0).getSelf().toString())
-                        .append(" ")
-                        .append(node.getChildren().get(1).getSelf().toString())
-                        .append(" ")
-                        .append(node.getChildren().get(2).getSelf().toString())
-                        .append("\n");
-                return;
-            }
-
+        if(node.getChildren().size() == 2){ //Special case: ++ or --
             tac.append("t")
-                    .append(tTimes-1)
+                    .append(tTimes)
+                    .append(" = ")
+                    .append(node.getChildren().get(0).getToken().getData())
+                    .append(" ")
+                    .append(node.getChildren().get(1).getToken().getType().toPrettyString().charAt(0))
+                    .append(" 1\n");
+
+            tac.append(node.getChildren().get(0).getToken().getData())
                     .append(" = ")
                     .append("t")
-                    .append(tTimes++)
-                    .append(" ")
-                    .append(node.getChildren().get(1).getSelf().toString())
-                    .append(" ")
-                    .append(node.getChildren().get(2).getSelf().toString())
+                    .append(tTimes)
                     .append("\n");
 
-            generateTACAssignacio(node.getChildren().get(0), tac);
+            tTimes++;
         }
+        else if(node.getChildren().get(2).getSelf().equals("exp")){
+            traverseTACAssignacio(node.getChildren().get(2), tac);
+
+            tac.append(node.getChildren().get(0).getToken().getData())
+                    .append(" = ")
+                    .append("t")
+                    .append(tTimes-1)
+                    .append("\n");
+        }
+        else{
+            tac.append(node.getChildren().get(0).getToken().toString())
+                    .append(" = ")
+                    .append(node.getChildren().get(0).getToken().getData())
+                    .append(" ")
+                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
+                    .append(" ")
+                    .append(node.getChildren().get(2).getToken().getData())
+                    .append("\n");
+        }
+    }
+
+    private void traverseTACAssignacio(@NotNull ParseTreeNode node, @NotNull StringBuilder tac){
+        //If the first child is equ, go down the tree
+        if(node.getChildren().get(0).getSelf().equals("exp")){
+            traverseTACAssignacio(node.getChildren().get(0), tac);
+
+            tac.append("t")
+                    .append(tTimes)
+                    .append(" = ")
+                    .append("t")
+                    .append(tTimes-1)
+                    .append(" ")
+                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
+                    .append(" ")
+                    .append(node.getChildren().get(2).getToken().getData())
+                    .append("\n");
+        }
+        else if(node.getChildren().get(2).getSelf().equals("exp")){
+            traverseTACAssignacio(node.getChildren().get(2), tac);
+
+            tac.append("t")
+                    .append(tTimes)
+                    .append(" = ")
+                    .append(node.getChildren().get(0).getToken().getData())
+                    .append(" ")
+                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
+                    .append(" t")
+                    .append(tTimes-1)
+                    .append("\n");
+        }
+        else{
+            tac.append("t")
+                    .append(tTimes)
+                    .append(" = ")
+                    .append(node.getChildren().get(0).getToken().getData())
+                    .append(" ")
+                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
+                    .append(" ")
+                    .append(node.getChildren().get(2).getToken().getData())
+                    .append("\n");
+        }
+
+        tTimes++;
     }
 
     /**

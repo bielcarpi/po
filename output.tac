@@ -1,3 +1,19 @@
-ID = t0
-t1 = INT ADD INT
+t0 = 3 * 4
+a = t0
+t1 = 3 * 4
+t2 = t1 / 6
+t3 = t2 + 8
+b = t3
+t4 = a + 1
+a = t4
+t5 = 123 * 3
+t6 = t5 + 8
+t7 = t6 and 6
+i = t7
+t8 = i + 1
+i = t8
+t9 = b + 1
+b = t9
+t10 = b + 1
+b = t10
 

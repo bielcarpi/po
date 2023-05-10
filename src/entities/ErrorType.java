@@ -1,5 +1,11 @@
 package entities;
 
+/**
+ * The ErrorType enum represents the type of error that occurred during the compilation process.
+ *
+ * @see Error
+ * @see ErrorManager
+ */
 public enum ErrorType {
     FILE_NOT_FOUND,
     VARIABLE_UNDECLARED,
@@ -7,7 +13,10 @@ public enum ErrorType {
     TOKEN_LIST_ERROR,
     BUFFER_LENGTH_ERROR,
     SYNTAX_ERROR,
-    ;
+    TAC_GENERATION_ERROR,
+    TAC_OPTIMIZATION_ERROR,
+    MIPS_GENERATION_ERROR;
+
 
     public static String getMessage(ErrorType type) {
         return switch (type) {
@@ -21,6 +30,7 @@ public enum ErrorType {
     }
 
     public static boolean isCritical(ErrorType type) {
-        return type == FILE_NOT_FOUND;
+        return type == FILE_NOT_FOUND || type == TAC_GENERATION_ERROR || type == TAC_OPTIMIZATION_ERROR ||
+                type == MIPS_GENERATION_ERROR;
     }
 }

@@ -24,7 +24,7 @@ public interface Parser {
      * @param semanticAnalyzer The semantic analyzer to be used
      * @return The ParseTree semantically validated
      */
-    @Nullable
+    @NotNull
     ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer);
 
 }

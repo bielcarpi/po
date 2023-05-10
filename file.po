@@ -1,14 +1,22 @@
-var a = 2 + 2 + -1
-var c
-
-func hola(a, b, c) {
-    c = 2
-    c = 3
+var a = 3*4
+var b = 3*4/6+8
+type Z {
+    var z
 }
-
-func hola2(d, e, f) {
+func hola(){
+    a++
+    for i = 123*3+8 and 6, i < 3+4*5/6, i++ {
+        print("hola")
+        break
+    }
+    ret 3
 }
-
 main() {
-    a = 3 +3 -3
+    hola(3+4+5*6, 6/c)
+    while 1 > 2 {
+        b++
+        hola()
+    }
+    hola(b, 3)
+    b++
 }

@@ -12,7 +12,7 @@ public abstract class SymbolTableEntry {
 
     private final String id;
     private final String scope;
-    private final TokenType type;
+    private TokenType type;
 
     /**
      * SymbolTableEntry Constructor
@@ -59,6 +59,13 @@ public abstract class SymbolTableEntry {
      * @return The type of the entry
      */
     public TokenType getType() {
+
         return type;
     }
+
+    public void setType(TokenType type){
+        this.type = type;
+    }
+
+
 }

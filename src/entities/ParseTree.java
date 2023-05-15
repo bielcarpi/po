@@ -177,7 +177,7 @@ public class ParseTree {
                     new SymbolTableVariableEntry(
                             node.getChildren().get(0).getToken().getData(),
                             scope,
-                            TokenType.UNKNOWN,
+                            TokenType.INT,
                             1));
 
             //If VAR has only one child, it means it's a declaration, so we can remove it. If not, it's an assignation
@@ -217,7 +217,7 @@ public class ParseTree {
                             new SymbolTableVariableEntry(
                                     param.getToken().getData(),
                                     scope,
-                                    TokenType.UNKNOWN,
+                                    TokenType.INT,
                                     1));
                 }
             }

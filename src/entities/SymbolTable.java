@@ -30,7 +30,13 @@ public class SymbolTable {
      * @param entry The entry to insert
      */
     public void insert(@NotNull SymbolTableEntry entry) {
-        //TODO: check if exists and put to error manager
+        // Check if already exists and put to error manager
+        if (map.containsKey(entry.getId() + entry.getScope())) {
+            Error error = new entities.Error(ErrorType.REPEATED_SCOPE_ENTRY,
+                    "Error, there is a repeated scope entry");
+            ErrorManager.getInstance().addError(error);
+        }
+
         map.put(entry.getId() + entry.getScope(), entry);
     }
 

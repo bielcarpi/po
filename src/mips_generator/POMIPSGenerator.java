@@ -28,13 +28,57 @@ public class POMIPSGenerator implements MIPSGenerator {
 
                     switch (op) {
                         case "+":
-                            out.println("\tadd " + var + ", " + c1 + ", " + c2);
+                            // Same as multiplication
+                            if(c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                out.println("\tadd " + tmp[tmpIndex -1] + ", " + tmp[tmpIndex]);
+                            } else if (c1.matches("-?\\d+") && !c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tadd " + tmp[tmpIndex -1] + ", " + c2);
+                            } else if (!c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tadd " + tmp[tmpIndex -1] + ", " + c1);
+                            } else {
+                                out.println("\tadd " + tmp[tmpIndex] + ", " + c1 + ", " + c2);
+                            }
                             break;
                         case "-":
-                            out.println("\tsub " + var + ", " + c1 + ", " + c2);
+                            if(c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                out.println("\tsub " + tmp[tmpIndex -1] + ", " + tmp[tmpIndex]);
+                            }
                             break;
                         case "*":
-                            // Check if c1 or c2 is a constant, or if both are constants or if none is a constant
                             if(c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
                                 out.println("\tli " + tmp[tmpIndex] + ", " + c1);
                                 tmpIndex++;
@@ -46,18 +90,74 @@ public class POMIPSGenerator implements MIPSGenerator {
                                 }
                                 out.println("\tli " + tmp[tmpIndex] + ", " + c2);
                                 out.println("\tmul " + tmp[tmpIndex -1] + ", " + tmp[tmpIndex]);
+                            } else if (c1.matches("-?\\d+") && !c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                    tmpIndex++;
+                                } else {
+                                    tmpIndex = 1;
+                                }
+                                out.println("\tmul " + tmp[tmpIndex -1] + ", " + c2);
+                            } else if (!c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                    tmpIndex++;
+                                } else {
+                                    tmpIndex = 1;
+                                }
+                                out.println("\tmul " + tmp[tmpIndex -1] + ", " + c1);
+                            } else {
+                                out.println("\tmul " + tmp[tmpIndex] + ", " + c1 + ", " + c2);
                             }
 
                             break;
                         case "/":
-                            out.println("\tdiv " + var + ", " + c1 + ", " + c2);
+                            // The same as multiplication
+                            if(c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                out.println("\tdiv " + tmp[tmpIndex -1] + ", " + tmp[tmpIndex]);
+                            }
                             break;
                         case "and":
-                            out.println("\tand " + var + ", " + c1 + ", " + c2);
+                            if(c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                out.println("\tand " + tmp[tmpIndex -1] + ", " + tmp[tmpIndex]);
+                            }
                             break;
 
                         case "or":
-                            out.println("\tor " + var + ", " + c1 + ", " + c2);
+                            if(c1.matches("-?\\d+") && c2.matches("-?\\d+")) {
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c1);
+                                tmpIndex++;
+
+                                if(tmpIndex < tmp.length -1) {
+                                tmpIndex++;
+                                } else {
+                                tmpIndex = 1;
+                                }
+                                out.println("\tli " + tmp[tmpIndex] + ", " + c2);
+                                out.println("\tor " + tmp[tmpIndex -1] + ", " + tmp[tmpIndex]);
+                            }
                             break;
                     }
                 } else {

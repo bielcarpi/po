@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public record ParsingTableKey(@NotNull String producer, @NotNull TokenType terminal) {
+    public record ParsingTableKey(@NotNull String producer, @NotNull TokenType terminal) {
 
     public ParsingTableKey {
         Objects.requireNonNull(producer);

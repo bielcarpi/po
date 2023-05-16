@@ -56,8 +56,13 @@ public class SymbolTable {
      * @return The SymbolTableEntry found or {@code null}
      */
     @Nullable
-    public SymbolTableEntry lookup(@NotNull String entryId){
-        return map.get(entryId);
+    public SymbolTableEntry lookup(@NotNull String entryId, @NotNull String scope){
+        SymbolTableEntry ste = map.get(entryId + scope);
+        if (ste == null) {
+            ste = map.get(entryId + "global");
+        }
+
+        return ste;
     }
 
     @Override

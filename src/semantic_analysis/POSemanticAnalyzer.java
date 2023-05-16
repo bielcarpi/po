@@ -51,7 +51,7 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
 
     }
 
-    private TokenType validateAssignacio(@NotNull ParseTreeNode node) {
+    private TokenType validateAssignacio(@NotNull ParseTreeNode node, String scope) {
         // 1rst case: The node has 2 children
         // If the node has 2 children, it means that it is a ++ or -- operation (which means type is INT)
         if (node.getChildren().size() == 2) return TokenType.INT;
@@ -59,6 +59,7 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
         TokenType firstChildType;
         TokenType thirdChildType;
         ParseTreeNode firstChild = node.getChildren().get(0);
+        ParseTreeNode secondChild = node.getChildren().get(1);
         ParseTreeNode thirdChild = node.getChildren().get(2);
 
         if (thirdChild.toString().equals("exp")) {

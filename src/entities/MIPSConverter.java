@@ -1,5 +1,7 @@
 package entities;
 
+import org.jetbrains.annotations.NotNull;
+
 public class MIPSConverter {
 
     private static final String WORK_REG_1 = "$t9"; // Working register used for arg1
@@ -100,8 +102,8 @@ public class MIPSConverter {
 
         } else if(isLiteral(tacEntry.getArg1()) && !isLiteral(tacEntry.getArg2())){
             // 2. If only arg1 is constant
-            sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg1())).append("\n");
-            sb.append(operationType + WORK_REG_1 + ", " + WORK_REG_2 + ", " + tacEntry.getArg2()).append("\n");
+            sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg2())).append("\n");
+            sb.append(operationType + WORK_REG_1 + ", " + WORK_REG_2 + ", " + getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb)).append("\n");
 
         }else if(!isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())){
             // 3. If only arg2 is constant
@@ -122,4 +124,9 @@ public class MIPSConverter {
         return sb.toString();
     }
 
+    private static String getVariableRegister(@NotNull String name, @NotNull String scope, @NotNull StringBuilder sb){
+        int programID = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getProgramID();
+        //TODO if programID == -1, the variable doesn't have a register. Load it from RAM
+        return "$t" + programID;
+    }
 }

@@ -22,6 +22,7 @@ public class POMIPSGenerator implements MIPSGenerator {
 
     @Override
     public void generateMIPS(@NotNull TAC tac) {
+        //Start printing the asm file
         try (PrintWriter out = new PrintWriter(fileName)) {
             entries = tac.getEntries(); // Get the map of function names to TACBlocks
 
@@ -45,3 +46,18 @@ public class POMIPSGenerator implements MIPSGenerator {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

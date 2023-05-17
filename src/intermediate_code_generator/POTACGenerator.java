@@ -5,11 +5,16 @@ import intermediate_code_optimizer.TACOptimizer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.FileNotFoundException;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Class that generates TAC from a parse tree
+ *
+ * @see TAC
+ * @see TACOptimizer
+ * @see ParseTree
+ */
 public class POTACGenerator implements TACGenerator{
 
     private final TACOptimizer tacOptimizer;
@@ -28,20 +33,20 @@ public class POTACGenerator implements TACGenerator{
 
 
     @Override
-    public @NotNull String generateTAC(@NotNull ParseTree pt) {
-        StringBuilder tac = new StringBuilder();
+    public @NotNull TAC generateTAC(@NotNull ParseTree pt) {
+        TAC tac = new TAC(); //Data structure to store the TAC
         traverseTree(pt.getRoot(), tac);
 
-        //if(tacOptimizer != null)
-            //tac = tacOptimizer.optimizeTAC(tac.toString());
+        if(tacOptimizer != null)
+            tac = tacOptimizer.optimizeTAC(tac);
 
         if(outputFile)
             writeToFile(tac.toString());
 
-        return tac.toString();
+        return tac;
     }
 
-    private void traverseTree(@NotNull ParseTreeNode node, @NotNull StringBuilder tac){
+    private void traverseTree(@NotNull ParseTreeNode node, @NotNull TAC tac){
 
         if(node.getSelf().equals("assignacio")){
             generateTACAssignacio(node, tac);
@@ -53,7 +58,7 @@ public class POTACGenerator implements TACGenerator{
             traverseTree(child, tac);
     }
 
-    private void generateTACAssignacio(@NotNull ParseTreeNode node, @NotNull StringBuilder tac){
+    private void generateTACAssignacio(@NotNull ParseTreeNode node, @NotNull TAC tac){
         if(node.getChildren().size() == 2){ //Special case: ++ or --
             tac.append("t")
                     .append(tTimes)
@@ -92,7 +97,7 @@ public class POTACGenerator implements TACGenerator{
         }
     }
 
-    private void traverseTACAssignacio(@NotNull ParseTreeNode node, @NotNull StringBuilder tac){
+    private void traverseTACAssignacio(@NotNull ParseTreeNode node, @NotNull TAC tac){
         //If the first child is equ, go down the tree
         if(node.getChildren().get(0).getSelf().equals("exp")){
             traverseTACAssignacio(node.getChildren().get(0), tac);

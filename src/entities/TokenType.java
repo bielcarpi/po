@@ -98,8 +98,4 @@ public enum TokenType {
 
         return null;
     }
-
-    public String toPrettyString(){
-        return regex.toString().replace("\\", "").replace("^", "").replace("$", "");
-    }
 }

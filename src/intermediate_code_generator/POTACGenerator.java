@@ -107,17 +107,22 @@ public class POTACGenerator implements TACGenerator{
         tacBlock = trueBlock; //Update current block working on
         traverseTree(node.getChildren().get(1), tac, scope);
 
+        //The last entry of the true block should jump to the end of the if
+        int blockAfterIf = trueBlock.getBlockNum() + node.getChildren().size() - 1;
+        //if (node.getChildren().get(node.getChildren().size() - 1).getToken().getType() == TokenType.ELSE) blockAfterIf++;
+        tacBlock.add(new TACEntry(blockAfterIf, TACType.GOTO));
+
         tacBlock = falseBlock; //Update current block working on
 
         //Traverse all else if & else
         for(int i = 2; i < node.getChildren().size(); i++){
-            generateTACElsif(node.getChildren().get(i), tac, scope);
+            generateTACElsif(node.getChildren().get(i), tac, scope, blockAfterIf);
         }
 
 
     }
 
-    private void generateTACElsif(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+    private void generateTACElsif(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope, int blockAfterIf){
         //We just need another new block (to jump if the condition is false)
 
         TACBlock falseBlock = new TACBlock(true);
@@ -128,6 +133,11 @@ public class POTACGenerator implements TACGenerator{
         if(node.getToken().getType() == TokenType.ELSIF){
             tacBlock.add(new TACEntry("a", "7", falseBlock.getBlockNum(), TACType.IFGEQ));
             traverseTree(node.getChildren().get(1), tac, scope);
+
+            //The last entry of this block should jump to the end of the if
+            //Add the GOTO only if it is not the last ELSIF
+            if(!node.getParent().getChildren().get(node.getParent().getChildren().size() - 1).equals(node))
+                tacBlock.add(new TACEntry(blockAfterIf, TACType.GOTO));
         }
         else{ //IF it is an ELSE
             traverseTree(node, tac, scope);

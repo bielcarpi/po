@@ -28,7 +28,7 @@ public class TACEntry {
         else
             this.src = src;
 
-        if(SymbolTable.getInstance().lookup(arg1) != null)
+        if(arg2 != null && SymbolTable.getInstance().lookup(arg1) != null)
             this.arg1 = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(arg1)).getProgramID();
         else
             this.arg1 = arg1;
@@ -58,6 +58,16 @@ public class TACEntry {
      */
     public TACEntry(String arg1, String arg2, int blockNum, TACType type) {
         this(null, arg1, arg2, type);
+        this.blockNum = blockNum;
+    }
+
+    /**
+     * Constructor for TACEntry with one argument and a block number (goto statement, for example)
+     * @param blockNum The block number
+     * @param type The type of the entry
+     */
+    public TACEntry(int blockNum, TACType type) {
+        this(null, null, null, type);
         this.blockNum = blockNum;
     }
 
@@ -105,7 +115,14 @@ public class TACEntry {
         else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ){
             sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);
         }
+        else if(type == TACType.GOTO){
+            sb.append(TACType.GOTO).append(" E").append(blockNum);
+        }
+        else{
+            sb.append("ERROR");
+        }
 
         return sb.toString();
     }
 }
+

@@ -64,7 +64,7 @@ public class TACBlock {
         if(blockNum != -1) sb.append("E").append(blockNum).append(":\n");
 
         for(TACEntry entry: blockEntries)
-            sb.append(entry.toString()).append("\n");
+            sb.append('\t').append(entry.toString()).append("\n");
 
         return sb.toString();
     }

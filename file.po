@@ -3,14 +3,19 @@ var a = 3
 main() {
     switch z {
         opt 1 -> {
-            print("1, 2, or 3")
+            a = a + 3
+            b++
+            hola()
         }
         opt 2 -> {
-            print("1, 2, or 3")
-            a++
+            d = a + 3
+            b++
         }
         default -> {
-            print("else")
+            d = a + 3
+            c = d + 3
         }
     }
+
+    c = a + 3
 }

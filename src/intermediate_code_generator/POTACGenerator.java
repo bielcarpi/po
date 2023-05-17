@@ -131,7 +131,43 @@ public class POTACGenerator implements TACGenerator{
      * @param scope to obtain the scope for the new blocks
      */
     private void generateTACSwitch(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+        //We need a new block for each case, one for the default, and one for the end of the switch
+        TACBlock endBlock = new TACBlock(true);
 
+        //Add to current block all conditions and jumps to the case blocks
+        for(int i = 1; i < node.getChildren().size() - 1; i++){
+            tacBlock.add(new TACEntry(node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(i).getChildren().get(0).getToken().getData(),
+                    endBlock.getBlockNum() + i, TACType.IFEQU));
+        }
+        //Add default jump, or skip switch
+        if(node.getChildren().get(node.getChildren().size() - 1).getToken().getType() == TokenType.DEFAULT)
+            tacBlock.add(new TACEntry(endBlock.getBlockNum() + node.getChildren().size()-1, TACType.GOTO));
+        else
+            tacBlock.add(new TACEntry(endBlock.getBlockNum(), TACType.GOTO));
+
+        for(int i = 1; i < node.getChildren().size(); i++){
+            TACBlock caseBlock = new TACBlock(true);
+            tac.add(scope, caseBlock);
+            tacBlock = caseBlock;
+
+            if(node.getChildren().get(i).getToken().getType() == TokenType.DEFAULT){
+                for(int j = 1; j < node.getChildren().get(i).getChildren().size(); j++)
+                    traverseTree(node.getChildren().get(i).getChildren().get(j), tac, scope);
+            }
+            else{
+                for(int j = 1; j < node.getChildren().get(i).getChildren().size(); j++)
+                    traverseTree(node.getChildren().get(i).getChildren().get(j), tac, scope);
+
+                //Finally, we jump to the end of the switch after the case (only if we're not the last case)
+                if(i != node.getChildren().size()-1)
+                    tacBlock.add(new TACEntry(endBlock.getBlockNum(), TACType.GOTO));
+            }
+        }
+
+        //Add the end block
+        tac.add(scope, endBlock);
+        tacBlock = endBlock;
     }
 
     /**

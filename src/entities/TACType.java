@@ -8,6 +8,7 @@ public enum TACType {
     AND,
     OR,
     EQU,
+    IFEQU, //IF EQual
     IFGEQ, //IF Greater or EQual
     IFLEQ, //IF Less or EQual
     IFG, //IF Greater
@@ -37,6 +38,7 @@ public enum TACType {
             case AND -> "and";
             case OR -> "or";
             case EQU -> "=";
+            case IFEQU -> "==";
             case IFGEQ -> ">=";
             case IFLEQ -> "<=";
             case IFG -> ">";

@@ -101,7 +101,7 @@ public class TACEntry {
         else if(type == TACType.EQU){
             sb.append(dest).append(" = ").append(arg1);
         }
-        else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ){
+        else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ || type == TACType.IFEQU){
             sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);
         }
         else if(type == TACType.GOTO){

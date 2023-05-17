@@ -164,10 +164,10 @@ public class ParseTree {
      * @param pt The Parse Tree to optimize
      */
     public static void runTACOptimization(ParseTree pt){
-        innerTACOptimization(pt.root, pt);
+        innerTACOptimization(pt.root);
     }
 
-    private static void innerTACOptimization(ParseTreeNode node, ParseTree pt){
+    private static void innerTACOptimization(ParseTreeNode node){
         //Top-Down Recursive
 
         //If we have a VAR or TYPE node, we can remove it entirely
@@ -272,7 +272,7 @@ public class ParseTree {
         while(!childrenDone.containsAll(node.getChildren())){ //While we have not cleaned all children
             for(ParseTreeNode child: node.getChildren()){
                 if(!childrenDone.contains(child)){
-                    innerTACOptimization(child, pt);
+                    innerTACOptimization(child);
                     childrenDone.add(child);
                     break;
                 }

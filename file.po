@@ -1,26 +1,28 @@
-var a = 2
+var a = 3
 
-
-/*func hola(){
-    a++
-    a = a + b
-}*/
-
-main() {
-    if a == 2 {
-        a = 3
-    }
-    elsif a == 3 {
+func hola(){
+    a = 6 * 2
+    if a < 7 {
         a = 4
     }
-    elsif a == "s" {
-        a = 4
+    elsif a == 4 {
+        a = 5
     }
-    else {
+    elsif a == 5 {
+        c++
+        b = 5 and 8 * 8
+    }
+    else{
         a = 6
     }
 
-    while 1 {
-        a = 5
-    }
+    b = 3 * 4
+    z++
+}
+
+main() {
+    a = 3 + 4 * 5
+    b++
+    c = 8 * 5
+    c--
 }

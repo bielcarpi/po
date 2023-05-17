@@ -1,0 +1,36 @@
+func main() {
+    var recursive = 0; //Either iterative (0) or recursive(1)
+    var n = 10 //Num of terms
+    var firstTerm = 0
+    var secondTerm = 0
+    print("Fibonacci Series till 10 terms:")
+
+    var i
+    for i = 0, i <= n, i++ {
+        print(firstTerm)
+
+        //Compute the next term
+        var nextTerm = firstTerm + secondTerm
+        firstTerm = secondTerm
+        secondTerm = nextTerm
+    }
+}
+
+/*
+    Demanem un numero i calculem el seu factorial
+    amb una funcio recursiva
+func main() {
+        print("Introdueix un numero: ")
+        var num = input()
+        print("Factorial de " + num + ": " + multiplyNumbers(num))
+}
+
+func multiplicarNumeros(num) {
+        if num >= 1 {
+            ret num multiplicarNumeros(num - 1)
+        }
+        else {
+            ret 1
+        }
+}
+*/

@@ -5,6 +5,7 @@ import intermediate_code_optimizer.TACOptimizer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.table.TableCellEditor;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -61,6 +62,10 @@ public class POTACGenerator implements TACGenerator{
                     tacBlock = new TACBlock(false);
                     tac.add(child.getToken().getData(), tacBlock);
                     traverseTree(child, tac, child.getToken().getData()); //Traverse the function and generate TAC inside the block
+
+                    //Add a return at the end of the function if it doesn't have one
+                    if(!tacBlock.getEntries().isEmpty() && tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
+                        tacBlock.add(new TACEntry(null, "0", TACType.RET));
                 }
             }
         }
@@ -126,6 +131,7 @@ public class POTACGenerator implements TACGenerator{
      * @param scope to obtain the scope for the new blocks
      */
     private void generateTACSwitch(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+
     }
 
     /**
@@ -135,6 +141,24 @@ public class POTACGenerator implements TACGenerator{
      * @param scope to obtain the scope for the new blocks
      */
     private void generateTACWhile(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+        //We need two new blocks, one if the condition is true and another one if it is false (to jump to the end of the if)
+        TACBlock trueBlock = new TACBlock(true);
+        TACBlock falseBlock = new TACBlock(true);
+        tac.add(scope, trueBlock);
+        tac.add(scope, falseBlock);
+
+        //TODO: Add condition (first child)
+        trueBlock.add(new TACEntry("a", "7", falseBlock.getBlockNum(), TACType.IFGEQ));
+
+        //Traverse the true block & add the entries
+        tacBlock = trueBlock;
+        traverseTree(node.getChildren().get(1), tac, scope);
+
+        //Add the jump to the condition
+        tacBlock.add(new TACEntry(trueBlock.getBlockNum(), TACType.GOTO));
+
+        //Add the false block to the end of the true block
+        tacBlock = falseBlock;
     }
 
     /**
@@ -144,6 +168,29 @@ public class POTACGenerator implements TACGenerator{
      * @param scope to obtain the scope for the new blocks
      */
     private void generateTACFor(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+        generateTACAssignacio(node.getChildren().get(0)); //First child is always assignation
+
+        //We need two new blocks, one if the condition is true and another one if it is false (to jump to the end of the if)
+        TACBlock trueBlock = new TACBlock(true);
+        TACBlock falseBlock = new TACBlock(true);
+        tac.add(scope, trueBlock);
+        tac.add(scope, falseBlock);
+
+        //TODO: Add conditionn (second child)
+        trueBlock.add(new TACEntry("a", "7", falseBlock.getBlockNum(), TACType.IFGEQ));
+
+        //Traverse the true block & add the entries to the true block
+        tacBlock = trueBlock;
+        traverseTree(node.getChildren().get(3), tac, scope);
+
+        //Add the increment to the end of the true block
+        generateTACAssignacio(node.getChildren().get(2));
+
+        //Add the jump to the beginning of the true block
+        tacBlock.add(new TACEntry(trueBlock.getBlockNum(), TACType.GOTO));
+
+        //Add the false block to the end of the true block
+        tacBlock = falseBlock;
     }
 
 

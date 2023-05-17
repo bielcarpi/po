@@ -1,29 +1,16 @@
 var a = 3
 
-func hola(){
-    a = 6 * 2
-    if a < 7 {
-        a = 4
-        continue
-    }
-    elsif a == 4 {
-        a = 5
-    }
-    elsif a == 5 {
-        c++
-        b = 5 and 8 * 8
-    }
-    else{
-        a = 6
-        break
-    }
-
-    ret 1
-}
-
 main() {
-    a = 3 + 4 * 5
-    b++
-    c = 8 * 5
-    c--
+    switch z {
+        opt 1 -> {
+            print("1, 2, or 3")
+        }
+        opt 2 -> {
+            print("1, 2, or 3")
+            a++
+        }
+        default -> {
+            print("else")
+        }
+    }
 }

@@ -1,5 +1,6 @@
 import entities.ErrorManager;
 import entities.ParseTree;
+import entities.TAC;
 import intermediate_code_generator.POTACGenerator;
 import intermediate_code_generator.TACGenerator;
 import intermediate_code_optimizer.POTACOptimizer;
@@ -29,7 +30,7 @@ public class Main {
         }
 
         TACGenerator tacGenerator = new POTACGenerator(new POTACOptimizer(), true);
-        String tac = tacGenerator.generateTAC(pt);
+        TAC tac = tacGenerator.generateTAC(pt);
 
         POMIPSGenerator mipsGenerator = new POMIPSGenerator();
         mipsGenerator.generateMIPS(tac, file.split("\\.")[0].concat(".asm"));

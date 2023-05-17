@@ -1,28 +1,35 @@
 var a = 3
 
 func hola(){
-    a = 6 * 2
-    if a < 7 {
-        a = 4
-    }
-    elsif a == 4 {
-        a = 5
-    }
-    elsif a == 5 {
-        c++
-        b = 5 and 8 * 8
-    }
-    else{
-        a = 6
+    var i = 3
+    for i = 0, i < 10, i++ {
+        a = a + 1
     }
 
-    b = 3 * 4
-    z++
+    if p < 3 {
+        z++
+    }
 }
 
 main() {
-    a = 3 + 4 * 5
-    b++
-    c = 8 * 5
-    c--
+    while a < 13 {
+        a = a + 1
+    }
+
+    switch z {
+        opt 1 -> {
+            a = a + 3
+            b++
+        }
+        opt 2 -> {
+            d = a + 3
+            b++
+        }
+        default -> {
+            d = a + 3
+            c = d + 3
+        }
+    }
+
+    c = a + 3
 }

@@ -2,6 +2,8 @@ package entities;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 /**
  * The SymbolTableVariableEntry represents a {@link SymbolTableEntry} for Variables.
  *
@@ -13,10 +15,13 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     private final int size; //Array size
 
     /**
-     * The programID is the ID of this variable in the running program
-     * It will be assigned later on, by the compiler
+     * The programID is the ID of this variable (the register where it is stored: e.g. t0, t1... t7) in the running program
+     * It will be assigned later on, by the MIPSGenerator
+     * //TODO Function that looks up the whole SymbolTable and calculates programID for each variable
+     * // TODO taking into account the globals that go first.
      */
-    private String programID;
+    private int programID;
+
 
     /**
      * SymbolTableVariableEntry Constructor
@@ -27,6 +32,7 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type, final int size) {
         super(id, scope, type);
         this.size = size;
+        programID = -1;
     }
 
     /**
@@ -41,7 +47,7 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      * Sets the program ID of the variable
      * @param programID The program ID of the variable
      */
-    public void setProgramID(String programID) {
+    public void setProgramID(int programID) {
     	this.programID = programID;
     }
 
@@ -49,10 +55,10 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      * Returns the program ID of the variable if it has been set, otherwise returns the normal ID
      * @return The program ID of the variable
      */
-    public String getProgramID() {
-        if(programID == null) return getId();
+    public int getProgramID() {
     	return programID;
     }
+
 
     @Override
     public String toString() {

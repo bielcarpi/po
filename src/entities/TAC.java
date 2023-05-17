@@ -24,7 +24,16 @@ public class TAC {
     }
 
 
-    public void add(TACBlock block) {
+    /**
+     * Add a TACBlock to the TAC
+     * @param func The name of the function the block belongs to
+     * @param block The block to add
+     */
+    public void add(String func, TACBlock block) {
+        if (!entries.containsKey(func))
+            entries.put(func, new ArrayList<>());
+
+        entries.get(func).add(block);
     }
 
 

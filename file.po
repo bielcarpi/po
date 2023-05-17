@@ -1,22 +1,6 @@
-var a = 3*4
-var b = 3*4/6+8
-type Z {
-    var z
-}
-func hola(){
-    a++
-    for i = 123*3+8 and 6, i < 3+4*5/6, i++ {
-        print("hola")
-        break
-    }
-    ret 3
-}
 main() {
-    hola(3+4+5*6, 6/c)
-    while 1 > 2 {
-        b++
-        hola()
-    }
-    hola(b, 3)
+    a = 3 + 4 * 5
     b++
+    c = 8 * 5
+    c--
 }

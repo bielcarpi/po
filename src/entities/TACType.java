@@ -16,8 +16,8 @@ public enum TACType {
 
     public static TACType getType(TokenType op) {
         return switch (op) {
-            case ADD -> ADD;
-            case SUB -> SUB;
+            case ADD, DOUBLE_ADD -> ADD;
+            case SUB, DOUBLE_SUB -> SUB;
             case MULT -> MUL;
             case DIV -> DIV;
             case AND -> AND;

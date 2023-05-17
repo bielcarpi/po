@@ -19,7 +19,7 @@ public class POTACGenerator implements TACGenerator{
 
     private final TACOptimizer tacOptimizer;
     private final boolean outputFile;
-    private int tTimes = 0; //The number of times a temporary variable has been used for TAC generation
+    private static final String WORK_REG = "t9";
 
     /**
      * Default constructor
@@ -35,7 +35,9 @@ public class POTACGenerator implements TACGenerator{
     @Override
     public @NotNull TAC generateTAC(@NotNull ParseTree pt) {
         TAC tac = new TAC(); //Data structure to store the TAC
-        traverseTree(pt.getRoot(), tac);
+        TACBlock tacBlock = new TACBlock();
+        tac.add("main", tacBlock);
+        traverseTree(pt.getRoot(), tacBlock);
 
         if(tacOptimizer != null)
             tac = tacOptimizer.optimizeTAC(tac);
@@ -46,99 +48,71 @@ public class POTACGenerator implements TACGenerator{
         return tac;
     }
 
-    private void traverseTree(@NotNull ParseTreeNode node, @NotNull TAC tac){
+    private void traverseTree(@NotNull ParseTreeNode node, @NotNull TACBlock tacBlock){
 
         if(node.getSelf().equals("assignacio")){
-            generateTACAssignacio(node, tac);
+            generateTACAssignacio(node, tacBlock);
             return;
         }
 
         if(node.getChildren() == null || node.getChildren().isEmpty()) return;
         for(ParseTreeNode child: node.getChildren())
-            traverseTree(child, tac);
+            traverseTree(child, tacBlock);
     }
 
-    private void generateTACAssignacio(@NotNull ParseTreeNode node, @NotNull TAC tac){
+    private void generateTACAssignacio(@NotNull ParseTreeNode node, @NotNull TACBlock tacBlock){
+        TACEntry entry;
         if(node.getChildren().size() == 2){ //Special case: ++ or --
-            tac.append("t")
-                    .append(tTimes)
-                    .append(" = ")
-                    .append(node.getChildren().get(0).getToken().getData())
-                    .append(" ")
-                    .append(node.getChildren().get(1).getToken().getType().toPrettyString().charAt(0))
-                    .append(" 1\n");
-
-            tac.append(node.getChildren().get(0).getToken().getData())
-                    .append(" = ")
-                    .append("t")
-                    .append(tTimes)
-                    .append("\n");
-
-            tTimes++;
+            entry = new TACEntry(node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(0).getToken().getData(),
+                    "1",
+                    TACType.getType(node.getChildren().get(1).getToken().getType()));
         }
         else if(node.getChildren().get(2).getSelf().equals("exp")){
-            traverseTACAssignacio(node.getChildren().get(2), tac);
+            traverseTACAssignacio(node.getChildren().get(2), tacBlock);
 
-            tac.append(node.getChildren().get(0).getToken().getData())
-                    .append(" = ")
-                    .append("t")
-                    .append(tTimes-1)
-                    .append("\n");
+            //All the temporary values calculated by the traversal are stored in WORK_REG
+            entry = new TACEntry(node.getChildren().get(0).getToken().getData(),
+                    WORK_REG,
+                    TACType.EQU);
         }
         else{
-            tac.append(node.getChildren().get(0).getToken().toString())
-                    .append(" = ")
-                    .append(node.getChildren().get(0).getToken().getData())
-                    .append(" ")
-                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
-                    .append(" ")
-                    .append(node.getChildren().get(2).getToken().getData())
-                    .append("\n");
+            entry = new TACEntry(node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(2).getToken().getData(),
+                    TACType.getType(node.getChildren().get(1).getToken().getType()));
         }
+
+        //Add the entry to the block
+        tacBlock.add(entry);
     }
 
-    private void traverseTACAssignacio(@NotNull ParseTreeNode node, @NotNull TAC tac){
+    private void traverseTACAssignacio(@NotNull ParseTreeNode node, @NotNull TACBlock tacBlock){
+        TACEntry entry;
+
         //If the first child is equ, go down the tree
         if(node.getChildren().get(0).getSelf().equals("exp")){
-            traverseTACAssignacio(node.getChildren().get(0), tac);
+            traverseTACAssignacio(node.getChildren().get(0), tacBlock);
 
-            tac.append("t")
-                    .append(tTimes)
-                    .append(" = ")
-                    .append("t")
-                    .append(tTimes-1)
-                    .append(" ")
-                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
-                    .append(" ")
-                    .append(node.getChildren().get(2).getToken().getData())
-                    .append("\n");
+            //t = (t-1) OP ch2
+            entry = new TACEntry(WORK_REG, WORK_REG, node.getChildren().get(2).getToken().getData(),
+                    TACType.getType(node.getChildren().get(1).getToken().getType()));
         }
         else if(node.getChildren().get(2).getSelf().equals("exp")){
-            traverseTACAssignacio(node.getChildren().get(2), tac);
+            traverseTACAssignacio(node.getChildren().get(2), tacBlock);
 
-            tac.append("t")
-                    .append(tTimes)
-                    .append(" = ")
-                    .append(node.getChildren().get(0).getToken().getData())
-                    .append(" ")
-                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
-                    .append(" t")
-                    .append(tTimes-1)
-                    .append("\n");
+            //t = ch0 OP (t-1)
+            entry = new TACEntry(WORK_REG, node.getChildren().get(0).getToken().getData(), WORK_REG,
+                    TACType.getType(node.getChildren().get(1).getToken().getType()));
         }
         else{
-            tac.append("t")
-                    .append(tTimes)
-                    .append(" = ")
-                    .append(node.getChildren().get(0).getToken().getData())
-                    .append(" ")
-                    .append(node.getChildren().get(1).getToken().getType().toPrettyString())
-                    .append(" ")
-                    .append(node.getChildren().get(2).getToken().getData())
-                    .append("\n");
+            //t = ch0 OP ch2
+            entry = new TACEntry(WORK_REG, node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(2).getToken().getData(),
+                    TACType.getType(node.getChildren().get(1).getToken().getType()));
         }
 
-        tTimes++;
+        tacBlock.add(entry);
     }
 
     /**

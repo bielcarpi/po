@@ -21,9 +21,21 @@ public class TACEntry {
      */
     public TACEntry(String src, String arg1, String arg2, TACType type) {
         this.type = type;
-        this.src = src;
-        this.arg1 = arg1;
-        this.arg2 = arg2;
+
+        if(SymbolTable.getInstance().lookup(src) != null)
+            this.src = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(src)).getProgramID();
+        else
+            this.src = src;
+
+        if(SymbolTable.getInstance().lookup(arg1) != null)
+            this.arg1 = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(arg1)).getProgramID();
+        else
+            this.arg1 = arg1;
+
+        if(arg2 != null && SymbolTable.getInstance().lookup(arg2) != null)
+            this.arg2 = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(arg2)).getProgramID();
+        else
+            this.arg2 = arg2;
     }
 
     /**

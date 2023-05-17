@@ -49,7 +49,6 @@ public class SymbolTable {
      * @param entryId The ID of the SymbolTableEntry to look for
      * @return The SymbolTableEntry found or {@code null}
      */
-    @Nullable
     public SymbolTableEntry lookup(@NotNull String entryId){
         return map.get(entryId);
     }

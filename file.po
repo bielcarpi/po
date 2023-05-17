@@ -5,6 +5,7 @@ func hola(){
     for i = 0, i < 10, i++ {
         a = a + 1
     }
+    a = a and i
 
     if p < 3 {
         z++

@@ -32,7 +32,7 @@ public class Main {
         TACGenerator tacGenerator = new POTACGenerator(new POTACOptimizer(), true);
         TAC tac = tacGenerator.generateTAC(pt);
 
-        POMIPSGenerator mipsGenerator = new POMIPSGenerator();
-        mipsGenerator.generateMIPS(tac, file.split("\\.")[0].concat(".asm"));
+        POMIPSGenerator mipsGenerator = new POMIPSGenerator(file.split("\\.")[0].concat(".asm"));
+        mipsGenerator.generateMIPS(tac);
     }
 }

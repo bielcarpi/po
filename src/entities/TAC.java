@@ -37,6 +37,15 @@ public class TAC {
     }
 
 
+
+    /**
+     * Get the map of function names to TACBlocks
+     * @return The hashmap
+     */
+    public HashMap<String, ArrayList<TACBlock>> getEntries() {
+        return entries;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

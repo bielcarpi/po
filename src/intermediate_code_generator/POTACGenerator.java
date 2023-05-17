@@ -65,7 +65,7 @@ public class POTACGenerator implements TACGenerator{
 
                     //Add a return at the end of the function if it doesn't have one
                     if(tacBlock.getEntries().isEmpty() || tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
-                        tacBlock.add(new TACEntry(null, "0", TACType.RET));
+                        tacBlock.add(new TACEntry(null, null, "0", TACType.RET));
                 }
             }
         }

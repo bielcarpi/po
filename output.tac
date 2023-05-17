@@ -17,7 +17,7 @@ E7:
 	a = a + 1
 	goto E6
 E8:
-	t9 = 5 + 3
+	t9 = a * 3
 	a = t9
 	a = a + 1
 	goto E6
@@ -25,7 +25,7 @@ E9:
 	t9 = 9 + 3
 	a = t9
 E6:
-	t9 = a or 3
+	t9 = a + 3
 	a = t9
 	ret 0
 
@@ -42,7 +42,7 @@ E1:
 	t9 = a and i
 	a = t9
 E2:
-	if i >= 3 goto E3
+	if a >= 3 goto E3
 	a = a + 1
 E3:
 	ret 0

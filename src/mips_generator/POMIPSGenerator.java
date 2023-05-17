@@ -28,7 +28,11 @@ public class POMIPSGenerator implements MIPSGenerator {
             // For each hashmap entry
             for (String funcName : entries.keySet()) {
                 // For each block in the function
+                out.println("\n$" + funcName + ":");
                 for (TACBlock block : entries.get(funcName)) {
+                    if(block.getBlockNum() != -1){
+                        out.println("\n$E" + block.getBlockNum() + ":");
+                    }
                     // For each entry in the block
                     for(TACEntry tacEntry : block.getEntries()){
                         out.println(MIPSConverter.convert(tacEntry));

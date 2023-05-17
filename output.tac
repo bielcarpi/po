@@ -1,19 +1,38 @@
-t0 = 3 * 4
-a = t0
-t1 = 3 * 4
-t2 = t1 / 6
-t3 = t2 + 8
-b = t3
-t4 = a + 1
-a = t4
-t5 = 123 * 3
-t6 = t5 + 8
-t7 = t6 and 6
-i = t7
-t8 = i + 1
-i = t8
-t9 = b + 1
-b = t9
-t10 = b + 1
-b = t10
+global:
+	a = 3
+
+main:
+	t9 = 4 * 5
+	t9 = 3 + t9
+	a = t9
+	b = b + 1
+	t9 = 8 * 5
+	c = t9
+	c = c - 1
+
+hola:
+	t9 = 6 * 2
+	a = t9
+E0:
+	if a >= 7 goto E1
+	a = 4
+	goto E4
+E1:
+	if a >= 7 goto E2
+	a = 5
+	goto E4
+E2:
+	if a >= 7 goto E3
+	c = c + 1
+	t9 = 8 * 8
+	t9 = 5 and t9
+	b = t9
+	goto E4
+E3:
+	a = 6
+E4:
+	t9 = 3 * 4
+	b = t9
+	z = z + 1
+
 

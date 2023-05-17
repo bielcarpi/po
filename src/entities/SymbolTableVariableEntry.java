@@ -13,6 +13,12 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     private final int size; //Array size
 
     /**
+     * The programID is the ID of this variable in the running program
+     * It will be assigned later on, by the compiler
+     */
+    private String programID;
+
+    /**
      * SymbolTableVariableEntry Constructor
      * @param id The ID of the entry
      * @param scope The scope of the Variable
@@ -29,6 +35,23 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      */
     public int getSize() {
         return size;
+    }
+
+    /**
+     * Sets the program ID of the variable
+     * @param programID The program ID of the variable
+     */
+    public void setProgramID(String programID) {
+    	this.programID = programID;
+    }
+
+    /**
+     * Returns the program ID of the variable if it has been set, otherwise returns the normal ID
+     * @return The program ID of the variable
+     */
+    public String getProgramID() {
+        if(programID == null) return getId();
+    	return programID;
     }
 
     @Override

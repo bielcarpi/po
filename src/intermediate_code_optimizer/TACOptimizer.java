@@ -1,5 +1,6 @@
 package intermediate_code_optimizer;
 
+import entities.TAC;
 import org.jetbrains.annotations.NotNull;
 
 public interface TACOptimizer {
@@ -9,5 +10,5 @@ public interface TACOptimizer {
      * @param tac the TAC to be optimized
      * @return the optimized TAC
      */
-    @NotNull String optimizeTAC(@NotNull String tac);
+    @NotNull TAC optimizeTAC(@NotNull TAC tac);
 }

@@ -101,14 +101,14 @@ public class TACEntry {
         else if(type == TACType.EQU){
             sb.append(dest).append(" = ").append(arg1);
         }
-        else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ || type == TACType.IFEQU){
+        else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ || type == TACType.IFEQU || type == TACType.IFNEQ){
             sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);
         }
         else if(type == TACType.GOTO){
             sb.append(TACType.GOTO).append(" E").append(blockNum);
         }
-        else if(type == TACType.RET){
-            sb.append(TACType.RET).append(" ").append(arg1);
+        else if(type == TACType.RET || type == TACType.CALL){
+            sb.append(type).append(" ").append(arg1);
         }
         else{
             sb.append("ERROR");

@@ -1,11 +1,25 @@
 var a = 3
 
+func hola(){
+    var i = 3
+    for i = 0, i < 10, i++ {
+        a = a + 1
+    }
+
+    if p < 3 {
+        z++
+    }
+}
+
 main() {
+    while a < 13 {
+        a = a + 1
+    }
+
     switch z {
         opt 1 -> {
             a = a + 3
             b++
-            hola()
         }
         opt 2 -> {
             d = a + 3

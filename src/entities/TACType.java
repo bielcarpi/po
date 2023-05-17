@@ -9,12 +9,14 @@ public enum TACType {
     OR,
     EQU,
     IFEQU, //IF EQual
+    IFNEQ, //IF Not EQual
     IFGEQ, //IF Greater or EQual
     IFLEQ, //IF Less or EQual
     IFG, //IF Greater
     IFL, //IF Less
     GOTO,
-    RET;
+    RET,
+    CALL; //Call function
 
     public static TACType getType(TokenType op) {
         return switch (op) {
@@ -29,6 +31,17 @@ public enum TACType {
         };
     }
 
+    public static TACType GetAntonym(TokenType type) {
+        return switch (type) {
+            case DOUBLE_EQU -> IFNEQ;
+            case GT -> IFLEQ;
+            case LT -> IFGEQ;
+            case GTE -> IFL;
+            case LTE -> IFG;
+            default -> null;
+        };
+    }
+
     public String toString(){
         return switch (this) {
             case ADD -> "+";
@@ -39,12 +52,14 @@ public enum TACType {
             case OR -> "or";
             case EQU -> "=";
             case IFEQU -> "==";
+            case IFNEQ -> "!=";
             case IFGEQ -> ">=";
             case IFLEQ -> "<=";
             case IFG -> ">";
             case IFL -> "<";
             case GOTO -> "goto";
             case RET -> "ret";
+            case CALL -> "call";
         };
     }
 }

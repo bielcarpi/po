@@ -31,10 +31,12 @@ public class SymbolTable {
      */
     public void insert(@NotNull SymbolTableEntry entry) {
         // Check if already exists and put to error manager
-        if (map.containsKey(entry.getId() + entry.getScope())) {
+        if (map.containsKey(entry.getId() + "global") || map.containsKey(entry.getId() + entry.getScope())) {
             Error error = new entities.Error(ErrorType.REPEATED_SCOPE_ENTRY,
-                    "Error, there is a repeated scope entry");
+                    "Error, variable " + entry.getId() + " already exists in the same scope");
             ErrorManager.getInstance().addError(error);
+
+            return;
         }
 
         map.put(entry.getId() + entry.getScope(), entry);

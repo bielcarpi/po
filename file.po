@@ -1,11 +1,13 @@
 var a = 2
-var b = 3
+var b = 1
+var c = "s"
+var d
+
 
 func hola(){
     a++
-    a = b
+    a = a + b + d
 }
 main() {
     b++
-    c++
 }

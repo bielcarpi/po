@@ -10,23 +10,23 @@ package entities;
  */
 public class TACEntry {
     private final TACType type;
-    private final String src, arg1, arg2;
+    private final String dest, arg1, arg2;
     private int blockNum; //Optional argument for GOTOs
 
     /**
      * Constructor for TACEntry
-     * @param src The source of the entry
+     * @param  dest The source of the entry
      * @param arg1 The first argument
      * @param arg2 The second argument
      * @param type The type of the entry
      */
-    public TACEntry(String src, String arg1, String arg2, TACType type) {
+    public TACEntry(String dest, String arg1, String arg2, TACType type) {
         this.type = type;
 
-        if(src != null && SymbolTable.getInstance().lookup(src) != null)
-            this.src = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(src)).getProgramID();
+        if(dest != null && SymbolTable.getInstance().lookup(dest) != null)
+            this.dest = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(dest)).getProgramID();
         else
-            this.src = src;
+            this.dest =  dest;
 
         if(arg2 != null && SymbolTable.getInstance().lookup(arg1) != null)
             this.arg1 = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(arg1)).getProgramID();
@@ -41,12 +41,12 @@ public class TACEntry {
 
     /**
      * Constructor for TACEntry with only one argument
-     * @param src The source of the entry
+     * @param dest The source of the entry
      * @param arg1 The first argument
      * @param type The type of the entry
      */
-    public TACEntry(String src, String arg1, TACType type) {
-        this(src, arg1, null, type);
+    public TACEntry(String dest, String arg1, TACType type) {
+        this(dest, arg1, null, type);
     }
 
     /**
@@ -83,8 +83,8 @@ public class TACEntry {
      * Returns the source of the entry
      * @return the source of the entry
      */
-    public String getSrc() {
-        return src;
+    public String getDest() {
+        return dest;
     }
 
     /**
@@ -107,10 +107,10 @@ public class TACEntry {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         if(type == TACType.ADD || type == TACType.SUB || type == TACType.MUL || type == TACType.DIV || type == TACType.AND || type == TACType.OR){
-            sb.append(src).append(" = ").append(arg1).append(" ").append(type).append(" ").append(arg2);
+            sb.append(dest).append(" = ").append(arg1).append(" ").append(type).append(" ").append(arg2);
         }
         else if(type == TACType.EQU){
-            sb.append(src).append(" = ").append(arg1);
+            sb.append(dest).append(" = ").append(arg1);
         }
         else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ){
             sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);

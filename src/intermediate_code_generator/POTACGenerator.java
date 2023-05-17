@@ -74,6 +74,12 @@ public class POTACGenerator implements TACGenerator{
 
         if(node.getToken() != null && node.getToken().getType() == TokenType.IF){
             generateTACIf(node, tac, scope);
+            //switch (node.getToken().getType()) {
+            //    case IF -> generateTACIf(node, tac, scope);
+                //case SWITCH -> generateTACSwitch(node, tac, scope);
+                //case FOR -> generateTACFor(node, tac, scope);
+                //case WHILE -> generateTACWhile(node, tac, scope);
+            //}
             return;
         }
         else if(node.getSelf().equals("assignacio")){
@@ -85,6 +91,34 @@ public class POTACGenerator implements TACGenerator{
         for(ParseTreeNode child: node.getChildren())
             traverseTree(child, tac, scope);
     }
+
+    /**
+     * Generates TAC for a Switch statement
+     * @param node the node to be traversed
+     * @param tac the TAC data structure
+     * @param scope to obtain the scope for the new blocks
+     */
+    private void generateTACSwitch(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+    }
+
+    /**
+     * Generates TAC for a While statement
+     * @param node the node to be traversed
+     * @param tac the TAC data structure
+     * @param scope to obtain the scope for the new blocks
+     */
+    private void generateTACWhile(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+    }
+
+    /**
+     * Generates TAC for a For statement
+     * @param node the node to be traversed
+     * @param tac the TAC data structure
+     * @param scope to obtain the scope for the new blocks
+     */
+    private void generateTACFor(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
+    }
+
 
     /**
      * Generates TAC for an if statement
@@ -181,7 +215,6 @@ public class POTACGenerator implements TACGenerator{
     /**
      * Traverses the tree and generates TAC for the assignations
      * @param node the node to be traversed
-     * @param tacBlock the block where the TAC will be stored
      */
     private void traverseTACAssignacio(@NotNull ParseTreeNode node){
         TACEntry entry;

@@ -1,33 +1,26 @@
-.section .text
-
-.global __start
-
-__start:
-	li $t0, 3
-	li $t2, 4
-	mul $t1, $t2
-	move $t3, t0
-	li $t4, 3
-	li $t6, 4
-	mul $t5, $t6
-	li $t8, 8
-	add $t0, t2
-	move $t2, t3
-	li $t3, 1
-	add $t4, a
-	move $t6, t4
-	li $t7, 123
-	li $t9, 3
-	mul $t8, $t9
-	li $t0, 8
-	add $t1, t5
-	move $t4, t7
-	li $t5, 1
-	add $t6, i
-	move $t8, t8
-	li $t9, 1
-	add $t0, b
-	move $t2, t9
-	li $t3, 1
-	add $t4, b
-	move $t6, t10
+li $t9, 3sw $t9, a
+li $t8, 4li $t7, 5mult$t9, $t8, $t7sw t9, $t9
+li $t8, 3add$t9, $t8, t9sw t9, $t9
+li $t9, t9sw $t9, a
+li $t9, 1add$t9, $t8, bsw b, $t9
+li $t8, 8li $t7, 5mult$t9, $t8, $t7sw t9, $t9
+li $t9, t9sw $t9, c
+li $t9, 1sub$t9, $t8, csw c, $t9
+li $t8, 6li $t7, 2mult$t9, $t8, $t7sw t9, $t9
+li $t9, t9sw $t9, a
+null
+li $t9, 4sw $t9, a
+null
+null
+li $t9, 5sw $t9, a
+null
+null
+li $t9, 1add$t9, $t8, csw c, $t9
+li $t8, 8li $t7, 8mult$t9, $t8, $t7sw t9, $t9
+null
+li $t9, t9sw $t9, b
+null
+li $t9, 6sw $t9, a
+li $t8, 3li $t7, 4mult$t9, $t8, $t7sw t9, $t9
+li $t9, t9sw $t9, b
+li $t9, 1add$t9, $t8, zsw z, $t9

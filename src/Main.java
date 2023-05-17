@@ -25,7 +25,7 @@ public class Main {
 
         //If the frontend has errors, the backend will not be executed
         if(ErrorManager.getInstance().hasErrors()){
-            ErrorManager.getInstance().printErrors();
+            //ErrorManager.getInstance().printErrors();
             return;
         }
 

@@ -30,7 +30,15 @@ public class SymbolTable {
      * @param entry The entry to insert
      */
     public void insert(@NotNull SymbolTableEntry entry) {
-        //TODO: check if exists and put to error manager
+        // Check if already exists and put to error manager
+        if (map.containsKey(entry.getId() + "global") || map.containsKey(entry.getId() + entry.getScope())) {
+            Error error = new entities.Error(ErrorType.REPEATED_SCOPE_ENTRY,
+                    "Error, variable " + entry.getId() + " already exists in the same scope");
+            ErrorManager.getInstance().addError(error);
+
+            return;
+        }
+
         map.put(entry.getId() + entry.getScope(), entry);
     }
 
@@ -49,8 +57,14 @@ public class SymbolTable {
      * @param entryId The ID of the SymbolTableEntry to look for
      * @return The SymbolTableEntry found or {@code null}
      */
-    public SymbolTableEntry lookup(@NotNull String entryId){
-        return map.get(entryId);
+    @Nullable
+    public SymbolTableEntry lookup(@NotNull String entryId, @NotNull String scope){
+        SymbolTableEntry ste = map.get(entryId + scope);
+        if (ste == null) {
+            ste = map.get(entryId + "global");
+        }
+
+        return ste;
     }
 
     @Override

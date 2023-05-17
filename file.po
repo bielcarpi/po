@@ -1,6 +1,17 @@
 var a = 3
 
 func hola(){
+    a = 6 * 2
+    if a < 7 {
+        a = 4
+    }
+    elsif a == 4 {
+        a = 5
+    }
+    else {
+        a = 6
+    }
+
     b = 3 * 4
     z++
 }

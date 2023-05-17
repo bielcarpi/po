@@ -25,7 +25,7 @@ public class TACBlock {
      * @param requiresId Whether the block requires a unique ID
      */
     public TACBlock(boolean requiresId){
-        if(requiresId) blockNum = numBlocks++;
+        if(requiresId) blockNum = ++numBlocks;
         else blockNum = -1;
 
         blockEntries = new ArrayList<>();
@@ -45,6 +45,14 @@ public class TACBlock {
      */
     public ArrayList<TACEntry> getEntries(){
         return blockEntries;
+    }
+
+    /**
+     * Returns the block number
+     * @return the block number
+     */
+    public int getBlockNum() {
+        return blockNum;
     }
 
 

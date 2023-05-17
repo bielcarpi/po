@@ -11,6 +11,7 @@ package entities;
 public class TACEntry {
     private final TACType type;
     private final String src, arg1, arg2;
+    private int blockNum; //Optional argument for GOTOs
 
     /**
      * Constructor for TACEntry
@@ -22,7 +23,7 @@ public class TACEntry {
     public TACEntry(String src, String arg1, String arg2, TACType type) {
         this.type = type;
 
-        if(SymbolTable.getInstance().lookup(src) != null)
+        if(src != null && SymbolTable.getInstance().lookup(src) != null)
             this.src = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(src)).getProgramID();
         else
             this.src = src;
@@ -48,6 +49,17 @@ public class TACEntry {
         this(src, arg1, null, type);
     }
 
+    /**
+     * Constructor for TACEntry without source, two arguments and a block number
+     * @param arg1 The first argument
+     * @param arg2 The second argument
+     * @param type The type of the entry
+     * @param blockNum The block number
+     */
+    public TACEntry(String arg1, String arg2, int blockNum, TACType type) {
+        this(null, arg1, arg2, type);
+        this.blockNum = blockNum;
+    }
 
     /**
      * Returns the type of the entry
@@ -91,7 +103,7 @@ public class TACEntry {
             sb.append(src).append(" = ").append(arg1);
         }
         else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ){
-            sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(TACType.GOTO).append(src);
+            sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);
         }
 
         return sb.toString();

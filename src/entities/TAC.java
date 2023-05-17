@@ -43,7 +43,8 @@ public class TAC {
         for (String funcName : entries.keySet()) {
             sb.append(funcName).append(":\n");
             for (TACBlock block : entries.get(funcName))
-                sb.append(block.toString()).append("\n");
+                sb.append(block.toString());
+            sb.append("\n");
         }
         return sb.toString();
     }

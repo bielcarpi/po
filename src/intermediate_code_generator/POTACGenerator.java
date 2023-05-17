@@ -48,12 +48,16 @@ public class POTACGenerator implements TACGenerator{
             tacBlock = new TACBlock(false);
             tac.add("global", tacBlock);
 
-            //Loop through the children of the root (either assignations or functions)
+            //The program can have either assignations or functions as children
+            //We'll first loop through the assignations and then through the functions
             for (ParseTreeNode child : pt.getRoot().getChildren()) {
                 if (child.getSelf().equals("assignacio")) {
                     generateTACAssignacio(child);
-                } else { //Main or normal function
-                    //New block for the function
+                }
+            }
+
+            for (ParseTreeNode child : pt.getRoot().getChildren()){
+                if (!child.getSelf().equals("assignacio")) {
                     tacBlock = new TACBlock(false);
                     tac.add(child.getToken().getData(), tacBlock);
                     traverseTree(child, tac, child.getToken().getData()); //Traverse the function and generate TAC inside the block
@@ -72,17 +76,40 @@ public class POTACGenerator implements TACGenerator{
 
     private void traverseTree(@NotNull ParseTreeNode node, @NotNull TAC tac, String scope){
 
-        if(node.getToken() != null && node.getToken().getType() == TokenType.IF){
-            generateTACIf(node, tac, scope);
-            //switch (node.getToken().getType()) {
-            //    case IF -> generateTACIf(node, tac, scope);
-                //case SWITCH -> generateTACSwitch(node, tac, scope);
-                //case FOR -> generateTACFor(node, tac, scope);
-                //case WHILE -> generateTACWhile(node, tac, scope);
-            //}
-            return;
+        if(node.getToken() != null){
+            switch (node.getToken().getType()) {
+                case IF -> {
+                    generateTACIf(node, tac, scope);
+                    return;
+                }
+                case SWITCH -> {
+                    generateTACSwitch(node, tac, scope);
+                    return;
+                }
+                case FOR -> {
+                    generateTACFor(node, tac, scope);
+                    return;
+                }
+                case WHILE -> {
+                    generateTACWhile(node, tac, scope);
+                    return;
+                }
+                case RET -> {
+                    tacBlock.add(new TACEntry(null, node.getChildren().get(0).getToken().getData(), TACType.RET));
+                    return;
+                }
+                case BREAK -> { //Converted to GOTO
+                    tacBlock.add(new TACEntry(tacBlock.getBlockNum()+1, TACType.GOTO));
+                    return;
+                }
+                case CONTINUE -> { //Converted to GOTO
+                    tacBlock.add(new TACEntry(tacBlock.getBlockNum(), TACType.GOTO));
+                    return;
+                }
+            }
         }
-        else if(node.getSelf().equals("assignacio")){
+
+        if(node.getSelf().equals("assignacio")){
             generateTACAssignacio(node);
             return;
         }

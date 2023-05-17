@@ -12,7 +12,8 @@ public enum TACType {
     IFLEQ, //IF Less or EQual
     IFG, //IF Greater
     IFL, //IF Less
-    GOTO;
+    GOTO,
+    RET;
 
     public static TACType getType(TokenType op) {
         return switch (op) {
@@ -41,6 +42,7 @@ public enum TACType {
             case IFG -> ">";
             case IFL -> "<";
             case GOTO -> "goto";
+            case RET -> "ret";
         };
     }
 }

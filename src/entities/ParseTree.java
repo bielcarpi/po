@@ -173,12 +173,13 @@ public class ParseTree {
         //If we have a VAR or TYPE node, we can remove it entirely
         if(node.getSelf().equals(TokenType.VAR) || node.getSelf().equals(TokenType.TYPE)){
             // Add variable to the symbol table, without type assigned yet
-            SymbolTable.getInstance().insert(
-                    new SymbolTableVariableEntry(
-                            node.getChildren().get(0).getToken().getData(),
-                            scope,
-                            TokenType.UNKNOWN,
-                            1));
+            SymbolTableVariableEntry entry = new SymbolTableVariableEntry(
+                    node.getChildren().get(0).getToken().getData(),
+                    scope,
+                    TokenType.UNKNOWN,
+                    1);
+
+            SymbolTable.getInstance().insert(entry);
 
             //If VAR has only one child, it means it's a declaration, so we can remove it. If not, it's an assignation
             if(node.getChildren().size() == 1 || node.getSelf().equals(TokenType.TYPE)){

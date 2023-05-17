@@ -4,6 +4,7 @@ func hola(){
     a = 6 * 2
     if a < 7 {
         a = 4
+        continue
     }
     elsif a == 4 {
         a = 5
@@ -14,10 +15,10 @@ func hola(){
     }
     else{
         a = 6
+        break
     }
 
-    b = 3 * 4
-    z++
+    ret 1
 }
 
 main() {

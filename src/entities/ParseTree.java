@@ -173,12 +173,13 @@ public class ParseTree {
         //If we have a VAR or TYPE node, we can remove it entirely
         if(node.getSelf().equals(TokenType.VAR) || node.getSelf().equals(TokenType.TYPE)){
             // Add variable to the symbol table, without type assigned yet
-            SymbolTable.getInstance().insert(
-                    new SymbolTableVariableEntry(
-                            node.getChildren().get(0).getToken().getData(),
-                            scope,
-                            TokenType.UNKNOWN,
-                            1));
+            SymbolTableVariableEntry entry = new SymbolTableVariableEntry(
+                    node.getChildren().get(0).getToken().getData(),
+                    scope,
+                    TokenType.UNKNOWN,
+                    1);
+
+            SymbolTable.getInstance().insert(entry);
 
             //If VAR has only one child, it means it's a declaration, so we can remove it. If not, it's an assignation
             if(node.getChildren().size() == 1 || node.getSelf().equals(TokenType.TYPE)){
@@ -199,7 +200,7 @@ public class ParseTree {
             SymbolTable.getInstance().insert(
                     new SymbolTableFunctionEntry(
                             node.getChildren().get(0).getToken().getData(),
-                            TokenType.UNKNOWN,
+                            TokenType.INT,
                             // If function has params, there will be 3 childs (ID, llistaParams, sentencies)
                             // If number of childs equals 2, there are no params to the function
                             // Careful with case where function is void
@@ -211,7 +212,7 @@ public class ParseTree {
             scope = node.getChildren().get(0).getToken().getData();
 
             // If the function has params, we need to add them to the symbol table
-            if (node.getChildren().size() == 3) { // If number of childs equals 3, there are params to the function
+            if (node.getChildren().size() == 2 && node.getChildren().get(1).getSelf().equals("<llistaParametres>")) { // If number of childs equals 3, there are params to the function
                 for (ParseTreeNode param : node.getChildren().get(1).getChildren()) {
                     SymbolTable.getInstance().insert(
                             new SymbolTableVariableEntry(

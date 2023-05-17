@@ -22,21 +22,9 @@ public class TACEntry {
      */
     public TACEntry(String dest, String arg1, String arg2, TACType type) {
         this.type = type;
-
-        if(dest != null && SymbolTable.getInstance().lookup(dest) != null)
-            this.dest = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(dest)).getProgramID();
-        else
-            this.dest =  dest;
-
-        if(arg2 != null && SymbolTable.getInstance().lookup(arg1) != null)
-            this.arg1 = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(arg1)).getProgramID();
-        else
-            this.arg1 = arg1;
-
-        if(arg2 != null && SymbolTable.getInstance().lookup(arg2) != null)
-            this.arg2 = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(arg2)).getProgramID();
-        else
-            this.arg2 = arg2;
+        this.dest =  dest;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
     }
 
     /**
@@ -70,6 +58,7 @@ public class TACEntry {
         this(null, null, null, type);
         this.blockNum = blockNum;
     }
+
 
     /**
      * Returns the type of the entry
@@ -112,11 +101,14 @@ public class TACEntry {
         else if(type == TACType.EQU){
             sb.append(dest).append(" = ").append(arg1);
         }
-        else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ){
+        else if(type == TACType.IFG || type == TACType.IFL || type == TACType.IFGEQ || type == TACType.IFLEQ || type == TACType.IFEQU || type == TACType.IFNEQ){
             sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);
         }
         else if(type == TACType.GOTO){
             sb.append(TACType.GOTO).append(" E").append(blockNum);
+        }
+        else if(type == TACType.RET || type == TACType.CALL){
+            sb.append(type).append(" ").append(arg1);
         }
         else{
             sb.append("ERROR");

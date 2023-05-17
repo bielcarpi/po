@@ -1,26 +1,86 @@
-li $t9, 3sw $t9, a
-li $t8, 4li $t7, 5mult$t9, $t8, $t7sw t9, $t9
-li $t8, 3add$t9, $t8, t9sw t9, $t9
-li $t9, t9sw $t9, a
-li $t9, 1add$t9, $t8, bsw b, $t9
-li $t8, 8li $t7, 5mult$t9, $t8, $t7sw t9, $t9
-li $t9, t9sw $t9, c
-li $t9, 1sub$t9, $t8, csw c, $t9
-li $t8, 6li $t7, 2mult$t9, $t8, $t7sw t9, $t9
-li $t9, t9sw $t9, a
+li $t9, 3
+sw a, $t9
+
 null
-li $t9, 4sw $t9, a
-null
-null
-li $t9, 5sw $t9, a
+li $t9, 1
+add $t9, $t8, a
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
 null
 null
-li $t9, 1add$t9, $t8, csw c, $t9
-li $t8, 8li $t7, 8mult$t9, $t8, $t7sw t9, $t9
 null
-li $t9, t9sw $t9, b
 null
-li $t9, 6sw $t9, a
-li $t8, 3li $t7, 4mult$t9, $t8, $t7sw t9, $t9
-li $t9, t9sw $t9, b
-li $t9, 1add$t9, $t8, zsw z, $t9
+li $t9, 3
+add $t9, $t8, a
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
+li $t9, 1
+add $t9, $t8, a
+sw $t9, a
+
+null
+li $t8, 5
+li $t7, 3
+add $t9, $t8, $t7
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
+li $t9, 1
+add $t9, $t8, a
+sw $t9, a
+
+null
+li $t8, 9
+li $t7, 3
+add $t9, $t8, $t7
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
+li $t9, 3
+or $t9, $t8, a
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
+null
+li $t9, 3
+sw i, $t9
+
+li $t9, 0
+sw i, $t9
+
+null
+li $t9, 1
+add $t9, $t8, a
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
+li $t9, 1
+add $t9, $t8, i
+sw $t9, i
+
+null
+sw $t9, t9
+
+li $t9, t9
+sw a, $t9
+
+null
+li $t9, 1
+add $t9, $t8, a
+sw $t9, a
+
+null

@@ -47,10 +47,62 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                         }
                         // Else, type is the same, so we can move on
                  }
+            } else if (ptn.getSelf().toString().equals("exp")) {
+                // Top level exp can only be found in conditionals and loops, there for second child must be a comparison operator
+                if (ptn.getChildren().size() == 2) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid expression",
+                            ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
+                    continue;
+                }
+
+                if (ptn.getChildren().get(1).getToken().getType() != TokenType.DIFF &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.DOUBLE_EQU &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.GT &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.GTE &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.LT &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.LTE) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid expression. Expression must contain a comparison operator",
+                            ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
+                    continue;
+                }
+                TokenType type = validateAssignacio(ptn, scope);
+                if (type == TokenType.STRING) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid expression. Trying to compare strings",
+                            ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
+                }
             } else if (ptn.getSelf().toString().equals("ID")
                     || ptn.getSelf().toString().equals("MAIN")) {
                 if (ptn.getChildren() != null) {
                     exploreTACOTree(ptn, ptn.getToken().getData());
+                }
+            } else if (ptn.getSelf().toString().equals("FOR")) {
+                if (!ptn.getChildren().get(1).getSelf().equals("exp")) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid expression. Cannot use value as condition",
+                            ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
+                    continue;
+                }
+                if (ptn.getChildren() != null) {
+                    exploreTACOTree(ptn, scope);
+                }
+            } else if (ptn.getSelf().toString().equals("IF") || ptn.getSelf().toString().equals("ELSIF") ||
+                        ptn.getSelf().toString().equals("WHILE")) {
+                // If or elsif, as well as while, will have exp as a first child, and this exp must be a comparison
+                if (!ptn.getChildren().get(0).getSelf().equals("exp")) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid expression. Cannot use value as condition",
+                            ptn.getChildren().get(0).getToken().getLine(), ptn.getChildren().get(0).getToken().getColumn()));
+                    continue;
+                }
+                if (ptn.getChildren() != null) {
+                    exploreTACOTree(ptn, scope);
+                }
+            } else {
+                if (ptn.getChildren() != null) {
+                    exploreTACOTree(ptn, scope);
                 }
             }
         }

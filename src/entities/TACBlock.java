@@ -22,15 +22,18 @@ public class TACBlock {
 
     /**
      * Default constructor
+     * @param requiresId Whether the block requires a unique ID
      */
-    public TACBlock(){
-        blockNum = numBlocks++;
+    public TACBlock(boolean requiresId){
+        if(requiresId) blockNum = numBlocks++;
+        else blockNum = -1;
+
         blockEntries = new ArrayList<>();
     }
 
     /**
      * Add a TACEntry to the block
-     * @param entry
+     * @param entry The entry to add
      */
     public void add(TACEntry entry){
         blockEntries.add(entry);
@@ -48,7 +51,10 @@ public class TACBlock {
     @Override
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("E").append(blockNum).append(":\n");
+
+        //If the block requires an ID, add it to the string
+        if(blockNum != -1) sb.append("E").append(blockNum).append(":\n");
+
         for(TACEntry entry: blockEntries)
             sb.append(entry.toString()).append("\n");
 

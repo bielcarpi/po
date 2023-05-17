@@ -35,9 +35,30 @@ public class POTACGenerator implements TACGenerator{
     @Override
     public @NotNull TAC generateTAC(@NotNull ParseTree pt) {
         TAC tac = new TAC(); //Data structure to store the TAC
-        TACBlock tacBlock = new TACBlock();
-        tac.add("main", tacBlock);
-        traverseTree(pt.getRoot(), tacBlock);
+
+        //If the root is MAIN, we only have to traverse the main function
+        if(pt.getRoot().getToken() != null){
+            TACBlock tacBlock = new TACBlock(false);
+            tac.add("main", tacBlock);
+            traverseTree(pt.getRoot(), tacBlock); //Traverse the function and generate TAC inside the block
+        }
+        else {
+            //New block for the global assignations
+            TACBlock globalAssignations = new TACBlock(false);
+            tac.add("global", globalAssignations);
+
+            //Loop through the children of the root (either assignations or functions)
+            for (ParseTreeNode child : pt.getRoot().getChildren()) {
+                if (child.getSelf().equals("assignacio")) {
+                    generateTACAssignacio(child, globalAssignations);
+                } else { //Main or normal function
+                    //New block for the function
+                    TACBlock tacBlock = new TACBlock(false);
+                    tac.add(child.getToken().getData(), tacBlock);
+                    traverseTree(child, tacBlock); //Traverse the function and generate TAC inside the block
+                }
+            }
+        }
 
         if(tacOptimizer != null)
             tac = tacOptimizer.optimizeTAC(tac);
@@ -68,7 +89,7 @@ public class POTACGenerator implements TACGenerator{
                     "1",
                     TACType.getType(node.getChildren().get(1).getToken().getType()));
         }
-        else if(node.getChildren().get(2).getSelf().equals("exp")){
+        else if(node.getChildren().get(2).getSelf().equals("exp")){ //x = z OP exp
             traverseTACAssignacio(node.getChildren().get(2), tacBlock);
 
             //All the temporary values calculated by the traversal are stored in WORK_REG
@@ -76,9 +97,8 @@ public class POTACGenerator implements TACGenerator{
                     WORK_REG,
                     TACType.EQU);
         }
-        else{
+        else{ //x = z
             entry = new TACEntry(node.getChildren().get(0).getToken().getData(),
-                    node.getChildren().get(0).getToken().getData(),
                     node.getChildren().get(2).getToken().getData(),
                     TACType.getType(node.getChildren().get(1).getToken().getType()));
         }

@@ -1,36 +1,17 @@
-var a = 3
-
-func hola(){
-    var i = 3
-    for i = 0, i < 10, i++ {
-        a = a + 1
-    }
-    a = a and i
-
-    if a < 3 {
-        a++
-    }
-}
+var n = 10 //Num of terms $t0
+var firstTerm = 0 //$t1
+var secondTerm //$t2
 
 main() {
-    while a < 13 {
-        a = a + 1
+    secondTerm = 1
+    var nextTerm
+
+    var i //$t3
+    for i = 0, i < n, i++ {
+        nextTerm = firstTerm + secondTerm
+        firstTerm = secondTerm
+        secondTerm = nextTerm
     }
 
-    switch a {
-        opt 1 -> {
-            a = a + 3
-            a++
-        }
-        opt 2 -> {
-            a = a * 3
-            a++
-        }
-        default -> {
-            a = a + 3
-            a = 9 + 3
-        }
-    }
-
-    a = a + 3
+    print(firstTerm)
 }

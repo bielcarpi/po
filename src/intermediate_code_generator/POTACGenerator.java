@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.table.TableCellEditor;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 /**
  * Class that generates TAC from a parse tree
@@ -23,6 +24,8 @@ public class POTACGenerator implements TACGenerator{
     private static final String WORK_REG = "t9";
     private TACBlock tacBlock; //Current block aux for the traverseTree method
 
+    private final ArrayList<Syscall> syscallsList; //Syscalls used in the program. They will be added as separate functions
+
     /**
      * Default constructor
      * @param tacOptimizer the optimizer to be used
@@ -31,6 +34,7 @@ public class POTACGenerator implements TACGenerator{
     public POTACGenerator(@Nullable TACOptimizer tacOptimizer, boolean outputFile){
         this.tacOptimizer = tacOptimizer;
         this.outputFile = outputFile;
+        syscallsList = new ArrayList<>();
     }
 
 
@@ -47,13 +51,13 @@ public class POTACGenerator implements TACGenerator{
         else {
             //New block for the global assignations
             tacBlock = new TACBlock(false);
-            tac.add("global", tacBlock);
+            tac.add(SymbolTable.GLOBAL_SCOPE, tacBlock);
 
             //The program can have either assignations or functions as children
             //We'll first loop through the assignations and then through the functions
             for (ParseTreeNode child : pt.getRoot().getChildren()) {
                 if (child.getSelf().equals("assignacio")) {
-                    generateTACAssignacio(child, "global");
+                    generateTACAssignacio(child, SymbolTable.GLOBAL_SCOPE);
                 }
             }
 
@@ -65,8 +69,18 @@ public class POTACGenerator implements TACGenerator{
 
                     //Add a return at the end of the function if it doesn't have one
                     if(tacBlock.getEntries().isEmpty() || tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
-                        tacBlock.add(new TACEntry(null, null, "0", TACType.RET));
+                        tacBlock.add(new TACEntry(child.getToken().getData(), null, "0", TACType.RET));
                 }
+            }
+        }
+
+        //Add syscall functions to TAC (only if they are used)
+        if(!syscallsList.isEmpty()){
+            for (Syscall syscall: syscallsList) {
+                TACBlock syscallBlock = new TACBlock(false);
+                syscallBlock.add(new TACEntry(Syscall.getID(syscall), TACType.SYSCALL));
+                syscallBlock.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
+                tac.add(syscall.name(), syscallBlock);
             }
         }
 
@@ -100,11 +114,14 @@ public class POTACGenerator implements TACGenerator{
                     return;
                 }
                 case ID -> { //Function CALL
-                    if(!node.getParent().getSelf().equals("<programa>"))
-                        tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
+                    //Only if it is a function call, not a function declaration
+                    if(!node.getParent().getSelf().equals("<programa>")){
+                        generateTACFuncCall(node, tac);
+                        return;
+                    }
                 }
                 case RET -> {
-                    tacBlock.add(new TACEntry(null, null, node.getChildren().get(0).getToken().getData(), TACType.RET));
+                    tacBlock.add(new TACEntry(scope, null, node.getChildren().get(0).getToken().getData(), TACType.RET));
                     return;
                 }
                 case BREAK -> { //Converted to GOTO
@@ -126,6 +143,26 @@ public class POTACGenerator implements TACGenerator{
         if(node.getChildren() == null || node.getChildren().isEmpty()) return;
         for(ParseTreeNode child: node.getChildren())
             traverseTree(child, tac, scope);
+    }
+
+    /**
+     * Generates TAC for a Function CALL
+     * @param node the node of the function
+     * @param tac the TAC data structure
+     */
+    private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull TAC tac){
+        //If it's a syscall and we haven't detected it yet, add it to the syscalls list
+        if(Syscall.isSyscall(node.getToken().getData()) && !syscallsList.contains(Syscall.get(node.getToken().getData())))
+            syscallsList.add(Syscall.get(node.getToken().getData()));
+
+        //If we have params, add all childs as parameters
+        if(node.getChildren() != null){
+            for(int i = 0; i < node.getChildren().size(); i++) {
+                tacBlock.add(new TACEntry(node.getToken().getData(), null,
+                        node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
+            }
+        }
+        tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
     }
 
     /**
@@ -225,7 +262,8 @@ public class POTACGenerator implements TACGenerator{
 
         //Traverse the true block & add the entries to the true block
         tacBlock = trueBlock;
-        traverseTree(node.getChildren().get(3), tac, scope);
+        for(int i = 3; i < node.getChildren().size(); i++)
+            traverseTree(node.getChildren().get(i), tac, scope);
 
         //Add the increment to the end of the true block
         generateTACAssignacio(node.getChildren().get(2), scope);
@@ -251,6 +289,7 @@ public class POTACGenerator implements TACGenerator{
         tac.add(scope, trueBlock);
         tac.add(scope, falseBlock);
 
+        //Add the condition to the true block
         trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
                 node.getChildren().get(0).getChildren().get(2).getToken().getData(),
                 falseBlock.getBlockNum(),

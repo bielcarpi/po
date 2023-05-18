@@ -123,10 +123,17 @@ public class TACEntry {
             sb.append("if ").append(arg1).append(" ").append(type).append(" ").append(arg2).append(" ").append(TACType.GOTO).append(" E").append(blockNum);
         }
         else if(type == TACType.GOTO){
-            sb.append(TACType.GOTO).append(" E").append(blockNum);
+            if(dest != null) sb.append(TACType.GOTO).append(" ").append(dest);
+            else sb.append(TACType.GOTO).append(" E").append(blockNum);
         }
         else if(type == TACType.RET || type == TACType.CALL){
             sb.append(type).append(" ").append(arg1);
+        }
+        else if(type == TACType.SYSCALL){
+            sb.append(type).append(" ").append(blockNum);
+        }
+        else if(type == TACType.ADD_PARAM){
+            sb.append(type).append(" ").append(blockNum).append(" ").append(arg2);
         }
         else{
             sb.append("ERROR");

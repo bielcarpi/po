@@ -3,7 +3,6 @@ package entities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -14,8 +13,12 @@ import java.util.HashMap;
  */
 public class SymbolTable {
 
+    public static final String GLOBAL_SCOPE = "global";
+    public static final String MAIN_SCOPE = "main";
+
     private static SymbolTable instance = null;
     private static HashMap<String, SymbolTableEntry> map = null;
+
 
     public static SymbolTable getInstance() {
         if (instance == null) {
@@ -31,7 +34,7 @@ public class SymbolTable {
      */
     public void insert(@NotNull SymbolTableEntry entry) {
         // Check if already exists and put to error manager
-        if (map.containsKey(entry.getId() + "global") || map.containsKey(entry.getId() + entry.getScope())) {
+        if (map.containsKey(entry.getId() + GLOBAL_SCOPE) || map.containsKey(entry.getId() + entry.getScope())) {
             Error error = new entities.Error(ErrorType.REPEATED_SCOPE_ENTRY,
                     "Error, variable " + entry.getId() + " already exists in the same scope");
             ErrorManager.getInstance().addError(error);
@@ -60,10 +63,7 @@ public class SymbolTable {
     @Nullable
     public SymbolTableEntry lookup(@NotNull String entryId, @NotNull String scope){
         SymbolTableEntry ste = map.get(entryId + scope);
-        if (ste == null) {
-            ste = map.get(entryId + "global");
-        }
-
+        if (ste == null) ste = map.get(entryId + GLOBAL_SCOPE);
         return ste;
     }
 

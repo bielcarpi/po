@@ -1,8 +1,5 @@
-PRINT_INT:
-	syscall 1
-
 global:
-	n = 10
+	n = 1000
 	firstTerm = 0
 
 main:
@@ -10,15 +7,13 @@ main:
 	i = 0
 E0:
 	if i >= n goto E1
-	call print
-	call firstTerm
 	t9 = firstTerm + secondTerm
 	nextTerm = t9
+	firstTerm = secondTerm
+	secondTerm = nextTerm
 	i = i + 1
 	goto E0
 E1:
-	firstTerm = secondTerm
-	secondTerm = nextTerm
 	ret 0
 
 

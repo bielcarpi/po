@@ -79,6 +79,7 @@ public class POTACGenerator implements TACGenerator{
             for (Syscall syscall: syscallsList) {
                 TACBlock syscallBlock = new TACBlock(false);
                 syscallBlock.add(new TACEntry(Syscall.getID(syscall), TACType.SYSCALL));
+                syscallBlock.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
                 tac.add(syscall.name(), syscallBlock);
             }
         }

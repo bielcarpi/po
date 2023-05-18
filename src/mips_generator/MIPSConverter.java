@@ -50,10 +50,14 @@ public class MIPSConverter {
     }
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
-        //If we're in main, we don't need to return anything
-        if(tacEntry.getScope().equals(SymbolTable.MAIN_SCOPE)) return null;
-
         StringBuilder sb = new StringBuilder();
+
+        //If we're in main, syscall 10 (exit)
+        if(tacEntry.getScope().equals(SymbolTable.MAIN_SCOPE)){
+            sb.append("\tli $v0, 10\n\tsyscall");
+            return sb.toString();
+        }
+
         if (isLiteral(tacEntry.getArg1())) {
             //If arg1 is a literal
             sb.append("\t").append(assignLiteral(RETURN_REG, tacEntry.getArg1()));

@@ -1,4 +1,4 @@
-var n = 10 //Num of terms $t0
+var n = 1000 //Num of terms $t0
 var firstTerm = 0 //$t1
 var secondTerm //$t2
 
@@ -7,7 +7,7 @@ main() {
 
     var i //$t3
     for i = 0, i < n, i++ {
-        print(firstTerm)
+        //print(firstTerm)
 
         var nextTerm = firstTerm + secondTerm
         firstTerm = secondTerm

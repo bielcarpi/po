@@ -1,7 +1,16 @@
-var a = 3
+var n = 10 //Num of terms $t0
+var firstTerm = 0 //$t1
+var secondTerm //$t2
 
 main() {
-    while a < 13 {
-        a = a + 1
+    secondTerm = 1
+
+    var i //$t3
+    for i = 0, i < n, i++ {
+        print(firstTerm)
+
+        var nextTerm = firstTerm + secondTerm
+        firstTerm = secondTerm
+        secondTerm = nextTerm
     }
 }

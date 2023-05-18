@@ -65,7 +65,7 @@ public class POTACGenerator implements TACGenerator{
 
                     //Add a return at the end of the function if it doesn't have one
                     if(tacBlock.getEntries().isEmpty() || tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
-                        tacBlock.add(new TACEntry(null, null, "0", TACType.RET));
+                        tacBlock.add(new TACEntry(child.getToken().getData(), null, "0", TACType.RET));
                 }
             }
         }
@@ -104,7 +104,7 @@ public class POTACGenerator implements TACGenerator{
                         tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
                 }
                 case RET -> {
-                    tacBlock.add(new TACEntry(null, null, node.getChildren().get(0).getToken().getData(), TACType.RET));
+                    tacBlock.add(new TACEntry(scope, null, node.getChildren().get(0).getToken().getData(), TACType.RET));
                     return;
                 }
                 case BREAK -> { //Converted to GOTO
@@ -225,7 +225,8 @@ public class POTACGenerator implements TACGenerator{
 
         //Traverse the true block & add the entries to the true block
         tacBlock = trueBlock;
-        traverseTree(node.getChildren().get(3), tac, scope);
+        for(int i = 3; i < node.getChildren().size(); i++)
+            traverseTree(node.getChildren().get(i), tac, scope);
 
         //Add the increment to the end of the true block
         generateTACAssignacio(node.getChildren().get(2), scope);

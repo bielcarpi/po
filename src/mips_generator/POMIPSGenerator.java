@@ -40,6 +40,8 @@ public class POMIPSGenerator implements MIPSGenerator {
 
             // For each hashmap entry
             for (String funcName : entries.keySet()) {
+                if(funcName.equals("main")) continue; // Skip the main func (it needs to be the last func)
+
                 // For each block in the function
                 out.println("\n$" + funcName + ":");
                 for (TACBlock block : entries.get(funcName)) {
@@ -48,8 +50,22 @@ public class POMIPSGenerator implements MIPSGenerator {
                     }
                     // For each entry in the block
                     for(TACEntry tacEntry : block.getEntries()){
-                        out.println(MIPSConverter.convert(tacEntry));
+                        String asm = MIPSConverter.convert(tacEntry);
+                        if(asm != null) out.println(asm);
                     }
+                }
+            }
+
+            // Print the main function
+            out.println("\n$main:");
+            for (TACBlock block : entries.get("main")) {
+                if(block.getBlockNum() != -1){ //If the block has a label, print it
+                    out.println("$E" + block.getBlockNum() + ":");
+                }
+                // For each entry in the block
+                for(TACEntry tacEntry : block.getEntries()){
+                    String asm = MIPSConverter.convert(tacEntry);
+                    if(asm != null) out.println(asm);
                 }
             }
 

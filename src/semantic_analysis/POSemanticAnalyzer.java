@@ -1,7 +1,6 @@
 package semantic_analysis;
 
 import entities.*;
-import entities.Error;
 import org.jetbrains.annotations.NotNull;
 
 public class POSemanticAnalyzer implements SemanticAnalyzer {
@@ -73,7 +72,7 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                             "Error, invalid expression. Trying to compare strings",
                             ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
                 }
-            } else if (ptn.getSelf().toString().equals("ID")
+            } else if ((ptn.getSelf().toString().equals("ID") && ptn.getParent().getSelf().equals("<programa>"))
                     || ptn.getSelf().toString().equals("MAIN")) {
                 if (ptn.getChildren() != null) {
                     exploreTACOTree(ptn, ptn.getToken().getData());
@@ -100,6 +99,36 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                 if (ptn.getChildren() != null) {
                     exploreTACOTree(ptn, scope);
                 }
+            } else if (ptn.getSelf() == TokenType.ID){ // Function call without assignment
+                SymbolTableFunctionEntry ste = (SymbolTableFunctionEntry) SymbolTable.getInstance().lookup(ptn.getToken().getData(), scope);
+                if (ste == null) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.FUNCTION_UNDECLARED,
+                            "Error, undeclared function: " + ptn.getToken().getData(),
+                            ptn.getToken().getLine(), ptn.getToken().getColumn()));
+                    continue;
+                }
+                if (ste.getArguments() != ptn.getChildren().size()) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid number of arguments for function: " + ptn.getToken().getData(),
+                            ptn.getToken().getLine(), ptn.getToken().getColumn()));
+                    continue;
+                }
+                for (ParseTreeNode node : ptn.getChildren()) {
+                    if (node.getSelf().equals("exp")) {
+                        TokenType type = validateAssignacio(node, scope);
+                        if (type != TokenType.INT) {
+                            ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                                    "Error, invalid argument type for function: " + ptn.getToken().getData(),
+                                    ptn.getToken().getLine(), ptn.getToken().getColumn()));
+                        }
+                    } else {
+                        if (node.getSelf() != TokenType.INT) {
+                            ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                                    "Error, invalid argument type for function: " + ptn.getToken().getData(),
+                                    ptn.getToken().getLine(), ptn.getToken().getColumn()));
+                        }
+                    }
+                }
             } else {
                 if (ptn.getChildren() != null) {
                     exploreTACOTree(ptn, scope);
@@ -115,10 +144,19 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                 SymbolTableEntry ste = SymbolTable.getInstance().lookup(node.getToken().getData(), scope);
                 if (ste == null) {
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
-                            "Error, undeclared variable: " + node.getToken().getData(),
+                            "Error, undeclared identifier: " + node.getToken().getData(),
                             node.getToken().getLine(), node.getToken().getColumn()));
                     return TokenType.UNKNOWN;
                 }
+                if (node.getChildren() != null) {
+                    // It's a function call
+                    if (validateFunctionCall(node,
+                            (SymbolTableFunctionEntry) SymbolTable.getInstance().lookup(node.getToken().getData(), scope),
+                            scope)) {
+                        return TokenType.UNKNOWN;
+                    }
+                }
+
                 return ste.getType();
             } else if (node.getSelf().toString().equals("INT")) {
                 return TokenType.INT;
@@ -140,11 +178,21 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             if (firstChildType == TokenType.UNKNOWN) return TokenType.UNKNOWN;
         } else if (firstChild.getSelf().toString().equals("ID")) {
             SymbolTableEntry steFirstChild = SymbolTable.getInstance().lookup(firstChild.getToken().getData(), scope);
+
             if (steFirstChild == null) {
                 ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
-                        "Error, undeclared variable: " + firstChild.getToken().getData(),
+                        "Error, undeclared identifier: " + firstChild.getToken().getData(),
                         firstChild.getToken().getLine(), firstChild.getToken().getColumn()));
                 return TokenType.UNKNOWN;
+            }
+
+            if (firstChild.getChildren() != null) {
+                // It's a function call
+                if (validateFunctionCall(firstChild,
+                        (SymbolTableFunctionEntry) SymbolTable.getInstance().lookup(firstChild.getToken().getData(), scope),
+                        scope)) {
+                    return TokenType.UNKNOWN;
+                }
             }
             firstChildType = steFirstChild.getType();
         } else {
@@ -161,9 +209,18 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             SymbolTableEntry steThirdChild = SymbolTable.getInstance().lookup(thirdChild.getToken().getData(), scope);
             if (steThirdChild == null) {
                 ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
-                        "Error, undeclared variable: " + thirdChild.getToken().getData(),
+                        "Error, undeclared identifier: " + thirdChild.getToken().getData(),
                         thirdChild.getToken().getLine(), thirdChild.getToken().getColumn()));
                 return TokenType.UNKNOWN;
+            }
+
+            if (thirdChild.getChildren() != null) {
+                // It's a function call
+                if (validateFunctionCall(thirdChild,
+                        (SymbolTableFunctionEntry) SymbolTable.getInstance().lookup(thirdChild.getToken().getData(), scope),
+                        scope)) {
+                    return TokenType.UNKNOWN;
+                }
             }
             thirdChildType = steThirdChild.getType();
         } else {
@@ -180,5 +237,40 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                 thirdChild.getToken().getLine(), thirdChild.getToken().getColumn()));
 
         return TokenType.UNKNOWN;
+    }
+
+    private boolean validateFunctionCall(ParseTreeNode parent, SymbolTableFunctionEntry ste, String scope) {
+        if (ste == null) {
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.FUNCTION_UNDECLARED,
+                    "Error, undeclared function: " + parent.getToken().getData(),
+                    parent.getToken().getLine(), parent.getToken().getColumn()));
+            return true;
+        }
+        if (ste.getArguments() != parent.getChildren().size()) {
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                    "Error, invalid number of arguments for function: " + parent.getToken().getData(),
+                    parent.getToken().getLine(), parent.getToken().getColumn()));
+            return true;
+        }
+        for (ParseTreeNode node : parent.getChildren()) {
+            if (node.getSelf().equals("exp")) {
+                TokenType type = validateAssignacio(node, scope);
+                if (type != TokenType.INT) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid argument type for function: " + parent.getToken().getData(),
+                            parent.getToken().getLine(), parent.getToken().getColumn()));
+                    return true;
+                }
+            } else {
+                if (node.getSelf() != TokenType.INT) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid argument type for function: " + parent.getToken().getData(),
+                            parent.getToken().getLine(), parent.getToken().getColumn()));
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

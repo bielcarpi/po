@@ -1,3 +1,6 @@
+PRINT_INT:
+	syscall 1
+
 global:
 	n = 10
 	firstTerm = 0
@@ -7,7 +10,7 @@ main:
 	i = 0
 E0:
 	if i >= n goto E1
-	call abc
+	call print
 	call firstTerm
 	t9 = firstTerm + secondTerm
 	nextTerm = t9

@@ -129,6 +129,9 @@ public class TACEntry {
         else if(type == TACType.RET || type == TACType.CALL){
             sb.append(type).append(" ").append(arg1);
         }
+        else if(type == TACType.SYSCALL){
+            sb.append(type).append(" ").append(blockNum);
+        }
         else{
             sb.append("ERROR");
         }

@@ -1,6 +1,8 @@
 .text
 j $global
 
+$PRINT_INT:
+
 $global:
 	li $t0, 10
 	li $t1, 0
@@ -11,7 +13,7 @@ $main:
 	li $t3, 0
 $E0:
 	bge $t3, $t0, $E1
-	jal $abc
+	jal $print
 	jal $firstTerm
 	add $t9, $t1, $t2
 	move $t4, $t9

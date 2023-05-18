@@ -16,7 +16,8 @@ public enum TACType {
     IFL, //IF Less
     GOTO,
     RET,
-    CALL; //Call function
+    CALL, //Call function
+    SYSCALL; //System call
 
     public static TACType getType(TokenType op) {
         return switch (op) {
@@ -60,6 +61,7 @@ public enum TACType {
             case GOTO -> "goto";
             case RET -> "ret";
             case CALL -> "call";
+            case SYSCALL -> "syscall";
         };
     }
 }

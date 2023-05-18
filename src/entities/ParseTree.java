@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class ParseTree {
 
     private ParseTreeNode root;
-    private static String scope = "global"; //Aux variable to keep track of the current scope
+    private static String scope = SymbolTable.GLOBAL_SCOPE; //Aux variable to keep track of the current scope
 
     /**
      * Creates a Parse Tree with a given root
@@ -237,7 +237,6 @@ public class ParseTree {
             return;
         }
 
-
         //If we are llistaComposta and the parent is llistaComposta too, move ourselves to the level of our parent
         if(node.getSelf().equals("<llistaComposta>") && node.getParent().getSelf().equals("<llistaComposta>")){
             node.getParent().getChildren().remove(node);
@@ -313,7 +312,7 @@ public class ParseTree {
 
         //Check if scope changed
         if(node.getSelf().equals(TokenType.ID) && node.getToken().getData().equals(scope))
-            scope = "global"; //Return to global scope
+            scope = SymbolTable.GLOBAL_SCOPE; //Return to global scope
     }
 
 

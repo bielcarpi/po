@@ -1,5 +1,8 @@
-package entities;
+package mips_generator;
 
+import entities.SymbolTable;
+import entities.SymbolTableVariableEntry;
+import entities.TACEntry;
 import org.jetbrains.annotations.NotNull;
 
 public class MIPSConverter {
@@ -48,7 +51,7 @@ public class MIPSConverter {
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
         //If we're in main, we don't need to return anything
-        if(tacEntry.getScope().equals("main")) return null;
+        if(tacEntry.getScope().equals(SymbolTable.MAIN_SCOPE)) return null;
 
         StringBuilder sb = new StringBuilder();
         if (isLiteral(tacEntry.getArg1())) {

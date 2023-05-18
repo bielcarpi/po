@@ -30,17 +30,17 @@ public class POMIPSGenerator implements MIPSGenerator {
 
             // If we have a global block, add a 'j $global' and a 'j $main' at the end of the global block
             // else, add a 'j $main'
-            if(entries.containsKey("global")) {
-                out.println("j $global");
-                entries.get("global").get(0).getEntries().add(new TACEntry("j", "main", null, TACType.GOTO));
+            if(entries.containsKey(SymbolTable.GLOBAL_SCOPE)) {
+                out.println("j $" + SymbolTable.GLOBAL_SCOPE);
+                entries.get(SymbolTable.GLOBAL_SCOPE).get(0).getEntries().add(new TACEntry("j", SymbolTable.MAIN_SCOPE, null, TACType.GOTO));
             }
             else{
-                out.println("j $main");
+                out.println("j $" + SymbolTable.MAIN_SCOPE);
             }
 
             // For each hashmap entry
             for (String funcName : entries.keySet()) {
-                if(funcName.equals("main")) continue; // Skip the main func (it needs to be the last func)
+                if(funcName.equals(SymbolTable.MAIN_SCOPE)) continue; // Skip the main func (it needs to be the last func)
 
                 // For each block in the function
                 out.println("\n$" + funcName + ":");
@@ -57,8 +57,8 @@ public class POMIPSGenerator implements MIPSGenerator {
             }
 
             // Print the main function
-            out.println("\n$main:");
-            for (TACBlock block : entries.get("main")) {
+            out.println("\n$" + SymbolTable.MAIN_SCOPE + ":");
+            for (TACBlock block : entries.get(SymbolTable.MAIN_SCOPE)) {
                 if(block.getBlockNum() != -1){ //If the block has a label, print it
                     out.println("$E" + block.getBlockNum() + ":");
                 }

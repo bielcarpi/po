@@ -104,6 +104,10 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             } else if (ptn.getSelf() == TokenType.ID){ // Function call without assignment
                 SymbolTableFunctionEntry ste = (SymbolTableFunctionEntry) SymbolTable.getInstance().lookup(ptn.getToken().getData(), scope);
                 if (ste == null) {
+                    // If function call is a system call, ignore semantics
+                    if (Syscall.isSyscall(ptn.getToken().getData())) {
+                        continue;
+                    }
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.FUNCTION_UNDECLARED,
                             "Error, undeclared function: " + ptn.getToken().getData(),
                             ptn.getToken().getLine(), ptn.getToken().getColumn()));
@@ -145,6 +149,13 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             if (node.getSelf().toString().equals("ID")) {
                 SymbolTableEntry ste = SymbolTable.getInstance().lookup(node.getToken().getData(), scope);
                 if (ste == null) {
+                    if (Syscall.isSyscall(node.getToken().getData())) {
+                        // TODO: aqui potser la syscall retorna algo, de moment no es poden fer syscalls ens assignacions
+                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.INVALID_SYSCALL_USE,
+                                "Error, cannot use a syscall as part of an assignment",
+                                node.getToken().getLine(), node.getToken().getColumn()));
+                        return TokenType.UNKNOWN;
+                    }
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
                             "Error, undeclared identifier: " + node.getToken().getData(),
                             node.getToken().getLine(), node.getToken().getColumn()));
@@ -182,6 +193,13 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             SymbolTableEntry steFirstChild = SymbolTable.getInstance().lookup(firstChild.getToken().getData(), scope);
 
             if (steFirstChild == null) {
+                if (Syscall.isSyscall(firstChild.getToken().getData())) {
+                    // TODO: aqui potser la syscall retorna algo, de moment no es poden fer syscalls ens assignacions
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.INVALID_SYSCALL_USE,
+                            "Error, cannot use a syscall as part of an assignment",
+                            firstChild.getToken().getLine(), firstChild.getToken().getColumn()));
+                    return TokenType.UNKNOWN;
+                }
                 ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
                         "Error, undeclared identifier: " + firstChild.getToken().getData(),
                         firstChild.getToken().getLine(), firstChild.getToken().getColumn()));
@@ -210,6 +228,13 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
         } else if (thirdChild.getSelf().toString().equals("ID")) {
             SymbolTableEntry steThirdChild = SymbolTable.getInstance().lookup(thirdChild.getToken().getData(), scope);
             if (steThirdChild == null) {
+                if (Syscall.isSyscall(thirdChild.getToken().getData())) {
+                    // TODO: aqui potser la syscall retorna algo, de moment no es poden fer syscalls ens assignacions
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.INVALID_SYSCALL_USE,
+                            "Error, cannot use a syscall as part of an assignment",
+                            thirdChild.getToken().getLine(), thirdChild.getToken().getColumn()));
+                    return TokenType.UNKNOWN;
+                }
                 ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
                         "Error, undeclared identifier: " + thirdChild.getToken().getData(),
                         thirdChild.getToken().getLine(), thirdChild.getToken().getColumn()));

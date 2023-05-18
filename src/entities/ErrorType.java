@@ -19,7 +19,8 @@ public enum ErrorType {
     REPEATED_SCOPE_ENTRY,
     MISMATCHED_TYPE_OPERATION,
     TOO_MANY_ARGUMENTS,
-    FUNCTION_UNDECLARED;
+    FUNCTION_UNDECLARED,
+    INVALID_SYSCALL_USE;
 
     public static String getMessage(ErrorType type) {
         return switch (type) {

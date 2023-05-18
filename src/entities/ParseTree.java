@@ -243,6 +243,9 @@ public class ParseTree {
             return;
         }
 
+        if (node.getSelf().equals(TokenType.MAIN)) {
+            scope = node.getToken().getData();
+        }
 
         //If we are llistaComposta and the parent is llistaComposta too, move ourselves to the level of our parent
         if(node.getSelf().equals("<llistaComposta>") && node.getParent().getSelf().equals("<llistaComposta>")){
@@ -318,7 +321,7 @@ public class ParseTree {
         }
 
         //Check if scope changed
-        if(node.getSelf().equals(TokenType.ID) && node.getToken().getData().equals(scope))
+        if((node.getSelf().equals(TokenType.ID) || node.getSelf().equals(TokenType.MAIN)) && node.getToken().getData().equals(scope))
             scope = "global"; //Return to global scope
     }
 

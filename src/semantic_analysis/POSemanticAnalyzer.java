@@ -60,7 +60,9 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                         ptn.getChildren().get(1).getToken().getType() != TokenType.GT &&
                         ptn.getChildren().get(1).getToken().getType() != TokenType.GTE &&
                         ptn.getChildren().get(1).getToken().getType() != TokenType.LT &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.LTE) {
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.LTE &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.AND &&
+                        ptn.getChildren().get(1).getToken().getType() != TokenType.OR) {
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
                             "Error, invalid expression. Expression must contain a comparison operator",
                             ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));

@@ -1,8 +1,21 @@
 var a = 3
+var b = 2
 
-func hola(b, c, d, e){
+func b() {
+    var hola
+    b++
+    b++
 }
 
 main() {
-    a = hola(1, 23, 3, "s")
+    var hola
+    var i
+    if a == 1 and b < a {
+        if 1 < 2 {
+            b++
+        }
+        else {
+            b--
+        }
+    }
 }

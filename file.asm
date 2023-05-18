@@ -8,12 +8,12 @@ $PRINT_INT:
 	jr $ra
 
 $global:
-	li $t0, 15
+	li $t0, 10
 	li $t1, 0
 	j $main
 
 $main:
-	li $t2, 2
+	li $t2, 1
 	li $t4, 0
 $E0:
 	bge $t4, $t0, $E1
@@ -26,7 +26,7 @@ $E0:
 	move $t4, $t9
 	j $E0
 $E1:
-	move $a0, $t2
+	move $a0, $t1
 	jal $PRINT_INT
 	li $v0, 10
 	syscall

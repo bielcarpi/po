@@ -3,11 +3,11 @@ PRINT_INT:
 	ret 0
 
 global:
-	n = 15
+	n = 10
 	firstTerm = 0
 
 main:
-	secondTerm = 2
+	secondTerm = 1
 	i = 0
 E0:
 	if i >= n goto E1
@@ -18,7 +18,7 @@ E0:
 	i = i + 1
 	goto E0
 E1:
-	addp 0 secondTerm
+	addp 0 firstTerm
 	call print
 	ret 0
 

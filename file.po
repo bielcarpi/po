@@ -1,9 +1,9 @@
-var n = 15 //Num of terms $t0
+var n = 10 //Num of terms $t0
 var firstTerm = 0 //$t1
 var secondTerm //$t2
 
 main() {
-    secondTerm = 2
+    secondTerm = 1
     var nextTerm
 
     var i //$t3
@@ -13,5 +13,5 @@ main() {
         secondTerm = nextTerm
     }
 
-    print(secondTerm)
+    print(firstTerm)
 }

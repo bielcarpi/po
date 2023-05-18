@@ -1,86 +1,96 @@
+
+$global:
+li $t9, $t0
+move a, $t9
+
+$main:
+
+$E4:
+null
+li $t9, 1
+add $t9, $t8, $t0
+move $t9, t9
+li $t9, $t0
+move a, $t9
+j $E4
+
+
+$E5:
+null
+null
+j $E9
+
+
+$E7:
 li $t9, 3
-sw a, $t9
-
-null
+add $t9, $t8, $t0
+move $t9, t9
+li $t9, $t0
+move a, $t9
 li $t9, 1
-add $t9, $t8, a
-sw $t9, t9
+add $t9, $t8, $t0
+move $t9, $t0
+j $E6
 
-li $t9, t9
-sw a, $t9
 
-null
-null
-null
-null
+$E8:
 li $t9, 3
-add $t9, $t8, a
-sw $t9, t9
-
-li $t9, t9
-sw a, $t9
-
+mul $t9, $t8, $t0
+move $t9, t9
+li $t9, $t0
+move a, $t9
 li $t9, 1
-add $t9, $t8, a
-sw $t9, a
+add $t9, $t8, $t0
+move $t9, $t0
+j $E6
 
-null
-li $t8, 5
-li $t7, 3
-add $t9, $t8, $t7
-sw $t9, t9
 
-li $t9, t9
-sw a, $t9
-
-li $t9, 1
-add $t9, $t8, a
-sw $t9, a
-
-null
+$E9:
 li $t8, 9
 li $t7, 3
 add $t9, $t8, $t7
-sw $t9, t9
+move $t9, t9
+li $t9, $t0
+move a, $t9
 
-li $t9, t9
-sw a, $t9
-
+$E6:
 li $t9, 3
-or $t9, $t8, a
-sw $t9, t9
-
-li $t9, t9
-sw a, $t9
-
+add $t9, $t8, $t0
+move $t9, t9
+li $t9, $t0
+move a, $t9
 null
-li $t9, 3
-sw i, $t9
 
-li $t9, 0
-sw i, $t9
+$hola:
+li $t9, $t0
+move i, $t9
+li $t9, $t0
+move i, $t9
 
-null
-li $t9, 1
-add $t9, $t8, a
-sw $t9, t9
-
-li $t9, t9
-sw a, $t9
-
-li $t9, 1
-add $t9, $t8, i
-sw $t9, i
-
-null
-sw $t9, t9
-
-li $t9, t9
-sw a, $t9
-
+$E0:
 null
 li $t9, 1
-add $t9, $t8, a
-sw $t9, a
+add $t9, $t8, $t0
+move $t9, t9
+li $t9, $t0
+move a, $t9
+li $t9, 1
+add $t9, $t8, $t0
+move $t9, $t0
+j $E0
 
+
+$E1:
+and $t9, $t0, $t0
+move $t9, t9
+li $t9, $t0
+move a, $t9
+
+$E2:
+null
+li $t9, 1
+add $t9, $t8, $t0
+move $t9, $t0
+
+$E3:
 null

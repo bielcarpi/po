@@ -11,6 +11,7 @@ package entities;
 public class TACEntry {
     private final TACType type;
     private final String dest, arg1, arg2;
+    private final String scope; //We also need scope in order to identify the variable later on
     private int blockNum; //Optional argument for GOTOs
 
     /**
@@ -20,7 +21,8 @@ public class TACEntry {
      * @param arg2 The second argument
      * @param type The type of the entry
      */
-    public TACEntry(String dest, String arg1, String arg2, TACType type) {
+    public TACEntry(String scope, String dest, String arg1, String arg2, TACType type) {
+        this.scope = scope;
         this.type = type;
         this.dest =  dest;
         this.arg1 = arg1;
@@ -33,8 +35,8 @@ public class TACEntry {
      * @param arg1 The first argument
      * @param type The type of the entry
      */
-    public TACEntry(String dest, String arg1, TACType type) {
-        this(dest, arg1, null, type);
+    public TACEntry(String scope, String dest, String arg1, TACType type) {
+        this(scope, dest, arg1, null, type);
     }
 
     /**
@@ -44,8 +46,8 @@ public class TACEntry {
      * @param type The type of the entry
      * @param blockNum The block number
      */
-    public TACEntry(String arg1, String arg2, int blockNum, TACType type) {
-        this(null, arg1, arg2, type);
+    public TACEntry(String scope, String arg1, String arg2, int blockNum, TACType type) {
+        this(scope, null, arg1, arg2, type);
         this.blockNum = blockNum;
     }
 
@@ -55,7 +57,7 @@ public class TACEntry {
      * @param type The type of the entry
      */
     public TACEntry(int blockNum, TACType type) {
-        this(null, null, null, type);
+        this(null, null, null, null, type);
         this.blockNum = blockNum;
     }
 
@@ -90,6 +92,22 @@ public class TACEntry {
      */
     public String getArg2() {
         return arg2;
+    }
+
+    /**
+     * Returns the scope of the dest
+     * @return The scope of the dest
+     */
+    public String getScope(){
+        return scope;
+    }
+
+    /**
+     * Returns the block number of the entry
+     * @return the block number of the entry
+     */
+    public int getBlockNum() {
+        return blockNum;
     }
 
     @Override

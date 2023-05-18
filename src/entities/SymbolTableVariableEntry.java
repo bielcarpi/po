@@ -17,10 +17,10 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     /**
      * The programID is the ID of this variable (the register where it is stored: e.g. t0, t1... t7) in the running program
      * It will be assigned later on, by the MIPSGenerator
-     * //TODO Function that looks up the whole SymbolTable and calculates programID for each variable
-     * // TODO taking into account the globals that go first.
      */
     private int programID;
+
+    private static int sProgramID = 0;
 
 
     /**
@@ -32,7 +32,7 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type, final int size) {
         super(id, scope, type);
         this.size = size;
-        programID = -1;
+        programID = programID++;
     }
 
     /**

@@ -22,13 +22,18 @@ public class POMIPSGenerator implements MIPSGenerator {
 
     @Override
     public void generateMIPS(@NotNull TAC tac) {
+        //Start printing the asm file
         try (PrintWriter out = new PrintWriter(fileName)) {
             entries = tac.getEntries(); // Get the map of function names to TACBlocks
 
             // For each hashmap entry
             for (String funcName : entries.keySet()) {
                 // For each block in the function
+                out.println("\n$" + funcName + ":");
                 for (TACBlock block : entries.get(funcName)) {
+                    if(block.getBlockNum() != -1){
+                        out.println("\n$E" + block.getBlockNum() + ":");
+                    }
                     // For each entry in the block
                     for(TACEntry tacEntry : block.getEntries()){
                         out.println(MIPSConverter.convert(tacEntry));
@@ -41,3 +46,18 @@ public class POMIPSGenerator implements MIPSGenerator {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

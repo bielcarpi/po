@@ -7,8 +7,8 @@ func hola(){
     }
     a = a and i
 
-    if p < 3 {
-        z++
+    if a < 3 {
+        a++
     }
 }
 
@@ -17,20 +17,20 @@ main() {
         a = a + 1
     }
 
-    switch z {
+    switch a {
         opt 1 -> {
             a = a + 3
-            b++
+            a++
         }
         opt 2 -> {
-            d = a + 3
-            b++
+            a = a * 3
+            a++
         }
         default -> {
-            d = a + 3
-            c = d + 3
+            a = a + 3
+            a = 9 + 3
         }
     }
 
-    c = a + 3
+    a = a + 3
 }

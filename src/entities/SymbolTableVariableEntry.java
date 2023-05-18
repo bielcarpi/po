@@ -32,7 +32,7 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type, final int size) {
         super(id, scope, type);
         this.size = size;
-        programID = programID++;
+        programID = sProgramID++;
     }
 
     /**

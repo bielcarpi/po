@@ -1,15 +1,25 @@
-for:
-	i = 0
-E0:
-	if i > 10 goto E1
-	a = a + 1
-	i = i + 1
-	goto E0
-E1:
+PRINT_INT:
+	syscall 1
 	ret 0
 
 global:
-	a = 3
-	b = 2
+	n = 10
+	firstTerm = 0
+
+main:
+	secondTerm = 1
+	i = 0
+E0:
+	if i >= n goto E1
+	t9 = firstTerm + secondTerm
+	nextTerm = t9
+	firstTerm = secondTerm
+	secondTerm = nextTerm
+	i = i + 1
+	goto E0
+E1:
+	addp 0 firstTerm
+	call print
+	ret 0
 
 

@@ -1,21 +1,17 @@
-var a = 3
-var b = 2
-
-func b() {
-    var hola
-    b++
-    b++
-}
+var n = 10 //Num of terms $t0
+var firstTerm = 0 //$t1
+var secondTerm //$t2
 
 main() {
-    var hola
-    var i
-    if a == 1 and b < a {
-        if 1 < 2 {
-            b++
-        }
-        else {
-            b--
-        }
+    secondTerm = 1
+    var nextTerm
+
+    var i //$t3
+    for i = 0, i < n, i++ {
+        nextTerm = firstTerm + secondTerm
+        firstTerm = secondTerm
+        secondTerm = nextTerm
     }
+
+    print(firstTerm)
 }

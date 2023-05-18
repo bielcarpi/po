@@ -19,7 +19,7 @@ public class SymbolTableFunctionEntry extends SymbolTableEntry{
      * @param arguments The number of arguments in the Function
      */
     public SymbolTableFunctionEntry(final @NotNull String id, final @NotNull TokenType type, final int arguments) {
-        super(id, "global", type);
+        super(id, SymbolTable.GLOBAL_SCOPE, type);
         this.arguments = arguments;
     }
 

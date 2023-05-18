@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class ParseTree {
 
     private ParseTreeNode root;
-    private static String scope = "global"; //Aux variable to keep track of the current scope
+    private static String scope = SymbolTable.GLOBAL_SCOPE; //Aux variable to keep track of the current scope
 
     /**
      * Creates a Parse Tree with a given root
@@ -322,7 +322,7 @@ public class ParseTree {
 
         //Check if scope changed
         if((node.getSelf().equals(TokenType.ID) || node.getSelf().equals(TokenType.MAIN)) && node.getToken().getData().equals(scope))
-            scope = "global"; //Return to global scope
+            scope = SymbolTable.GLOBAL_SCOPE; //Return to global scope
     }
 
 

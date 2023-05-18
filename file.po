@@ -1,16 +1,17 @@
-var n = 1000 //Num of terms $t0
+var n = 15 //Num of terms $t0
 var firstTerm = 0 //$t1
 var secondTerm //$t2
 
 main() {
-    secondTerm = 1
+    secondTerm = 2
+    var nextTerm
 
     var i //$t3
     for i = 0, i < n, i++ {
-        //print(firstTerm)
-
-        var nextTerm = firstTerm + secondTerm
+        nextTerm = firstTerm + secondTerm
         firstTerm = secondTerm
         secondTerm = nextTerm
     }
+
+    print(secondTerm)
 }

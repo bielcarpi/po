@@ -114,14 +114,10 @@ public class POTACGenerator implements TACGenerator{
                     return;
                 }
                 case ID -> { //Function CALL
+                    //Only if it is a function call, not a function declaration
                     if(!node.getParent().getSelf().equals("<programa>")){
-                        if(Syscall.isSyscall(node.getToken().getData())){
-                            syscallsList.add(Syscall.get(node.getToken().getData()));
-                            tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
-                        }
-                        else{
-                            tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
-                        }
+                        generateTACFuncCall(node, tac);
+                        return;
                     }
                 }
                 case RET -> {
@@ -147,6 +143,26 @@ public class POTACGenerator implements TACGenerator{
         if(node.getChildren() == null || node.getChildren().isEmpty()) return;
         for(ParseTreeNode child: node.getChildren())
             traverseTree(child, tac, scope);
+    }
+
+    /**
+     * Generates TAC for a Function CALL
+     * @param node the node of the function
+     * @param tac the TAC data structure
+     */
+    private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull TAC tac){
+        //If it's a syscall and we haven't detected it yet, add it to the syscalls list
+        if(Syscall.isSyscall(node.getToken().getData()) && !syscallsList.contains(Syscall.get(node.getToken().getData())))
+            syscallsList.add(Syscall.get(node.getToken().getData()));
+
+        //If we have params, add all childs as parameters
+        if(node.getChildren() != null){
+            for(int i = 0; i < node.getChildren().size(); i++) {
+                tacBlock.add(new TACEntry(node.getToken().getData(), null,
+                        node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
+            }
+        }
+        tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
     }
 
     /**

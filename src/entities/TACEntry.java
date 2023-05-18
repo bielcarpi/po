@@ -132,6 +132,9 @@ public class TACEntry {
         else if(type == TACType.SYSCALL){
             sb.append(type).append(" ").append(blockNum);
         }
+        else if(type == TACType.ADD_PARAM){
+            sb.append(type).append(" ").append(blockNum).append(" ").append(arg2);
+        }
         else{
             sb.append("ERROR");
         }

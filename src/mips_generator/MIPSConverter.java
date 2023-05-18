@@ -2,6 +2,7 @@ package mips_generator;
 
 import entities.SymbolTable;
 import entities.SymbolTableVariableEntry;
+import entities.Syscall;
 import entities.TACEntry;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,15 +39,39 @@ public class MIPSConverter {
             case CALL -> {
                 return generateCallMIPS(tacEntry);
             }
-
+            case SYSCALL -> {
+                return generateSyscallMIPS(tacEntry);
+            }
+            case ADD_PARAM -> {
+                return generateAddParamMIPS(tacEntry);
+            }
             default -> {
                 return null;
             }
         }
     }
 
+    private static String generateSyscallMIPS(TACEntry tacEntry) {
+        return "\tli $v0, " + tacEntry.getBlockNum() + "\n\tsyscall";
+    }
+
+
+    private static String generateAddParamMIPS(TACEntry tacEntry){
+        StringBuilder sb = new StringBuilder();
+        if(isLiteral(tacEntry.getArg2())){
+            //If arg1 is a literal
+            sb.append("\t").append(assignLiteral(ARG_REGS[tacEntry.getBlockNum()], tacEntry.getArg2()));
+        }
+        else{
+            //If arg1 is a variable
+            sb.append("\tmove ").append(ARG_REGS[tacEntry.getBlockNum()]).append(", ")
+                    .append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb));
+        }
+        return sb.toString();
+    }
+
     private static String generateCallMIPS(TACEntry tacEntry) {
-        return "\tjal $" + tacEntry.getArg1();
+        return "\tjal $" + (Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
     }
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
@@ -61,7 +86,8 @@ public class MIPSConverter {
         if (isLiteral(tacEntry.getArg1())) {
             //If arg1 is a literal
             sb.append("\t").append(assignLiteral(RETURN_REG, tacEntry.getArg1()));
-        } else {
+        }
+        else {
             //If arg1 is a variable
             sb.append("\tmove ").append(RETURN_REG).append(", ")
                     .append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb));

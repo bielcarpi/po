@@ -251,6 +251,7 @@ public class POTACGenerator implements TACGenerator{
         tac.add(scope, trueBlock);
         tac.add(scope, falseBlock);
 
+        //Add the condition to the true block
         trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
                 node.getChildren().get(0).getChildren().get(2).getToken().getData(),
                 falseBlock.getBlockNum(),

@@ -1,9 +1,6 @@
 package mips_generator;
 
-import entities.MIPSConverter;
-import entities.TAC;
-import entities.TACBlock;
-import entities.TACEntry;
+import entities.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.FileNotFoundException;
@@ -26,13 +23,28 @@ public class POMIPSGenerator implements MIPSGenerator {
         try (PrintWriter out = new PrintWriter(fileName)) {
             entries = tac.getEntries(); // Get the map of function names to TACBlocks
 
+            // TODO Add the .data section
+
+            //Add the .text section
+            out.println(".text");
+
+            // If we have a global block, add a 'j $global' and a 'j $main' at the end of the global block
+            // else, add a 'j $main'
+            if(entries.containsKey("global")) {
+                out.println("j $global");
+                entries.get("global").get(0).getEntries().add(new TACEntry("j", "main", null, TACType.GOTO));
+            }
+            else{
+                out.println("j $main");
+            }
+
             // For each hashmap entry
             for (String funcName : entries.keySet()) {
                 // For each block in the function
                 out.println("\n$" + funcName + ":");
                 for (TACBlock block : entries.get(funcName)) {
-                    if(block.getBlockNum() != -1){
-                        out.println("\n$E" + block.getBlockNum() + ":");
+                    if(block.getBlockNum() != -1){ //If the block has a label, print it
+                        out.println("$E" + block.getBlockNum() + ":");
                     }
                     // For each entry in the block
                     for(TACEntry tacEntry : block.getEntries()){

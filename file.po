@@ -1,36 +1,7 @@
 var a = 3
 
-func hola(){
-    var i = 3
-    for i = 0, i < 10, i++ {
-        a = a + 1
-    }
-    a = a and i
-
-    if a < 3 {
-        a++
-    }
-}
-
 main() {
     while a < 13 {
         a = a + 1
     }
-
-    switch a {
-        opt 1 -> {
-            a = a + 3
-            a++
-        }
-        opt 2 -> {
-            a = a * 3
-            a++
-        }
-        default -> {
-            a = a + 3
-            a = 9 + 3
-        }
-    }
-
-    a = a + 3
 }

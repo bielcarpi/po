@@ -7,6 +7,8 @@ public class MIPSConverter {
     private static final String WORK_REG_1 = "$t9"; // Working register used for arg1
     private static final String WORK_REG_2 = "$t8"; // Working register used for arg1
     private static final String WORK_REG_3  = "$t7"; // Working register used for result
+    private static final String RETURN_REG = "$v0"; // Register used for return values
+    private static final String[] ARG_REGS = {"$a0", "$a1", "$a2", "$a3"}; // Registers used for arguments
 
     private static String assignLiteral(String dest, String literal) {
         return "li " + dest + ", " + literal;
@@ -29,6 +31,9 @@ public class MIPSConverter {
             case RET -> {
                 return generateReturnMIPS(tacEntry);
             }
+            case CALL -> {
+                return generateCallMIPS(tacEntry);
+            }
 
             default -> {
                 return null;
@@ -36,23 +41,33 @@ public class MIPSConverter {
         }
     }
 
+    private static String generateCallMIPS(TACEntry tacEntry) {
+        return "\tjal " + tacEntry.getArg1();
+    }
+
     private static String generateReturnMIPS(TACEntry tacEntry) {
         StringBuilder sb = new StringBuilder();
-        // TODO: Check recursive calls and return literals/variables
-        /*if (isLiteral(tacEntry.getArg1())) {
-            sb.append(assignLiteral(WORK_REG_1, tacEntry.getArg1())).append("\n");
-            sb.append("move $v0, " + WORK_REG_1).append("\n");
+        if (isLiteral(tacEntry.getArg1())) {
+            //If arg1 is a literal
+            sb.append("\t").append(assignLiteral(RETURN_REG, tacEntry.getArg1()));
         } else {
-            sb.append("move $v0, " + getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb)).append("\n");
-        }*/
+            //If arg1 is a variable
+            sb.append("\tmove ").append(RETURN_REG).append(", ")
+                    .append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb));
+        }
 
-        return null;
+        return sb.toString();
     }
 
     private static String generateGotoMIPS(TACEntry tacEntry) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("j $E").append(tacEntry.getBlockNum()).append("\n");
-        return sb.toString();
+        if(tacEntry.getDest() != null){
+            //If the goto is a label
+            return "\tj $" + tacEntry.getDest();
+        }
+        else{
+            //If the goto is a block number
+            return "\tj $E" + tacEntry.getBlockNum();
+        }
     }
 
     private static String generateConditionalMIPS(TACEntry tacEntry) {
@@ -67,13 +82,42 @@ public class MIPSConverter {
             default -> null;
         };
 
-        return null;
+        if(isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())){
+            //If both args are literals
+            sb.append("\t").append(conditionalType).append(tacEntry.getArg1()).append(", ").append(tacEntry.getArg2())
+                    .append(", $E").append(tacEntry.getBlockNum());
+        }
+        else if(isLiteral(tacEntry.getArg1()) && !isLiteral(tacEntry.getArg2())){
+            //If arg2 is a variable and arg1 is a literal
+            sb.append("\t").append(conditionalType).append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb))
+                    .append(", ").append(tacEntry.getArg1()).append(", $E").append(tacEntry.getBlockNum());
+        }
+        else if(!isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())){
+            //If arg1 is a variable and arg2 is a literal
+            sb.append("\t").append(conditionalType).append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb))
+                    .append(", ").append(tacEntry.getArg2()).append(", $E").append(tacEntry.getBlockNum());
+        }
+        else{ //If both are variables
+            sb.append("\t").append(conditionalType).append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb))
+                    .append(", ").append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb))
+                    .append(", $E").append(tacEntry.getBlockNum());
+        }
+
+        return sb.toString();
     }
 
     private static String generateAssignmentMIPS(TACEntry tacEntry) {
         StringBuilder sb = new StringBuilder();
-        sb.append(assignLiteral(WORK_REG_1, getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb))).append("\n");;
-        sb.append("move " + tacEntry.getDest() + ", " + WORK_REG_1);
+        if(isLiteral(tacEntry.getArg1())){
+            //If arg1 is a literal
+            sb.append("\t").append(assignLiteral(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb), tacEntry.getArg1()));
+        }
+        else{
+            //If arg1 is a variable
+            sb.append("\tmove ").append(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb)).append(", ")
+                    .append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb));
+        }
+
         return sb.toString();
     }
 
@@ -83,6 +127,7 @@ public class MIPSConverter {
 
     private static String generateOperationMIPS(TACEntry tacEntry){
         StringBuilder sb = new StringBuilder();
+        sb.append("\t");
 
         String operationType = switch (tacEntry.getType()) {
             case ADD -> "add ";
@@ -96,35 +141,40 @@ public class MIPSConverter {
 
         if(isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())) {
             // 1. If both are constants
-            sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg1())).append("\n");
-            sb.append(assignLiteral(WORK_REG_3, tacEntry.getArg2())).append("\n");
-            sb.append(operationType  + WORK_REG_1 + ", " + WORK_REG_2 + ", " + WORK_REG_3).append("\n");
+            sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg1())).append("\n\t");
+            sb.append(assignLiteral(WORK_REG_3, tacEntry.getArg2())).append("\n\t");
+            sb.append(operationType  + WORK_REG_1 + ", " + WORK_REG_2 + ", " + WORK_REG_3).append("\n\t");
 
         } else if(isLiteral(tacEntry.getArg1()) && !isLiteral(tacEntry.getArg2())){
             // 2. If only arg1 is constant
-            sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg2())).append("\n");
-            sb.append(operationType + WORK_REG_1 + ", " + WORK_REG_2 + ", " + getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb)).append("\n");
+            sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg2())).append("\n\t");
+            sb.append(operationType + WORK_REG_1 + ", " + WORK_REG_2 + ", " + getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb)).append("\n\t");
 
-        }else if(!isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())){
+        } else if(!isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())){
             // 3. If only arg2 is constant
-            sb.append(assignLiteral(WORK_REG_1, tacEntry.getArg2())).append("\n");
-            sb.append(operationType + WORK_REG_1 + ", " + WORK_REG_2 + ", " + getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb)).append("\n");
-        }else {
+            sb.append(assignLiteral(WORK_REG_1, tacEntry.getArg2())).append("\n\t");
+            sb.append(operationType + WORK_REG_1 + ", " + WORK_REG_2 + ", " + getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb)).append("\n\t");
+        } else {
             // 4. If both are variables
             sb.append(operationType + WORK_REG_1 + ", " + getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb) + ", " +
-                    getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb)).append("\n");
+                    getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb)).append("\n\t");
         }
 
         // Lastly assign WORK_REG_3 value to the destination
         if(SymbolTable.getInstance().lookup(tacEntry.getDest(), tacEntry.getScope()) != null)
-            sb.append("move " + WORK_REG_1 + ", " + getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb));
+            sb.append("move " + WORK_REG_1 + ", ").append(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb));
+        else if(!WORK_REG_1.contains(tacEntry.getDest())) //Only assign if the destination is not the same as the WORK_REG_1
+            sb.append("move " + WORK_REG_1 + ", ").append(tacEntry.getDest());
         else
-            sb.append("move " + WORK_REG_1 + ", " + tacEntry.getDest());
+            sb.delete(sb.length() - 2, sb.length()); //Remove the last \n\t
 
         return sb.toString();
     }
 
     private static String getVariableRegister(@NotNull String name, @NotNull String scope, @NotNull StringBuilder sb){
+        if(SymbolTable.getInstance().lookup(name, scope) == null)
+            return "$" + name;
+
         int programID = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getProgramID();
         //TODO if programID == -1, the variable doesn't have a register. Load it from RAM
         return "$t" + programID;

@@ -6,12 +6,13 @@ main() {
     secondTerm = 1
     var nextTerm
 
+    print("hola")
+
     var i //$t3
     for i = 0, i < n, i++ {
         nextTerm = firstTerm + secondTerm
-        firstTerm = secondTerm
+        firstTerm = secondTerm + print(nextTerm)
         secondTerm = nextTerm
     }
 
-    print(firstTerm)
 }

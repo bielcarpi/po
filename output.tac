@@ -8,6 +8,8 @@ global:
 
 main:
 	secondTerm = 1
+	addp 0 "hola"
+	call print
 	i = 0
 E0:
 	if i >= n goto E1
@@ -18,8 +20,6 @@ E0:
 	i = i + 1
 	goto E0
 E1:
-	addp 0 firstTerm
-	call print
 	ret 0
 
 

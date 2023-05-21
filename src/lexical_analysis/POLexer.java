@@ -14,7 +14,7 @@ import static entities.ErrorType.*;
 public class POLexer implements Lexer {
 
     private final static Pattern specialCharacters = Pattern.compile("([ \\t,(){}=\\[\\]+\\-*/\\n<>;])");
-    private final static Pattern doubleOperators = Pattern.compile("->|\\+\\+|--|==");
+    private final static Pattern doubleOperators = Pattern.compile("->|\\+\\+|--|==|<=|>=|!=");
 
     @Override
     @Nullable

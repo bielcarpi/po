@@ -17,7 +17,10 @@ public enum ErrorType {
     TAC_OPTIMIZATION_ERROR,
     MIPS_GENERATION_ERROR,
     REPEATED_SCOPE_ENTRY,
-    MISMATCHED_TYPE_OPERATION;
+    MISMATCHED_TYPE_OPERATION,
+    TOO_MANY_ARGUMENTS,
+    FUNCTION_UNDECLARED,
+    INVALID_SYSCALL_USE;
 
     public static String getMessage(ErrorType type) {
         return switch (type) {

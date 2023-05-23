@@ -2,8 +2,6 @@ package entities;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 /**
  * The SymbolTableVariableEntry represents a {@link SymbolTableEntry} for Variables.
  *
@@ -15,12 +13,17 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     private final int size; //Array size
 
     /**
-     * The programID is the ID of this variable (the register where it is stored: e.g. t0, t1... t7) in the running program
-     * It will be assigned later on, by the MIPSGenerator
+     * The registerID contains the register where this is stored (e.g. t0, t1... t7) in the running program
+     * It will be assigned later on, by the MIPSGenerator, or -1 if it has no register and has to be loaded
+     * from memory and stored back to memory
      */
-    private int programID;
+    private int registerID;
 
-    private static int sProgramID = 0;
+    /**
+     * The numTimesUsed contains the number of times this variable is being used in code.
+     * The most used variables will be stored in registers, and the least used will be stored in memory
+     */
+    private int numTimesUsed;
 
 
     /**
@@ -32,7 +35,8 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type, final int size) {
         super(id, scope, type);
         this.size = size;
-        programID = sProgramID++;
+        registerID = -1;
+        numTimesUsed = 0;
     }
 
     /**
@@ -44,24 +48,39 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
     }
 
     /**
-     * Sets the program ID of the variable
-     * @param programID The program ID of the variable
+     * Sets the register ID of this variable (only on most used variables)
+     * @param registerID The new register ID of the variable
      */
-    public void setProgramID(int programID) {
-    	this.programID = programID;
+    public void setRegisterID(int registerID) {
+    	this.registerID = registerID;
     }
 
     /**
-     * Returns the program ID of the variable if it has been set, otherwise returns the normal ID
-     * @return The program ID of the variable
+     * Returns the register of the variable if it has been set, otherwise returns -1
+     * @return The register of the variable if it has been set, otherwise returns -1
      */
-    public int getProgramID() {
-    	return programID;
+    public int getRegisterID() {
+    	return registerID;
+    }
+
+    /**
+     * Returns the number of times this variable is being used in code
+     * @return The number of times this variable is being used in code
+     */
+    public int getNumTimesUsed() {
+        return numTimesUsed;
+    }
+
+    /**
+     * Increments the number of times this variable is being used in code
+     */
+    public void incrementNumTimesUsed() {
+        numTimesUsed++;
     }
 
 
     @Override
     public String toString() {
-        return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope();
+        return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope() + ", Times Used: " + numTimesUsed + "\n";
     }
 }

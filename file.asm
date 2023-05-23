@@ -8,25 +8,25 @@ $PRINT_INT:
 	jr $ra
 
 $global:
-	li $t0, 10
-	li $t1, 0
+	li $t-1, 10
+	li $t-1, 0
 	j $main
 
 $main:
-	li $t2, 1
-	li $t4, 0
+	li $t-1, 1
+	li $t-1, 0
 $E0:
-	bge $t4, $t0, $E1
-	add $t9, $t1, $t2
-	move $t3, $t9
-	move $t1, $t2
-	move $t2, $t3
+	bge $t-1, $t-1, $E1
+	add $t9, $t-1, $t-1
+	move $t-1, $t9
+	move $t-1, $t-1
+	move $t-1, $t-1
 	li $t8, 1
-	add $t9, $t8, $t4
-	move $t4, $t9
+	add $t9, $t8, $t-1
+	move $t-1, $t9
 	j $E0
 $E1:
-	move $a0, $t1
+	move $a0, $t-1
 	jal $PRINT_INT
 	li $v0, 10
 	syscall

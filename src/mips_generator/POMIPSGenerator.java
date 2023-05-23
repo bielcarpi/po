@@ -19,6 +19,9 @@ public class POMIPSGenerator implements MIPSGenerator {
 
     @Override
     public void generateMIPS(@NotNull TAC tac) {
+        //Assign registers to the most used variables
+        assignRegisters(tac);
+
         //Start printing the asm file
         try (PrintWriter out = new PrintWriter(fileName)) {
             entries = tac.getEntries(); // Get the map of function names to TACBlocks
@@ -56,6 +59,16 @@ public class POMIPSGenerator implements MIPSGenerator {
         } catch (FileNotFoundException e) {
                 e.printStackTrace();
         }
+
+        System.out.println(SymbolTable.getInstance().toString());;
+    }
+
+
+    /**
+     * Assigns registers to the most used variables (the ones that are used the most times)
+     * @param tac The TAC to assign registers to
+     */
+    private void assignRegisters(@NotNull TAC tac){
     }
 }
 

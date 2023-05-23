@@ -214,7 +214,7 @@ public class MIPSConverter {
         if(SymbolTable.getInstance().lookup(name, scope) == null)
             return "$" + name;
 
-        int programID = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getProgramID();
+        int programID = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getRegisterID();
         //TODO if programID == -1, the variable doesn't have a register. Load it from RAM
         return "$t" + programID;
     }

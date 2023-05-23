@@ -64,6 +64,11 @@ public class SymbolTable {
     public SymbolTableEntry lookup(@NotNull String entryId, @NotNull String scope){
         SymbolTableEntry ste = map.get(entryId + scope);
         if (ste == null) ste = map.get(entryId + GLOBAL_SCOPE);
+
+        //If it's found, and it's a variable, increment the number of times it's used
+        if (ste instanceof SymbolTableVariableEntry)
+            ((SymbolTableVariableEntry) ste).incrementNumTimesUsed();
+
         return ste;
     }
 

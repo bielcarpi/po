@@ -2,18 +2,21 @@ multiplicarNumeros:
 	num = num - 1
 E0:
 	if num < 1 goto E1
-	savec
-	addp 0 num
-	addp 1 0
-	call multiplicarNumeros
-	loadc
-	b = v0
 	s0 = b * num
 	b = s0
-	goto E2
-E1:
-	ret 1
 E2:
+	if num != 0 goto E3
+	ret 1
+	goto E4
+E3:
+	b = b + 1
+E4:
+	num = num + 1
+	goto E5
+E1:
+	num = num + 1
+	ret 1
+E5:
 	ret b
 
 PRINT_INT:
@@ -35,12 +38,12 @@ main:
 	call print
 	loadc
 	a = 0
-E3:
-	if a >= 10 goto E4
-	goto E4
+E6:
+	if a >= 10 goto E7
+	goto E7
 	a = a + 1
-	goto E3
-E4:
+	goto E6
+E7:
 	ret 0
 
 

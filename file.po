@@ -4,10 +4,17 @@ func multiplicarNumeros(num, b) {
     num--
 
     if num >= 1 {
-        b = multiplicarNumeros(num, 0)
         b = b * num
+        if num == 0{
+            ret 1
+        }
+        else{
+            b++
+        }
+        num++
     }
     else {
+        num++
         ret 1
     }
 

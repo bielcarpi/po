@@ -306,7 +306,7 @@ public class POTACGenerator implements TACGenerator{
 
         //If there is no block after the if, compute this one
         if(blockAfterIf == -1) blockAfterIf = trueBlock.getBlockNum() + node.getChildren().size() - 1;
-        else blockAfterIf += trueBlock.getBlockNum() + node.getChildren().size() - 2;
+        else blockAfterIf += node.getChildren().size() - 2;
 
         //The last entry of the true block should jump to the end of the if
         if(node.getChildren().size() > 2)

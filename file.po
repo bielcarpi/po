@@ -6,7 +6,16 @@ func multiplicarNumeros(num, b) {
     if num >= 1 {
         b = b * num
         if num == 0{
+            if num < 0 {
+                a = 58
+            }
+            else {
+                a = 30
+            }
             ret 1
+        }
+        elsif num == 1 {
+            a = 100
         }
         else{
             b++

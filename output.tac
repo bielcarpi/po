@@ -6,17 +6,28 @@ E0:
 	b = s0
 E2:
 	if num != 0 goto E3
-	ret 1
-	goto E4
-E3:
-	b = b + 1
 E4:
+	if num >= 0 goto E5
+	a = 58
+	goto E6
+E5:
+	a = 30
+E6:
+	ret 1
+	goto E8
+E3:
+	if num != 1 goto E7
+	a = 100
+	goto E8
+E7:
+	b = b + 1
+E8:
 	num = num + 1
-	goto E5
+	goto E9
 E1:
 	num = num + 1
 	ret 1
-E5:
+E9:
 	ret b
 
 PRINT_INT:
@@ -38,12 +49,12 @@ main:
 	call print
 	loadc
 	a = 0
-E6:
-	if a >= 10 goto E7
-	goto E7
+E10:
+	if a >= 10 goto E11
+	goto E11
 	a = a + 1
-	goto E6
-E7:
+	goto E10
+E11:
 	ret 0
 
 

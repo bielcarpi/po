@@ -11,25 +11,36 @@ $E0:
 	move $a1, $s0
 $E2:
 	bne $a0, 0, $E3
+$E4:
+	bge $a0, 0, $E5
+	li $t0, 58
+	j $E6
+$E5:
+	li $t0, 30
+$E6:
 	li $v0, 1
 	jr $ra
-	j $E4
+	j $E8
 $E3:
+	bne $a0, 1, $E7
+	li $t0, 100
+	j $E8
+$E7:
 	li $s1, 1
 	add $s0, $a1, $s1
 	move $a1, $s0
-$E4:
+$E8:
 	li $s1, 1
 	add $s0, $a0, $s1
 	move $a0, $s0
-	j $E5
+	j $E9
 $E1:
 	li $s1, 1
 	add $s0, $a0, $s1
 	move $a0, $s0
 	li $v0, 1
 	jr $ra
-$E5:
+$E9:
 	move $v0, $a1
 	jr $ra
 
@@ -135,13 +146,13 @@ $main:
 	lw $s2, 64($sp)
 
 	li $t0, 0
-$E6:
-	bge $t0, 10, $E7
-	j $E7
+$E10:
+	bge $t0, 10, $E11
+	j $E11
 	li $s1, 1
 	add $s0, $t0, $s1
 	move $t0, $s0
-	j $E6
-$E7:
+	j $E10
+$E11:
 	li $v0, 10
 	syscall

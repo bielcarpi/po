@@ -15,7 +15,23 @@ func multiplicarNumeros(num, b) {
 }
 
 main() {
+    var b = 0
+    var t1 = 0
+    var t2 = 0
     a = multiplicarNumeros(8, 0)
+
+    t1 = 0 + t2
+    t2 = t2 + 0
+    t1 = 0 - t2
+    t2 = t2 - 0
+    t1 = 0 * t2
+    t2 = t2 * 0
+    t1 = 0 / t2
+    t2 = t2 / 0
+    t1 = 0 * t2
+    t2 = t2 * 0
+    t1 = 0 / t2
+
     print(a)
     for a = 0, a < 10, a++ {
         break

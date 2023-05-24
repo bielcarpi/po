@@ -24,12 +24,37 @@ global:
 	a = 0
 
 main:
+	b = 0
+	t1 = 0
+	t2 = 0
 	savec
 	addp 0 8
 	addp 1 0
 	call multiplicarNumeros
 	loadc
 	a = v0
+	s0 = 0 + t2
+	t1 = s0
+	s0 = t2 + 0
+	t2 = s0
+	s0 = 0 - t2
+	t1 = s0
+	s0 = t2 - 0
+	t2 = s0
+	s0 = 0 * t2
+	t1 = s0
+	s0 = t2 * 0
+	t2 = s0
+	s0 = 0 / t2
+	t1 = s0
+	s0 = t2 / 0
+	t2 = s0
+	s0 = 0 * t2
+	t1 = s0
+	s0 = t2 * 0
+	t2 = s0
+	s0 = 0 / t2
+	t1 = s0
 	savec
 	addp 0 a
 	call print

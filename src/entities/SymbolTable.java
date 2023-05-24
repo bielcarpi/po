@@ -54,7 +54,7 @@ public class SymbolTable {
         // Check if already exists and put to error manager
         if (map.containsKey(entry.getId() + GLOBAL_SCOPE) || map.containsKey(entry.getId() + entry.getScope())) {
             Error error = new entities.Error(ErrorType.REPEATED_SCOPE_ENTRY,
-                    "Error, variable " + entry.getId() + " already exists in the same scope");
+                    "Error, identifier " + entry.getId() + " already exists in the same scope");
             ErrorManager.getInstance().addError(error);
 
             return;

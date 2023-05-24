@@ -212,14 +212,20 @@ public class ParseTree {
             scope = node.getChildren().get(0).getToken().getData();
 
             // If the function has params, we need to add them to the symbol table
-            if (node.getChildren().size() == 2 && node.getChildren().get(1).getSelf().equals("<llistaParametres>")) { // If number of childs equals 3, there are params to the function
-                for (ParseTreeNode param : node.getChildren().get(1).getChildren()) {
-                    SymbolTable.getInstance().insert(
-                            new SymbolTableVariableEntry(
-                                    param.getToken().getData(),
-                                    scope,
-                                    TokenType.UNKNOWN,
-                                    1));
+            if (node.getChildren().get(1).getSelf().equals("<llistaParametres>")) { // If number of childs equals 3, there are params to the function
+                if (node.getChildren().get(1).getChildren().size() > 4) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.TOO_MANY_ARGUMENTS,
+                            "Error, function " + node.getChildren().get(0).getToken().getData() + " has too many arguments",
+                            node.getChildren().get(1).getChildren().get(0).getToken().getLine(), node.getChildren().get(1).getChildren().get(0).getToken().getColumn()));
+                } else {
+                    for (ParseTreeNode param : node.getChildren().get(1).getChildren()) {
+                        SymbolTable.getInstance().insert(
+                                new SymbolTableVariableEntry(
+                                        param.getToken().getData(),
+                                        scope,
+                                        TokenType.INT,
+                                        1));
+                    }
                 }
             }
 
@@ -235,6 +241,10 @@ public class ParseTree {
                 node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
 
             return;
+        }
+
+        if (node.getSelf().equals(TokenType.MAIN)) {
+            scope = node.getToken().getData();
         }
 
         //If we are llistaComposta and the parent is llistaComposta too, move ourselves to the level of our parent
@@ -286,9 +296,9 @@ public class ParseTree {
         else if(node.getSelf().equals("<llistaComposta>"))
             node.setSelf("llista", null);
 
-        //If we're <llistaDeclaracions>, <llistaElsif> or <llistaOpt> delete ourselves and put our children in our level
+        //If we're <llistaDeclaracions>, <llistaElsif> or <llistaOpt> or <llistaArgumentsPrima> delete ourselves and put our children in our level
         if((node.getSelf().equals("<llistaDeclaracions>") || node.getSelf().equals("<llistaElsif>") ||
-            node.getSelf().equals("<llistaOpt>")) && node.getParent() != null)
+            node.getSelf().equals("<llistaOpt>") || node.getSelf().equals("<llistaArgumentsPrima>")) && node.getParent() != null)
             node.getParent().replaceChild(node, node.getChildren());
 
         //If we're FOR or WHILE and our last child is not a llista, substitute it with a llista and put it inside the llista
@@ -311,7 +321,7 @@ public class ParseTree {
         }
 
         //Check if scope changed
-        if(node.getSelf().equals(TokenType.ID) && node.getToken().getData().equals(scope))
+        if((node.getSelf().equals(TokenType.ID) || node.getSelf().equals(TokenType.MAIN)) && node.getToken().getData().equals(scope))
             scope = SymbolTable.GLOBAL_SCOPE; //Return to global scope
     }
 

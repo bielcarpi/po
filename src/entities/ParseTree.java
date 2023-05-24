@@ -197,30 +197,50 @@ public class ParseTree {
         //If we have a FUNC token, we can substitute it for its first child (ID: the name of the FUNC) and remove the second child (the parameters)
         if(node.getSelf().equals(TokenType.FUNC)){
             // Insert function entry to the symbol table with unknown type for now.
+            // Case 1: ID, llistaParams, sentencies
+            // Case 2: ID, ID, sentencies
+            // Case 3: ID, sentencies
+            // Case 4: ID, ID
+            // Case 5: ID
+            int numArgs = 0;
+            switch (node.getChildren().size()){
+                case 2:
+                    if (node.getChildren().get(1).getSelf().equals("<llistaParametres>"))
+                        numArgs = node.getChildren().get(1).getChildren().size();
+                    else if (node.getChildren().get(1).getSelf().equals(TokenType.ID))
+                        numArgs = 1;
+                case 3:
+                    if (node.getChildren().get(1).getSelf().equals("<llistaParametres>"))
+                        numArgs = node.getChildren().get(1).getChildren().size();
+                    else if (node.getChildren().get(1).getSelf().equals(TokenType.ID))
+                        numArgs = 1;
+            }
             SymbolTable.getInstance().insert(
                     new SymbolTableFunctionEntry(
                             node.getChildren().get(0).getToken().getData(),
                             TokenType.INT,
-                            // If function has params, there will be 3 childs (ID, llistaParams, sentencies)
-                            // If number of childs equals 2, there are no params to the function
-                            // Careful with case where function is void
-                            node.getChildren().size() == 2 && !node.getChildren().get(1).getSelf().equals("<llistaParametres>")?
-                                    0 : node.getChildren().get(1).getChildren().size()
+                            numArgs
                     ));
 
             // Change the current scope to the new function. The first child of the FUNC will always be the ID
             scope = node.getChildren().get(0).getToken().getData();
 
             // If the function has params, we need to add them to the symbol table
-            if (node.getChildren().get(1).getSelf().equals("<llistaParametres>")) { // If number of childs equals 3, there are params to the function
-                if (node.getChildren().get(1).getChildren().size() > 4) {
+            if (numArgs > 0) { // If number of childs equals 3, there are params to the function
+                if (numArgs > 4) {
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.TOO_MANY_ARGUMENTS,
                             "Error, function " + node.getChildren().get(0).getToken().getData() + " has too many arguments",
                             node.getChildren().get(1).getChildren().get(0).getToken().getLine(), node.getChildren().get(1).getChildren().get(0).getToken().getColumn()));
                 } else {
-                    for(int i = 0; i < node.getChildren().get(1).getChildren().size(); i++){
+                    for(int i = 0; i < numArgs; i++){
+                        String data;
+                        if (numArgs == 1) {
+                            data = node.getChildren().get(1).getToken().getData();
+                        } else {
+                            data = node.getChildren().get(1).getChildren().get(i).getToken().getData();
+                        }
                         SymbolTableVariableEntry entry = new SymbolTableVariableEntry(
-                                node.getChildren().get(1).getChildren().get(i).getToken().getData(),
+                                data,
                                 scope,
                                 TokenType.INT,
                                 1,
@@ -234,7 +254,7 @@ public class ParseTree {
             node.setSelf(node.getChildren().get(0).getSelf(), node.getChildren().get(0).getToken());
             // The node has been switched, and we need to remove the node itself from the children (which is the first node)
             node.getChildren().remove(0);
-            if(node.getChildren().get(0).getSelf().equals("<llistaParametres>")) //If we have parameters, remove them
+            if(numArgs > 0) //If we have parameters, remove them
                 node.getChildren().remove(0);
 
             // Only one child is left, so substitute it with its childs.

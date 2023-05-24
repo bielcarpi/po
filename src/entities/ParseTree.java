@@ -237,7 +237,7 @@ public class ParseTree {
                 node.getChildren().remove(0);
 
             // Only one child is left, so substitute it with its childs.
-            if (node.getChildren().size() != 0) // Make sure first the function is not void
+            if (node.getChildren().size() != 0 && !node.getChildren().get(0).getSelf().equals("<sentencia>")) // Make sure first the function is not void
                 node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
 
             return;
@@ -250,8 +250,9 @@ public class ParseTree {
         //If we are llistaComposta and the parent is llistaComposta too, move ourselves to the level of our parent
         if(node.getSelf().equals("<llistaComposta>") && node.getParent().getSelf().equals("<llistaComposta>")){
             node.getParent().getChildren().remove(node);
-            node.getParent().getParent().addChild(node);
-            node.setParent(node.getParent().getParent());
+            //node.getParent().getParent().addChild(node);
+            node.getParent().addChildren(node.getChildren());
+            //node.setParent(node.getParent().getParent());
         }
 
 
@@ -291,7 +292,10 @@ public class ParseTree {
 
 
         //If we're <llistaComposta>, delete ourselves and put our children in our level
-        if(node.getSelf().equals("<llistaComposta>") && node.getParent() != null && (node.getParent().getSelf() == TokenType.MAIN || node.getParent().getSelf() == TokenType.ID || node.getParent().getSelf() == TokenType.OPT))
+        if(node.getSelf().equals("<llistaComposta>") && node.getParent() != null &&
+                (node.getParent().getSelf() == TokenType.MAIN ||
+                node.getParent().getSelf() == TokenType.ID ||
+                node.getParent().getSelf() == TokenType.OPT))
             node.getParent().replaceChild(node, node.getChildren());
         else if(node.getSelf().equals("<llistaComposta>"))
             node.setSelf("llista", null);

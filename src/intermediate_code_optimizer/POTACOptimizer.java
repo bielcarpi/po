@@ -4,11 +4,9 @@ import entities.TAC;
 import entities.TACBlock;
 import entities.TACEntry;
 import entities.TACType;
-import mips_generator.MIPSConverter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class POTACOptimizer implements TACOptimizer{
 
@@ -23,17 +21,33 @@ public class POTACOptimizer implements TACOptimizer{
 
                     TACEntry newEntry = null;
 
-                    if(tacEntry.getType() == TACType.ADD){
-                        // t1 = 0 + t2 -> t1 = t2
+                    // We assume that a = 0 - a -> a = a
+                    if((tacEntry.getType() == TACType.ADD) || (tacEntry.getType() == TACType.SUB)){
+                        // t1 = 0 +/- t2 -> t1 = t2
                         if(tacEntry.getArg1() != null && tacEntry.getArg1().equals("0") && !tacEntry.getArg2().equals("0")){
                             newEntry = new TACEntry(tacEntry.getScope(), nextBlock.get(i+1).getDest(),nextBlock.get(i).getArg2(), TACType.EQU);
                         }
-                        // t1 = 0 + t2 -> t1 = t2
+                        // t1 = 0 +/- t2 -> t1 = t2
                         if(tacEntry.getArg2() != null && tacEntry.getArg2().equals("0")){
                             newEntry = new TACEntry(tacEntry.getScope(), nextBlock.get(i+1).getDest(),nextBlock.get(i).getArg1(), TACType.EQU);
                         }
+                    }else if((tacEntry.getType() == TACType.MUL)){
+                        // t1 = 0 * t2 -> t1 = 0 || t1 = 0 * t2 -> t1 = 0
+                        if((tacEntry.getArg1() != null && tacEntry.getArg1().equals("0")) || (tacEntry.getArg2() != null && tacEntry.getArg2().equals("0"))){
+                            newEntry = new TACEntry(tacEntry.getScope(), nextBlock.get(i+1).getDest(),"0", TACType.EQU);
+                        }
+                    }else if((tacEntry.getType() == TACType.DIV)){
+                        // t1 = t2 / 0 -> "infinity" In MIPS, this is 4294967296 (2^32)
+                        if(tacEntry.getArg1() != null && tacEntry.getArg1().equals("0")){
+                            newEntry = new TACEntry(tacEntry.getScope(), nextBlock.get(i+1).getDest(),"0", TACType.EQU);
+                        }
+                        // t1 = 0 / t2 -> t1 = 0
+                        if(tacEntry.getArg2() != null && tacEntry.getArg2().equals("0")){
+                            newEntry = new TACEntry(tacEntry.getScope(), nextBlock.get(i+1).getDest(),"4294967296", TACType.EQU);
+                        }
                     }
 
+                    // Replace to an optimized entry
                     if(newEntry != null){
                         nextBlock.remove(i);
                         nextBlock.remove(i);
@@ -44,23 +58,5 @@ public class POTACOptimizer implements TACOptimizer{
             }
         }
         return tac;
-    }
-
-    private TACEntry removeZeroOperations(TACEntry tacEntry) {
-        /*if((tacEntry.getType() == TACType.ADD)){
-
-            // t1 = 0 + t2 -> t1 = t2
-            if(tacEntry.getArg1() != null && tacEntry.getArg1().equals("0") && !tacEntry.getArg2().equals("0")){
-                System.out.println("Removing zero operation: " + tacEntry);
-                return new TACEntry(tacEntry.getScope(), tacEntry.getDest(), tacEntry.getArg2(), TACType.EQU);
-            }
-
-            // t1 = t2 + 0 -> t1 = t2
-            if(tacEntry.getArg2() != null && tacEntry.getArg2().equals("0")){
-                System.out.println("Removing zero operation: " + tacEntry);
-                return new TACEntry(null, null, null, null);
-            }
-        }*/
-        return new TACEntry(null, null, null, null);
     }
 }

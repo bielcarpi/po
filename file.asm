@@ -123,16 +123,15 @@ $main:
 	lw $s2, 64($sp)
 
 	move $t0, $v0
-	move $t1, $t2
-	move $t2, $t1
-	move $t1, $t2
-	move $t2, $t1
-	move $t1, $t2
-	move $t2, $t1
-	move $t1, $t2
-	move $t2, $t1
-	move $t1, $t2
-	move $t2, $t1
+	move $t1, $t1
+	move $t1, $t1
+	move $t1, $t1
+	move $t1, $t1
+	li $t1, 0
+	li $t1, 0
+	li $t1, 4294967296
+	li $t1, 0
+	li $t1, 4294967296
 
 	sw $a0, 0($sp)
 	sw $a1, 4($sp)

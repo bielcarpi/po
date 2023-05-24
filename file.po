@@ -20,16 +20,15 @@ main() {
     var t2 = 0
     a = multiplicarNumeros(8, 0)
 
-    t1 = 0 + t2
-    t2 = t1 + 0
-    t1 = 0 + t2
-    t2 = t1 + 0
-    t1 = 0 + t2
-    t2 = t1 + 0
-    t1 = 0 + t2
-    t2 = t1 + 0
-    t1 = 0 + t2
-    t2 = t1 + 0
+    t1 = t1 + 0
+    t1 = 0 + t1
+    t1 = t1 - 0
+    t1 = 0 - t1
+    t1 = t1 * 0
+    t1 = 0 * t1
+    t1 = t1 / 0
+    t1 = 0 / t1
+    t1 = 0 / 0
 
 
     print(a)

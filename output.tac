@@ -25,7 +25,7 @@ global:
 
 main:
 	savec
-	addp 0 3
+	addp 0 8
 	addp 1 0
 	call multiplicarNumeros
 	loadc

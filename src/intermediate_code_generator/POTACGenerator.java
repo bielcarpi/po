@@ -116,7 +116,7 @@ public class POTACGenerator implements TACGenerator{
                 case ID -> { //Function CALL
                     //Only if it is a function call, not a function declaration
                     if(!node.getParent().getSelf().equals("<programa>")){
-                        generateTACFuncCall(node);
+                        generateTACFuncCall(node, scope);
                         return;
                     }
                 }
@@ -149,7 +149,7 @@ public class POTACGenerator implements TACGenerator{
      * Generates TAC for a Function CALL
      * @param node the node of the function
      */
-    private void generateTACFuncCall(@NotNull ParseTreeNode node){
+    private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull String scope){
         //If it's a syscall, and we haven't detected it yet, add it to the syscalls list
         if(Syscall.isSyscall(node.getToken().getData()) && !syscallsList.contains(Syscall.get(node.getToken().getData())))
             syscallsList.add(Syscall.get(node.getToken().getData()));
@@ -158,7 +158,7 @@ public class POTACGenerator implements TACGenerator{
         //If we have params, add all childs as parameters
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
-                tacBlock.add(new TACEntry(node.getToken().getData(), null,
+                tacBlock.add(new TACEntry(scope, null,
                         node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
             }
         }
@@ -366,7 +366,7 @@ public class POTACGenerator implements TACGenerator{
         else{ //x = z
             //If z is a function call, we need to call it
             if(SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
-                generateTACFuncCall(node.getChildren().get(2));
+                generateTACFuncCall(node.getChildren().get(2), scope);
                 entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
                         "v0",
                         TACType.EQU);

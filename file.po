@@ -2,6 +2,7 @@ var a = 0
 
 func multiplicarNumeros(num, b) {
     num--
+
     if num >= 1 {
         b = multiplicarNumeros(num, 0)
         b = b * num
@@ -14,6 +15,6 @@ func multiplicarNumeros(num, b) {
 }
 
 main() {
-    a = multiplicarNumeros(3, 0)
+    a = multiplicarNumeros(8, 0)
     print(a)
 }

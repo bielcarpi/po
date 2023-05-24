@@ -27,6 +27,9 @@ public class POMIPSGenerator implements MIPSGenerator {
             entries = tac.getEntries(); // Get the map of function names to TACBlocks
 
             // TODO Add the .data section
+            //Check if we have strings to add to the .data section
+
+
 
             //Add the .text section
             out.println(".text");

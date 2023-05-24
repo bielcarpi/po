@@ -95,7 +95,7 @@ $main:
 	addi $sp, $sp, 68
 
 
-	li $a0, 3
+	li $a0, 8
 	li $a1, 0
 	jal $multiplicarNumeros
 

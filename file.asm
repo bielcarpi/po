@@ -164,5 +164,14 @@ $main:
 	lw $s1, 60($sp)
 	lw $s2, 64($sp)
 
+	li $t0, 0
+$E3:
+	bge $t0, 10, $E4
+	j $E4
+	li $s1, 1
+	add $s0, $t0, $s1
+	move $t0, $s0
+	j $E3
+$E4:
 	li $v0, 10
 	syscall

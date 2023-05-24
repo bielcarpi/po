@@ -34,6 +34,13 @@ main:
 	addp 0 a
 	call print
 	loadc
+	a = 0
+E3:
+	if a >= 10 goto E4
+	goto E4
+	a = a + 1
+	goto E3
+E4:
 	ret 0
 
 

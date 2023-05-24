@@ -26,7 +26,7 @@
 <blocOpt&> ::= opt <expressio> -> <sentenciaComposta> \n
 <blocDefault&> ::= default -> <sentenciaComposta> \n | ε
 <sentenciaRetorn&> ::= ret <expressio> \n
-<sentenciaBreak> ::= break \n
+<sentenciaBreak> ::= break \n | continue \n
 <sentenciaWhile&> ::= while <expressio> <sentenciaComposta> \n
 <sentenciaFor&> ::= for <assignacioFor> , <expressio> , <assignacioForPrima> <sentenciaComposta> \n
 <assignacioFor> ::= ID = <expressio>

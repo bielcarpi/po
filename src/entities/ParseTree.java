@@ -231,7 +231,7 @@ public class ParseTree {
                 node.getChildren().remove(0);
 
             // Only one child is left, so substitute it with its childs.
-            if (node.getChildren().size() != 0) // Make sure first the function is not void
+            if (node.getChildren().size() != 0 && !node.getChildren().get(0).getSelf().equals("<sentencia>")) // Make sure first the function is not void
                 node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
 
             return;

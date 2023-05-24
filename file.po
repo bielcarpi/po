@@ -3,12 +3,16 @@ var a = 0
 func multiplicarNumeros(num, b) {
     num--
 
-    if num >= 1 {
-        b = multiplicarNumeros(num, 0)
-        b = b * num
-    }
-    else {
-        ret 1
+    var i
+    var j
+    for i = 0, i < 10, i++ {
+        for j = 0, j < 10, j++ {
+            b = i * j
+            while i == 0 {
+                continue
+                break
+            }
+        }
     }
 
     ret b

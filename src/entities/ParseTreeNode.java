@@ -61,6 +61,16 @@ public class ParseTreeNode {
     }
 
     /**
+     * Adds children to the node
+     * @param parseTreeNodes The children to add
+     */
+    public void addChildren(ArrayList<ParseTreeNode> parseTreeNodes) {
+        children.addAll(parseTreeNodes);
+        for(ParseTreeNode parseTreeNode: parseTreeNodes)
+            parseTreeNode.parent = this;
+    }
+
+    /**
      * Replaces a child of the node
      * @param childToReplace The child to replace
      * @param children The children to replace with

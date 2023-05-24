@@ -1,33 +1,25 @@
 multiplicarNumeros:
 	num = num - 1
+	i = 0
 E0:
-	if num < 1 goto E1
-	s0 = b * num
-	b = s0
+	if i >= 10 goto E1
+	j = 0
 E2:
-	if num != 0 goto E3
+	if j >= 10 goto E3
+	s0 = i * j
+	b = s0
 E4:
-	if num >= 0 goto E5
-	a = 58
-	goto E6
+	if i != 0 goto E5
+	goto E4
+	goto E5
+	goto E4
 E5:
-	a = 30
-E6:
-	ret 1
-	goto E8
+	j = j + 1
+	goto E2
 E3:
-	if num != 1 goto E7
-	a = 100
-	goto E8
-E7:
-	b = b + 1
-E8:
-	num = num + 1
-	goto E9
+	i = i + 1
+	goto E0
 E1:
-	num = num + 1
-	ret 1
-E9:
 	ret b
 
 PRINT_INT:
@@ -49,12 +41,12 @@ main:
 	call print
 	loadc
 	a = 0
-E10:
-	if a >= 10 goto E11
-	goto E11
+E6:
+	if a >= 10 goto E7
+	goto E7
 	a = a + 1
-	goto E10
-E11:
+	goto E6
+E7:
 	ret 0
 
 

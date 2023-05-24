@@ -5,42 +5,30 @@ $multiplicarNumeros:
 	li $s1, 1
 	sub $s0, $a0, $s1
 	move $a0, $s0
+	li $t1, 0
 $E0:
-	blt $a0, 1, $E1
-	mul $s0, $a1, $a0
-	move $a1, $s0
+	bge $t1, 10, $E1
+	li $t2, 0
 $E2:
-	bne $a0, 0, $E3
-$E4:
-	bge $a0, 0, $E5
-	li $t0, 58
-	j $E6
-$E5:
-	li $t0, 30
-$E6:
-	li $v0, 1
-	jr $ra
-	j $E8
-$E3:
-	bne $a0, 1, $E7
-	li $t0, 100
-	j $E8
-$E7:
-	li $s1, 1
-	add $s0, $a1, $s1
+	bge $t2, 10, $E3
+	mul $s0, $t1, $t2
 	move $a1, $s0
-$E8:
+$E4:
+	bne $t1, 0, $E5
+	j $E4
+	j $E5
+	j $E4
+$E5:
 	li $s1, 1
-	add $s0, $a0, $s1
-	move $a0, $s0
-	j $E9
+	add $s0, $t2, $s1
+	move $t2, $s0
+	j $E2
+$E3:
+	li $s1, 1
+	add $s0, $t1, $s1
+	move $t1, $s0
+	j $E0
 $E1:
-	li $s1, 1
-	add $s0, $a0, $s1
-	move $a0, $s0
-	li $v0, 1
-	jr $ra
-$E9:
 	move $v0, $a1
 	jr $ra
 
@@ -146,13 +134,13 @@ $main:
 	lw $s2, 64($sp)
 
 	li $t0, 0
-$E10:
-	bge $t0, 10, $E11
-	j $E11
+$E6:
+	bge $t0, 10, $E7
+	j $E7
 	li $s1, 1
 	add $s0, $t0, $s1
 	move $t0, $s0
-	j $E10
-$E11:
+	j $E6
+$E7:
 	li $v0, 10
 	syscall

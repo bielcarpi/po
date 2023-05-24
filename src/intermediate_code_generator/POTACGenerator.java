@@ -228,7 +228,6 @@ public class POTACGenerator implements TACGenerator{
         TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
         tac.add(scope, trueBlock);
-        tac.add(scope, falseBlock);
 
         trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
                 node.getChildren().get(0).getChildren().get(2).getToken().getData(),
@@ -243,6 +242,7 @@ public class POTACGenerator implements TACGenerator{
         tacBlock.add(new TACEntry(trueBlock.getBlockNum(), TACType.GOTO));
 
         //Add the false block to the end of the true block
+        tac.add(scope, falseBlock);
         tacBlock = falseBlock;
     }
 
@@ -259,7 +259,6 @@ public class POTACGenerator implements TACGenerator{
         TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
         tac.add(scope, trueBlock);
-        tac.add(scope, falseBlock);
 
         trueBlock.add(new TACEntry(scope, node.getChildren().get(1).getChildren().get(0).getToken().getData(),
                 node.getChildren().get(1).getChildren().get(2).getToken().getData(),
@@ -268,8 +267,7 @@ public class POTACGenerator implements TACGenerator{
 
         //Traverse the true block & add the entries to the true block
         tacBlock = trueBlock;
-        for(int i = 3; i < node.getChildren().size(); i++)
-            traverseTree(node.getChildren().get(i), tac, scope);
+        traverseTree(node.getChildren().get(3), tac, scope);
 
         //Add the increment to the end of the true block
         generateTACAssignacio(node.getChildren().get(2), scope);
@@ -278,6 +276,7 @@ public class POTACGenerator implements TACGenerator{
         tacBlock.add(new TACEntry(trueBlock.getBlockNum(), TACType.GOTO));
 
         //Add the false block to the end of the true block
+        tac.add(scope, falseBlock);
         tacBlock = falseBlock;
     }
 

@@ -116,7 +116,7 @@ public class POTACGenerator implements TACGenerator{
                 case ID -> { //Function CALL
                     //Only if it is a function call, not a function declaration
                     if(!node.getParent().getSelf().equals("<programa>")){
-                        generateTACFuncCall(node, tac);
+                        generateTACFuncCall(node);
                         return;
                     }
                 }
@@ -148,9 +148,8 @@ public class POTACGenerator implements TACGenerator{
     /**
      * Generates TAC for a Function CALL
      * @param node the node of the function
-     * @param tac the TAC data structure
      */
-    private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull TAC tac){
+    private void generateTACFuncCall(@NotNull ParseTreeNode node){
         //If it's a syscall, and we haven't detected it yet, add it to the syscalls list
         if(Syscall.isSyscall(node.getToken().getData()) && !syscallsList.contains(Syscall.get(node.getToken().getData())))
             syscallsList.add(Syscall.get(node.getToken().getData()));
@@ -365,9 +364,18 @@ public class POTACGenerator implements TACGenerator{
                     TACType.EQU);
         }
         else{ //x = z
-            entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
-                    node.getChildren().get(2).getToken().getData(),
-                    TACType.getType(node.getChildren().get(1).getToken().getType()));
+            //If z is a function call, we need to call it
+            if(SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
+                generateTACFuncCall(node.getChildren().get(2));
+                entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
+                        "v0",
+                        TACType.EQU);
+            }
+            else{ //If z is a variable, we just need to copy it
+                entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
+                        node.getChildren().get(2).getToken().getData(),
+                        TACType.getType(node.getChildren().get(1).getToken().getType()));
+            }
         }
 
         //Add the entry to the block

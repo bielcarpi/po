@@ -1,16 +1,19 @@
-var c = 0
+var a = 0
 
 func multiplicarNumeros(num, b) {
     num--
     if num >= 1 {
-        num = num * b
-        ret multiplicarNumeros(num, 1)
+        b = multiplicarNumeros(num, 0)
+        b = b * num
     }
     else {
         ret 1
     }
+
+    ret b
 }
 
 main() {
-    multiplicarNumeros(3, 0)
+    a = multiplicarNumeros(3, 0)
+    print(a)
 }

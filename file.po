@@ -1,18 +1,24 @@
-var n = 10 //Num of terms $t0
-var firstTerm = 0 //$t1
-var secondTerm //$t2
+var a = 0
 
-main() {
-    secondTerm = 1
-    var nextTerm
+func multiplicarNumeros(num, b) {
+    num--
 
-    print("hola")
-
-    var i //$t3
-    for i = 0, i < n, i++ {
-        nextTerm = firstTerm + secondTerm
-        firstTerm = secondTerm + print(nextTerm)
-        secondTerm = nextTerm
+    if num >= 1 {
+        b = multiplicarNumeros(num, 0)
+        b = b * num
+    }
+    else {
+        ret 1
     }
 
+    ret b
+}
+
+main() {
+    a = multiplicarNumeros(8, 0)
+    print(a)
+    for a = 0, a < 10, a++ {
+        break
+        //you can use continue too
+    }
 }

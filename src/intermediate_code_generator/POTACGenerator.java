@@ -21,7 +21,7 @@ public class POTACGenerator implements TACGenerator{
 
     private final TACOptimizer tacOptimizer;
     private final boolean outputFile;
-    private static final String WORK_REG = "t9";
+    private static final String WORK_REG = "s0";
     private TACBlock tacBlock; //Current block aux for the traverseTree method
 
     private final ArrayList<Syscall> syscallsList; //Syscalls used in the program. They will be added as separate functions
@@ -116,7 +116,7 @@ public class POTACGenerator implements TACGenerator{
                 case ID -> { //Function CALL
                     //Only if it is a function call, not a function declaration
                     if(!node.getParent().getSelf().equals("<programa>")){
-                        generateTACFuncCall(node, tac);
+                        generateTACFuncCall(node, scope);
                         return;
                     }
                 }
@@ -148,21 +148,22 @@ public class POTACGenerator implements TACGenerator{
     /**
      * Generates TAC for a Function CALL
      * @param node the node of the function
-     * @param tac the TAC data structure
      */
-    private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull TAC tac){
-        //If it's a syscall and we haven't detected it yet, add it to the syscalls list
+    private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull String scope){
+        //If it's a syscall, and we haven't detected it yet, add it to the syscalls list
         if(Syscall.isSyscall(node.getToken().getData()) && !syscallsList.contains(Syscall.get(node.getToken().getData())))
             syscallsList.add(Syscall.get(node.getToken().getData()));
 
+        tacBlock.add(new TACEntry(-1, TACType.SAVE_CONTEXT));
         //If we have params, add all childs as parameters
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
-                tacBlock.add(new TACEntry(node.getToken().getData(), null,
+                tacBlock.add(new TACEntry(scope, null,
                         node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
             }
         }
         tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
+        tacBlock.add(new TACEntry(-1, TACType.LOAD_CONTEXT));
     }
 
     /**
@@ -363,9 +364,18 @@ public class POTACGenerator implements TACGenerator{
                     TACType.EQU);
         }
         else{ //x = z
-            entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
-                    node.getChildren().get(2).getToken().getData(),
-                    TACType.getType(node.getChildren().get(1).getToken().getType()));
+            //If z is a function call, we need to call it
+            if(SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
+                generateTACFuncCall(node.getChildren().get(2), scope);
+                entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
+                        "v0",
+                        TACType.EQU);
+            }
+            else{ //If z is a variable, we just need to copy it
+                entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
+                        node.getChildren().get(2).getToken().getData(),
+                        TACType.getType(node.getChildren().get(1).getToken().getType()));
+            }
         }
 
         //Add the entry to the block

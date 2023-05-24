@@ -36,6 +36,7 @@ public class TACBlock {
      * @param entry The entry to add
      */
     public void add(TACEntry entry){
+        if(entry == null) return;
         blockEntries.add(entry);
     }
 

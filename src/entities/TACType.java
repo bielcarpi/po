@@ -18,7 +18,9 @@ public enum TACType {
     RET,
     CALL, //Call function
     SYSCALL, //System call
-    ADD_PARAM; //Add parameter
+    ADD_PARAM, //Add parameter
+    SAVE_CONTEXT, //Save context
+    LOAD_CONTEXT; //Load context
 
     public static TACType getType(TokenType op) {
         return switch (op) {
@@ -64,6 +66,8 @@ public enum TACType {
             case CALL -> "call";
             case SYSCALL -> "syscall";
             case ADD_PARAM -> "addp";
+            case SAVE_CONTEXT -> "savec";
+            case LOAD_CONTEXT -> "loadc";
         };
     }
 }

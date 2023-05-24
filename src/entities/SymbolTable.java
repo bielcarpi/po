@@ -3,7 +3,10 @@ package entities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * The SymbolTable class represents the symbol table of the compiler.
@@ -17,16 +20,31 @@ public class SymbolTable {
     public static final String MAIN_SCOPE = "main";
 
     private static SymbolTable instance = null;
-    private static HashMap<String, SymbolTableEntry> map = null;
+    private static HashMap<String, SymbolTableEntry> map;
+
+    private static HashSet<String> scopes = new HashSet<>();
 
 
+    /**
+     * Private constructor for the singleton
+     */
+    private SymbolTable() {
+        map = new HashMap<>();
+        scopes = new HashSet<>();
+        scopes.add(GLOBAL_SCOPE);
+    }
+
+    /**
+     * Returns the instance of this SymbolTable
+     * @return The instance of this SymbolTable
+     */
     public static SymbolTable getInstance() {
         if (instance == null) {
             instance = new SymbolTable();
-            map = new HashMap<>();
         }
         return instance;
     }
+
 
     /**
      * Inserts a SymbolTableEntry to this SymbolTable
@@ -42,17 +60,46 @@ public class SymbolTable {
             return;
         }
 
+        scopes.add(entry.getScope()); // Add the scope to the HashSet of scopes
         map.put(entry.getId() + entry.getScope(), entry);
     }
 
+
     /**
-     * Deletes a SymbolTableEntry from this SymbolTable, given its ID
-     * @param entryId The ID of the entry to delete
-     * @return The entry that was deleted, or {@code null} if there was no entry with the provided ID
+     * Returns the list of scopes in this SymbolTable
+     * @return The list of scopes in this SymbolTable
      */
-    @Nullable
-    public SymbolTableEntry delete(@NotNull String entryId){
-        return map.remove(entryId);
+    public List<String> getScopes() {
+        if(scopes.isEmpty()) return null;
+        return scopes.stream().toList();
+    }
+
+    /**
+     * Returns the list of {@link SymbolTableVariableEntry} in this SymbolTable, filtered by scope
+     *  e.g. if scope is "main", it will return all the variable entries (not functions) in the main scope
+     * @param scope The scope to filter by
+     * @return The list of {@link SymbolTableVariableEntry} in this SymbolTable, filtered by scope
+     */
+    public ArrayList<SymbolTableVariableEntry> getVariableEntries(String scope){
+        if(!scopes.contains(scope)) return null;
+
+        ArrayList<SymbolTableVariableEntry> entries = new ArrayList<>();
+        for (SymbolTableEntry entry : map.values())
+            if(entry.getScope().equals(scope) && entry instanceof SymbolTableVariableEntry) entries.add((SymbolTableVariableEntry) entry);
+
+        return entries.isEmpty() ? null : entries;
+    }
+
+    /**
+     * Returns the list of {@link SymbolTableVariableEntry} in this SymbolTable
+     * @return The list of {@link SymbolTableVariableEntry} in this SymbolTable
+     */
+    public ArrayList<SymbolTableVariableEntry> getVariableEntries(){
+        ArrayList<SymbolTableVariableEntry> entries = new ArrayList<>();
+        for (SymbolTableEntry entry : map.values())
+            if(entry instanceof SymbolTableVariableEntry) entries.add((SymbolTableVariableEntry) entry);
+
+        return entries.isEmpty() ? null : entries;
     }
 
     /**
@@ -64,16 +111,20 @@ public class SymbolTable {
     public SymbolTableEntry lookup(@NotNull String entryId, @NotNull String scope){
         SymbolTableEntry ste = map.get(entryId + scope);
         if (ste == null) ste = map.get(entryId + GLOBAL_SCOPE);
+
+        //If it's found, and it's a variable, increment the number of times it's used
+        if (ste instanceof SymbolTableVariableEntry)
+            ((SymbolTableVariableEntry) ste).incrementNumTimesUsed();
+
         return ste;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (SymbolTableEntry entry : map.values()) {
-
+        for (SymbolTableEntry entry : map.values())
             sb.append(entry.toString()).append("\n");
-        }
+
         return sb.toString();
     }
 }

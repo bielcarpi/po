@@ -218,13 +218,14 @@ public class ParseTree {
                             "Error, function " + node.getChildren().get(0).getToken().getData() + " has too many arguments",
                             node.getChildren().get(1).getChildren().get(0).getToken().getLine(), node.getChildren().get(1).getChildren().get(0).getToken().getColumn()));
                 } else {
-                    for (ParseTreeNode param : node.getChildren().get(1).getChildren()) {
-                        SymbolTable.getInstance().insert(
-                                new SymbolTableVariableEntry(
-                                        param.getToken().getData(),
-                                        scope,
-                                        TokenType.INT,
-                                        1));
+                    for(int i = 0; i < node.getChildren().get(1).getChildren().size(); i++){
+                        SymbolTableVariableEntry entry = new SymbolTableVariableEntry(
+                                node.getChildren().get(1).getChildren().get(i).getToken().getData(),
+                                scope,
+                                TokenType.INT,
+                                1,
+                                i);
+                        SymbolTable.getInstance().insert(entry);
                     }
                 }
             }

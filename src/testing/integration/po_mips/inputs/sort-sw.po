@@ -33,7 +33,7 @@ func sortVars(var n) {
                         v4 = aux
                     }
                 }
-                default {
+                default -> {
                     if v4 > v5 {
                         aux = v4
                         v4 = v5

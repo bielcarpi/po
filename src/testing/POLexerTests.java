@@ -27,17 +27,17 @@ class POLexerTests {
 
     @Test
     void simpleEmptyFuncMain() {
-        test("src/tests/unit/po_lexer/inputs/simple-empty-func-main.po", "src/tests/unit/po_lexer/outputs/simple-empty-func-main.po");
+        test("src/testing/unit/po_lexer/inputs/simple-empty-func-main.po", "src/testing/unit/po_lexer/outputs/simple-empty-func-main.po");
     }
 
     @Test
     void simpleFuncMainIf() {
-        test("src/tests/unit/po_lexer/inputs/simple-func-main-if.po", "src/tests/unit/po_lexer/outputs/simple-func-main-if.po");
+        test("src/testing/unit/po_lexer/inputs/simple-func-main-if.po", "src/testing/unit/po_lexer/outputs/simple-func-main-if.po");
     }
 
     @Test
     void simpleVariablesAssignation() {
-        test("src/tests/unit/po_lexer/inputs/simple-variable-assignation.po", "src/tests/unit/po_lexer/outputs/simple-variable-assignation.po");
+        test("src/testing/unit/po_lexer/inputs/simple-variable-assignation.po", "src/testing/unit/po_lexer/outputs/simple-variable-assignation.po");
     }
 
 

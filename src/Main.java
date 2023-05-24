@@ -14,7 +14,7 @@ import syntax_analysis.Parser;
 
 public class Main {
 
-    private final static String file = "file.po";
+    private final static String file = "src/testing/unit/po_mips/inputs/switch.po";
     public static void main(String[] args) {
 
         Preprocessor preprocessor = new POPreprocessor();

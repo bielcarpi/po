@@ -285,16 +285,26 @@ public class POTACGenerator implements TACGenerator{
      */
     private void generateTACIf(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
         //We need two new blocks, one if the condition is true and another one if it is false (to jump to the end of the if)
+        TACBlock conditionBlock = new TACBlock(true);
         TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
-        tac.add(scope, trueBlock);
-        tac.add(scope, falseBlock);
+        tac.add(scope, conditionBlock);
+
 
         //Add the condition to the true block
-        trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
+        generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(0), scope);
+        /*trueBlock.add(
+            new TACEntry(
+                scope,
+                node.getChildren().get(0).getChildren().get(0).getToken().getData(),
                 node.getChildren().get(0).getChildren().get(2).getToken().getData(),
                 falseBlock.getBlockNum(),
-                TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+                TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())
+            )
+        );*/
+
+        tac.add(scope, trueBlock);
+        tac.add(scope, falseBlock);
 
         //Traverse the true block & add the entries to the true block
         tacBlock = trueBlock; //Update current block working on
@@ -381,6 +391,46 @@ public class POTACGenerator implements TACGenerator{
         //Add the entry to the block
         tacBlock.add(entry);
     }
+
+    /**
+     *
+     * @param conditionBlock Block where the condition is evaluated
+     * @param trueBlock Block where the code is executed if the condition is true
+     * @param falseBlock Block where  the code is executed if the condition is false
+     * @param node Node to be traversed
+     * @param scope Scope of the block
+     * @param conditionalScope If the condition comes from a nested OR, or nested AND
+     */
+    private void generateTACCondition(@NotNull TACBlock conditionBlock, @NotNull TACBlock trueBlock,
+                                      @NotNull TACBlock falseBlock, @NotNull ParseTreeNode node,
+                                      String scope) {
+        TokenType type = node.getChildren().get(1).getToken().getType();
+        if (type != TokenType.OR && type != TokenType.AND) {
+            conditionBlock.add(new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(2).getToken().getData(),
+                    falseBlock.getBlockNum(),
+                    TACType.GetAntonym(node.getChildren().get(1).getToken().getType())));
+            return;
+        }
+        switch (type) {
+            case OR -> {
+                // OR block will always have an exp on the 1s and 3d node. One of this two nodes is a concrete
+                conditionBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
+                        node.getChildren().get(0).getChildren().get(2).getToken().getData(),
+                        trueBlock.getBlockNum(),
+                        TACType.GetEquivalent(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+                generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(2), scope);
+            }
+            case AND -> {
+                conditionBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
+                        node.getChildren().get(0).getChildren().get(2).getToken().getData(),
+                        falseBlock.getBlockNum(),
+                        TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+                generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(2), scope);
+            }
+        }
+    }
+
 
     /**
      * Traverses the tree and generates TAC for the assignations

@@ -1,0 +1,14 @@
+var a = 1
+var b = 2
+var c = 3
+var d = 4
+
+main() {
+    var e = d + 1
+    var f = e + 1
+    var g = f + 1
+    var h = g + 1
+    var i = h + 1
+
+    print(i)
+}

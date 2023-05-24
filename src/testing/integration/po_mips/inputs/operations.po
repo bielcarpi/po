@@ -1,24 +1,25 @@
-func calculator(var num1, var num2, var op) {
+func calculator(num1, num2, op) {
     var result = 0
 
     if op == 0 {
         result = num1 + num2
     }
-    else if op == 1 {
+    elsif op == 1 {
         result = num1 - num2
     }
-    else if op == 2 {
-        if (num1 <= 65000 and num2 <= 65000) {
+    elsif op == 2 {
+        if num1 <= 65000 and num2 <= 65000 {
             result = num1 * num2
-        } else {
+        }
+        else {
             print("The result can be bigger than 32 bits")
         }
     }
-    else if op == 3 {
+    elsif op == 3 {
         result = num1 / num2
     }
     else {
-        if(op == 4) {
+        if op == 4 {
             print("Mod is not supported yet")
         }
         else {
@@ -26,7 +27,7 @@ func calculator(var num1, var num2, var op) {
         }
     }
 
-    return result
+    ret result
 
 }
 

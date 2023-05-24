@@ -4,7 +4,7 @@ var v3 = 15
 var v4 = 1
 var v5 = 1000
 
-func sortVars(n, g) {
+func sortVars(n) {
     var i = 0
     var j = 0
     var aux = 0
@@ -47,7 +47,7 @@ func sortVars(n, g) {
 
 main() {
     var n = 5 //Num of variables
-    sortVars(n, 7)
+    sortVars(n)
     print(v1)
     print(v2)
     print(v3)

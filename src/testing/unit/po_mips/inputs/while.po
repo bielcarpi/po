@@ -1,0 +1,12 @@
+var cont = 0
+
+main() {
+    while 1 == 1 {
+        if cont == 10 {
+            break
+        }
+
+        cont++
+    }
+    print(cont)
+}

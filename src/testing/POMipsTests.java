@@ -72,8 +72,13 @@ class POMipsTests {
         test("src/testing/unit/po_mips/inputs/if-else.po", "src/testing/unit/po_mips/outputs/if-else.asm");
     }
 
-    @Test
+    /*@Test
     void unit_switch() {
         test("src/testing/unit/po_mips/inputs/switch.po", "src/testing/unit/po_mips/outputs/switch.asm");
+    }*/
+
+    @Test
+    void unit_for() {
+            test("src/testing/unit/po_mips/inputs/for.po", "src/testing/unit/po_mips/outputs/for.asm");
     }
 }

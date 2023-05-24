@@ -135,6 +135,7 @@ public class POParser implements Parser {
         }
 
         ParseTree.cleanTree(tree);
+        System.out.println(tree);
         ParseTree.runTACOptimization(tree);
         System.out.println(tree);
         //try {

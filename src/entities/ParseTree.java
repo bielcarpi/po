@@ -80,13 +80,8 @@ public class ParseTree {
         node.getChildren().removeIf(child -> tokensToRemove.contains(child.getSelf()));
 
         //If we have only one child, we can remove this node and move the child up
-        if(node.getChildren().size() == 1 && !node.getSelf().equals("<llistaArguments>")){
-            if(node.getParent() == null){ //If we are the root, we can just replace the root
-                pt.root = node.getChildren().get(0);
-                pt.root.setParent(null);
-                return;
-            }
-
+        if(node.getChildren().size() == 1 && !node.getSelf().equals("<llistaArguments>") &&
+                node.getParent() != null && !node.getParent().getSelf().equals("<programa>")){
             node.getParent().replaceChild(node, node.getChildren());
         }
 
@@ -186,12 +181,13 @@ public class ParseTree {
                 node.getParent().getChildren().remove(node);
 
                 //If the parent node has a single child now, we can remove it and move its childs up
-                if(node.getParent().getChildren().size() == 1 && node.getParent().getParent() != null)
-                    node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
+                //if(node.getParent().getChildren().size() == 1 && node.getParent().getParent() != null && !node.getParent().getSelf().equals(TokenType.MAIN))
+                //    node.getParent().getParent().replaceChild(node.getParent(), node.getParent().getChildren());
                 return;
-            }
+            } else {
 
-            node.setSelf("assignacio", null);
+                node.setSelf("assignacio", null);
+            }
         }
 
         //If we have a FUNC token, we can substitute it for its first child (ID: the name of the FUNC) and remove the second child (the parameters)

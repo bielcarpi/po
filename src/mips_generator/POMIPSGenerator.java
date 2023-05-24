@@ -88,7 +88,6 @@ public class POMIPSGenerator implements MIPSGenerator {
         entries.sort((o1, o2) -> o2.getNumTimesUsed() - o1.getNumTimesUsed());
 
         //Check which ones of the 8 most used variables are in the global scope
-        System.out.println(entries);
         int globalVariablesInRegisters = 0;
         for(int i = 0; i < 8; i++){
             if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE)){
@@ -96,10 +95,11 @@ public class POMIPSGenerator implements MIPSGenerator {
                 globalVariablesInRegisters++;
             }
         }
+        MIPSConverter.setGlobalRegCount(globalVariablesInRegisters);
 
         //We now have 8-GLOBAL_VARIABLES_IN_REGISTERS registers available for the function scope
         int availableRegisters = 8 - globalVariablesInRegisters;
-        //if(availableRegisters <= 0) return; //If we don't have any registers available, we're done
+        if(availableRegisters <= 0) return; //If we don't have any registers available, we're done
 
         //Get all scopes
         ArrayList<String> scopes = new ArrayList<>(SymbolTable.getInstance().getScopes());

@@ -15,6 +15,10 @@ public class MIPSConverter {
     private static final String RETURN_ADDR_REG = "$ra"; // Register used for return from function
     private static final String[] ARG_REGS = {"$a0", "$a1", "$a2", "$a3"}; // Registers used for arguments
 
+    private static int GLOBAL_REG_COUNT = 0; // Number of registers used for global variables
+
+
+
     private static String assignLiteral(String dest, String literal) {
         return "li " + dest + ", " + literal;
     }
@@ -71,7 +75,67 @@ public class MIPSConverter {
     }
 
     private static String generateCallMIPS(TACEntry tacEntry) {
-        return "\tjal $" + (Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
+        //If we're calling a syscall, we don't need to save the context
+        if(Syscall.isSyscall(tacEntry.getArg1())){
+            return "\tjal $" + Syscall.get(tacEntry.getArg1());
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n");
+
+        //Save the context
+        //Save the current arguments
+        for(int i = 0; i < ARG_REGS.length; i++){
+            sb.append("\tsw ").append(ARG_REGS[i]).append(", ").append(i * 4).append("($sp)\n");
+        }
+
+        //Save the return address
+        sb.append("\tsw $ra, ").append(ARG_REGS.length * 4).append("($sp)\n");
+
+        //Save all the $tx registers in use (except the ones that are global)
+        int registersToSave = GLOBAL_REG_COUNT;
+        int i;
+        for(i = ARG_REGS.length + 1; registersToSave <= 9; i++, registersToSave++){
+            sb.append("\tsw $t").append(registersToSave).append(", ").append(i * 4).append("($sp)\n");
+        }
+
+        //Save the $s registers in use
+        sb.append("\tsw $s0").append(", ").append(i++ * 4).append("($sp)\n");
+        sb.append("\tsw $s1").append(", ").append(i++ * 4).append("($sp)\n");
+        sb.append("\tsw $s2").append(", ").append(i++ * 4).append("($sp)\n");
+
+        //Modify the stack pointer to make room for the new stack frame
+        sb.append("\taddi $sp, $sp, ").append(i * 4).append("\n\n");
+
+
+        //Do the actual call
+        sb.append("\tjal $").append(tacEntry.getArg1());
+
+
+        //Restore the context
+        //Modify the stack pointer and pop the last stack frame
+        sb.append("\n\n\tsubi $sp, $sp, ").append(i * 4).append("\n");
+
+        //Restore the current arguments
+        for(i = 0; i < ARG_REGS.length; i++){
+            sb.append("\tlw ").append(ARG_REGS[i]).append(", ").append(i * 4).append("($sp)\n");
+        }
+
+        //Restore the return address
+        sb.append("\tlw $ra, ").append(ARG_REGS.length * 4).append("($sp)\n");
+
+        //Restore all the $tx registers in use (except the ones that are global)
+        int registersToRestore = GLOBAL_REG_COUNT;
+        for(i = ARG_REGS.length + 1; registersToRestore <= 9; i++, registersToRestore++){
+            sb.append("\tlw $t").append(registersToRestore).append(", ").append(i * 4).append("($sp)\n");
+        }
+
+        //Restore the $s registers
+        sb.append("\tlw $s0").append(", ").append(i++ * 4).append("($sp)\n");
+        sb.append("\tlw $s1").append(", ").append(i++ * 4).append("($sp)\n");
+        sb.append("\tlw $s2").append(", ").append(i * 4).append("($sp)\n");
+
+        return sb.toString();
     }
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
@@ -214,8 +278,23 @@ public class MIPSConverter {
         if(SymbolTable.getInstance().lookup(name, scope) == null)
             return "$" + name;
 
-        int programID = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getRegisterID();
-        //TODO if programID == -1, the variable doesn't have a register. Load it from RAM
-        return "$t" + programID;
+        SymbolTableVariableEntry entry = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope));
+        if(entry == null) return "$" + name;
+
+        int registerID = entry.getRegisterID();
+
+        //If the variable is in a register, return it
+        if(registerID != -1) return "$t" + registerID;
+
+        //Else, load it from memory into a register
+        return null;
+    }
+
+    /**
+     * Sets the global register count
+     * @param count The global register count
+     */
+    public static void setGlobalRegCount(int count) {
+        GLOBAL_REG_COUNT = count;
     }
 }

@@ -22,6 +22,12 @@ func hola() {
     print(firstTerm)
 }
 
+func adeu(){
+    n++
+    n++
+}
+
 main(){
     hola()
+    adeu()
 }

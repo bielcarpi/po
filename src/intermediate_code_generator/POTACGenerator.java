@@ -163,6 +163,7 @@ public class POTACGenerator implements TACGenerator{
         //If we have params, add all childs as parameters
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
+                // TODO: here only supported params of type ID
                 tacBlock.add(new TACEntry(scope, null,
                         node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
             }

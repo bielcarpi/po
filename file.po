@@ -21,16 +21,16 @@ main() {
     a = multiplicarNumeros(8, 0)
 
     t1 = 0 + t2
-    t2 = t2 + 0
-    t1 = 0 - t2
-    t2 = t2 - 0
-    t1 = 0 * t2
-    t2 = t2 * 0
-    t1 = 0 / t2
-    t2 = t2 / 0
-    t1 = 0 * t2
-    t2 = t2 * 0
-    t1 = 0 / t2
+    t2 = t1 + 0
+    t1 = 0 + t2
+    t2 = t1 + 0
+    t1 = 0 + t2
+    t2 = t1 + 0
+    t1 = 0 + t2
+    t2 = t1 + 0
+    t1 = 0 + t2
+    t2 = t1 + 0
+
 
     print(a)
     for a = 0, a < 10, a++ {

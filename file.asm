@@ -75,8 +75,8 @@ $global:
 
 $main:
 	li $t3, 0
-	li $t2, 0
 	li $t1, 0
+	li $t2, 0
 
 	sw $a0, 0($sp)
 	sw $a1, 4($sp)
@@ -123,39 +123,16 @@ $main:
 	lw $s2, 64($sp)
 
 	move $t0, $v0
-	li $s1, t2
-	add $s0, $s1, $t1
-	move $t2, $s0
-	li $s1, 0
-	add $s0, $t1, $s1
-	move $t1, $s0
-	li $s1, t2
-	sub $s0, $s1, $t1
-	move $t2, $s0
-	li $s1, 0
-	sub $s0, $t1, $s1
-	move $t1, $s0
-	li $s1, t2
-	mul $s0, $s1, $t1
-	move $t2, $s0
-	li $s1, 0
-	mul $s0, $t1, $s1
-	move $t1, $s0
-	li $s1, t2
-	div $s0, $s1, $t1
-	move $t2, $s0
-	li $s1, 0
-	div $s0, $t1, $s1
-	move $t1, $s0
-	li $s1, t2
-	mul $s0, $s1, $t1
-	move $t2, $s0
-	li $s1, 0
-	mul $s0, $t1, $s1
-	move $t1, $s0
-	li $s1, t2
-	div $s0, $s1, $t1
-	move $t2, $s0
+	move $t1, $t2
+	move $t2, $t1
+	move $t1, $t2
+	move $t2, $t1
+	move $t1, $t2
+	move $t2, $t1
+	move $t1, $t2
+	move $t2, $t1
+	move $t1, $t2
+	move $t2, $t1
 
 	sw $a0, 0($sp)
 	sw $a1, 4($sp)

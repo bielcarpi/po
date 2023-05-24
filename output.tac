@@ -33,28 +33,16 @@ main:
 	call multiplicarNumeros
 	loadc
 	a = v0
-	s0 = 0 + t2
-	t1 = s0
-	s0 = t2 + 0
-	t2 = s0
-	s0 = 0 - t2
-	t1 = s0
-	s0 = t2 - 0
-	t2 = s0
-	s0 = 0 * t2
-	t1 = s0
-	s0 = t2 * 0
-	t2 = s0
-	s0 = 0 / t2
-	t1 = s0
-	s0 = t2 / 0
-	t2 = s0
-	s0 = 0 * t2
-	t1 = s0
-	s0 = t2 * 0
-	t2 = s0
-	s0 = 0 / t2
-	t1 = s0
+	t1 = t2
+	t2 = t1
+	t1 = t2
+	t2 = t1
+	t1 = t2
+	t2 = t1
+	t1 = t2
+	t2 = t1
+	t1 = t2
+	t2 = t1
 	savec
 	addp 0 a
 	call print

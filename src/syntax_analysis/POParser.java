@@ -137,7 +137,9 @@ public class POParser implements Parser {
         ParseTree.cleanTree(tree);
         ParseTree.runTACOptimization(tree);
         System.out.println(tree);
-        semanticAnalyzer.validateParseTree(tree);
+        try {
+            semanticAnalyzer.validateParseTree(tree);
+        } catch (RuntimeException ignored) {}
         ErrorManager.getInstance().printErrors();
         return tree;
     }

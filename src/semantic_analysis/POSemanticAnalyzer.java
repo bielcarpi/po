@@ -101,8 +101,8 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                 if (ptn.getChildren() != null) {
                     exploreTACOTree(ptn, scope);
                 }
-            } else if (ptn.getSelf() == TokenType.ID){ // Function call without assignment
-                SymbolTableFunctionEntry ste = (SymbolTableFunctionEntry) SymbolTable.getInstance().lookup(ptn.getToken().getData(), scope);
+            } else if (ptn.getSelf() == TokenType.ID &&
+                    SymbolTable.getInstance().lookup(ptn.getToken().getData(), scope) instanceof SymbolTableFunctionEntry ste){ // Function call without assignment
                 if (ste == null) {
                     // If function call is a system call, ignore semantics
                     if (Syscall.isSyscall(ptn.getToken().getData())) {
@@ -113,12 +113,13 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                             ptn.getToken().getLine(), ptn.getToken().getColumn()));
                     continue;
                 }
-                if (ste.getArguments() != ptn.getChildren().size()) {
+                if (ste.getArguments() != (ptn.getChildren() == null ? 0: ptn.getChildren().size())) {
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
                             "Error, invalid number of arguments for function: " + ptn.getToken().getData(),
                             ptn.getToken().getLine(), ptn.getToken().getColumn()));
                     continue;
                 }
+                if(ste.getArguments() == 0) continue;
                 for (ParseTreeNode node : ptn.getChildren()) {
                     if (node.getSelf().equals("exp")) {
                         TokenType type = validateAssignacio(node, scope);

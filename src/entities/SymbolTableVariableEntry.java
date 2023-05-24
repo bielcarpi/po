@@ -25,6 +25,7 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      */
     private int numTimesUsed;
 
+    private boolean isParam;
 
     /**
      * SymbolTableVariableEntry Constructor
@@ -36,6 +37,24 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
         super(id, scope, type);
         this.size = size;
         registerID = -1;
+        numTimesUsed = 0;
+        isParam = false;
+    }
+
+    /**
+     * SymbolTableVariableEntry Constructor
+     * @param id The ID of the entry
+     * @param scope The scope of the Variable
+     * @param type The type of the Variable
+     * @param size The size of the variable (or 1 if it is not an array)
+     * @param paramNum The number of the parameter (if it is a parameter of a function)
+     */
+    public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type,
+                                    final int size, final int paramNum) {
+        super(id, scope, type);
+        this.size = size;
+        registerID = paramNum;
+        isParam = true;
         numTimesUsed = 0;
     }
 
@@ -78,10 +97,19 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
         numTimesUsed++;
     }
 
+    /**
+     * Returns whether this variable is a parameter of a function or not
+     * @return Whether this variable is a parameter of a function or not
+     */
+    public boolean isParameter(){
+        return isParam;
+    }
+
 
     @Override
     public String toString() {
         return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope()
-                + ", Times Used: " + numTimesUsed + ", Register Assigned: " + (registerID == -1 ? "NULL" : "$t" + registerID) + "\n";
+                + ", Times Used: " + numTimesUsed + ", Register Assigned: " +
+                (isParameter() ? "$a" + registerID : (registerID == -1 ? "NULL" : "$t" + registerID) + "\n");
     }
 }

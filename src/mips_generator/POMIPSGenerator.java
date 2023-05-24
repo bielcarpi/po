@@ -89,7 +89,7 @@ public class POMIPSGenerator implements MIPSGenerator {
 
         //Check which ones of the 8 most used variables are in the global scope
         int globalVariablesInRegisters = 0;
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 8 && i < entries.size(); i++){
             if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE)){
                 entries.get(i).setRegisterID(globalVariablesInRegisters);
                 globalVariablesInRegisters++;
@@ -117,6 +117,7 @@ public class POMIPSGenerator implements MIPSGenerator {
 
             //Assign registers to the 8-GLOBAL_VARIABLES_IN_REGISTERS most used variables in the scope
             for(SymbolTableVariableEntry entry : scopeEntries){
+                if(entry.isParameter()) continue; //Parameters are already assigned a register
                 if(scopeAssignedRegisters == availableRegisters) break;
                 entry.setRegisterID(globalVariablesInRegisters + scopeAssignedRegisters);
                 scopeAssignedRegisters++;

@@ -151,10 +151,11 @@ public class POTACGenerator implements TACGenerator{
      * @param tac the TAC data structure
      */
     private void generateTACFuncCall(@NotNull ParseTreeNode node, @NotNull TAC tac){
-        //If it's a syscall and we haven't detected it yet, add it to the syscalls list
+        //If it's a syscall, and we haven't detected it yet, add it to the syscalls list
         if(Syscall.isSyscall(node.getToken().getData()) && !syscallsList.contains(Syscall.get(node.getToken().getData())))
             syscallsList.add(Syscall.get(node.getToken().getData()));
 
+        tacBlock.add(new TACEntry(-1, TACType.SAVE_CONTEXT));
         //If we have params, add all childs as parameters
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
@@ -163,6 +164,7 @@ public class POTACGenerator implements TACGenerator{
             }
         }
         tacBlock.add(new TACEntry(null, null, node.getToken().getData(), TACType.CALL));
+        tacBlock.add(new TACEntry(-1, TACType.LOAD_CONTEXT));
     }
 
     /**

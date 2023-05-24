@@ -1,18 +1,13 @@
 var n = 10 //Num of terms $t0
 var firstTerm = 0 //$t1
 var secondTerm //$t2
-var r
-var adeu
-var ktal
-var mm
-var kkk
-var bbb
+var i
+var nextTerm
 
-func hola() {
+func hola(a, b, c) {
+    n = a
     secondTerm = 1
-    var nextTerm
 
-    var i //$t3
     for i = 0, i < n, i++ {
         nextTerm = firstTerm + secondTerm
         firstTerm = secondTerm
@@ -28,6 +23,6 @@ func adeu(){
 }
 
 main(){
-    hola()
+    hola(8, 5, 7)
     adeu()
 }

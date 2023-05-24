@@ -17,6 +17,8 @@ public class MIPSConverter {
 
     private static int GLOBAL_REG_COUNT = 0; // Number of registers used for global variables
 
+    private static int lastStackPointer = 0; // Last stack pointer used
+
 
 
     private static String assignLiteral(String dest, String literal) {
@@ -49,41 +51,52 @@ public class MIPSConverter {
             case ADD_PARAM -> {
                 return generateAddParamMIPS(tacEntry);
             }
+            case SAVE_CONTEXT -> {
+                return generateSaveContextMIPS(tacEntry);
+            }
+            case LOAD_CONTEXT -> {
+                return generateLoadContextMIPS(tacEntry);
+            }
             default -> {
                 return null;
             }
         }
     }
 
-    private static String generateSyscallMIPS(TACEntry tacEntry) {
-        return "\tli $v0, " + tacEntry.getBlockNum() + "\n\tsyscall";
-    }
-
-
-    private static String generateAddParamMIPS(TACEntry tacEntry){
+    private static String generateLoadContextMIPS(TACEntry tacEntry) {
         StringBuilder sb = new StringBuilder();
-        if(isLiteral(tacEntry.getArg2())){
-            //If arg1 is a literal
-            sb.append("\t").append(assignLiteral(ARG_REGS[tacEntry.getBlockNum()], tacEntry.getArg2()));
+
+        //Restore the context
+        //Modify the stack pointer and pop the last stack frame
+        int i = lastStackPointer;
+        sb.append("\n\n\tsubi $sp, $sp, ").append(i * 4).append("\n");
+
+        //Restore the current arguments
+        for(i = 0; i < ARG_REGS.length; i++){
+            sb.append("\tlw ").append(ARG_REGS[i]).append(", ").append(i * 4).append("($sp)\n");
         }
-        else{
-            //If arg1 is a variable
-            sb.append("\tmove ").append(ARG_REGS[tacEntry.getBlockNum()]).append(", ")
-                    .append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb));
+
+        //Restore the return address
+        sb.append("\tlw $ra, ").append(ARG_REGS.length * 4).append("($sp)\n");
+
+        //Restore all the $tx registers in use (except the ones that are global)
+        int registersToRestore = GLOBAL_REG_COUNT;
+        for(i = ARG_REGS.length + 1; registersToRestore <= 9; i++, registersToRestore++){
+            sb.append("\tlw $t").append(registersToRestore).append(", ").append(i * 4).append("($sp)\n");
         }
+
+        //Restore the $s registers
+        sb.append("\tlw $s0").append(", ").append(i++ * 4).append("($sp)\n");
+        sb.append("\tlw $s1").append(", ").append(i++ * 4).append("($sp)\n");
+        sb.append("\tlw $s2").append(", ").append(i * 4).append("($sp)\n");
+
         return sb.toString();
     }
 
-    private static String generateCallMIPS(TACEntry tacEntry) {
-        //If we're calling a syscall, we don't need to save the context
-        if(Syscall.isSyscall(tacEntry.getArg1())){
-            return "\tjal $" + Syscall.get(tacEntry.getArg1());
-        }
-
+    private static String generateSaveContextMIPS(TACEntry tacEntry) {
         StringBuilder sb = new StringBuilder();
         sb.append("\n");
 
-        //Save the context
         //Save the current arguments
         for(int i = 0; i < ARG_REGS.length; i++){
             sb.append("\tsw ").append(ARG_REGS[i]).append(", ").append(i * 4).append("($sp)\n");
@@ -107,35 +120,32 @@ public class MIPSConverter {
         //Modify the stack pointer to make room for the new stack frame
         sb.append("\taddi $sp, $sp, ").append(i * 4).append("\n\n");
 
-
-        //Do the actual call
-        sb.append("\tjal $").append(tacEntry.getArg1());
-
-
-        //Restore the context
-        //Modify the stack pointer and pop the last stack frame
-        sb.append("\n\n\tsubi $sp, $sp, ").append(i * 4).append("\n");
-
-        //Restore the current arguments
-        for(i = 0; i < ARG_REGS.length; i++){
-            sb.append("\tlw ").append(ARG_REGS[i]).append(", ").append(i * 4).append("($sp)\n");
-        }
-
-        //Restore the return address
-        sb.append("\tlw $ra, ").append(ARG_REGS.length * 4).append("($sp)\n");
-
-        //Restore all the $tx registers in use (except the ones that are global)
-        int registersToRestore = GLOBAL_REG_COUNT;
-        for(i = ARG_REGS.length + 1; registersToRestore <= 9; i++, registersToRestore++){
-            sb.append("\tlw $t").append(registersToRestore).append(", ").append(i * 4).append("($sp)\n");
-        }
-
-        //Restore the $s registers
-        sb.append("\tlw $s0").append(", ").append(i++ * 4).append("($sp)\n");
-        sb.append("\tlw $s1").append(", ").append(i++ * 4).append("($sp)\n");
-        sb.append("\tlw $s2").append(", ").append(i * 4).append("($sp)\n");
-
+        lastStackPointer = i;
         return sb.toString();
+    }
+
+    private static String generateSyscallMIPS(TACEntry tacEntry) {
+        return "\tli $v0, " + tacEntry.getBlockNum() + "\n\tsyscall";
+    }
+
+
+    private static String generateAddParamMIPS(TACEntry tacEntry){
+        StringBuilder sb = new StringBuilder();
+        if(isLiteral(tacEntry.getArg2())){
+            //If arg1 is a literal
+            sb.append("\t").append(assignLiteral(ARG_REGS[tacEntry.getBlockNum()], tacEntry.getArg2()));
+        }
+        else{
+            //If arg1 is a variable
+            sb.append("\tmove ").append(ARG_REGS[tacEntry.getBlockNum()]).append(", ")
+                    .append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb));
+        }
+        return sb.toString();
+    }
+
+    private static String generateCallMIPS(TACEntry tacEntry) {
+        //Do the actual call
+        return "\tjal $" + (Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
     }
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
@@ -283,8 +293,9 @@ public class MIPSConverter {
 
         int registerID = entry.getRegisterID();
 
-        //If the variable is in a register, return it
-        if(registerID != -1) return "$t" + registerID;
+        //If the variable is in a register, return it (either $a if it is a parameter or $t)
+        if(registerID != -1)
+            return entry.isParameter() ? "$a" + registerID : "$t" + registerID;
 
         //Else, load it from memory into a register
         return null;

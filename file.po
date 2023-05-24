@@ -1,28 +1,16 @@
-var n = 10 //Num of terms $t0
-var firstTerm = 0 //$t1
-var secondTerm //$t2
-var i
-var nextTerm
+var c = 0
 
-func hola(a, b, c) {
-    n = a
-    secondTerm = 1
-
-    for i = 0, i < n, i++ {
-        nextTerm = firstTerm + secondTerm
-        firstTerm = secondTerm
-        secondTerm = nextTerm
+func multiplicarNumeros(num, b) {
+    num--
+    if num >= 1 {
+        num = num * b
+        ret multiplicarNumeros(num, 1)
     }
-
-    print(firstTerm)
+    else {
+        ret 1
+    }
 }
 
-func adeu(){
-    n++
-    n++
-}
-
-main(){
-    hola(8, 5, 7)
-    adeu()
+main() {
+    multiplicarNumeros(3, 0)
 }

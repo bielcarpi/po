@@ -129,7 +129,7 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                                     ptn.getToken().getLine(), ptn.getToken().getColumn()));
                         }
                     } else {
-                        if (node.getSelf() != TokenType.INT) {
+                        if (node.getSelf() != TokenType.INT && node.getSelf() != TokenType.ID) {
                             ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
                                     "Error, invalid argument type for function: " + ptn.getToken().getData(),
                                     ptn.getToken().getLine(), ptn.getToken().getColumn()));

@@ -266,7 +266,7 @@ public class MIPSConverter {
         } else if(!isLiteral(tacEntry.getArg1()) && isLiteral(tacEntry.getArg2())){
             // 3. If only arg2 is constant
             sb.append(assignLiteral(WORK_REG_2, tacEntry.getArg2())).append("\n\t");
-            sb.append(operationType).append(WORK_REG_1).append(", ").append(WORK_REG_2).append(", ").append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb)).append("\n\t");
+            sb.append(operationType).append(WORK_REG_1).append(", ").append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb)).append(", ").append(WORK_REG_2).append("\n\t");
         } else {
             // 4. If both are variables
             sb.append(operationType).append(WORK_REG_1).append(", ")

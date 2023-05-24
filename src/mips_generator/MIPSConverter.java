@@ -8,9 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class MIPSConverter {
 
-    private static final String WORK_REG_1 = "$t9"; // Working register used for arg1
-    private static final String WORK_REG_2 = "$t8"; // Working register used for arg1
-    private static final String WORK_REG_3  = "$t7"; // Working register used for result
+    private static final String WORK_REG_1 = "$s0"; // Working register used for arg1
+    private static final String WORK_REG_2 = "$s1"; // Working register used for arg1
+    private static final String WORK_REG_3  = "$s2"; // Working register used for result
     private static final String RETURN_REG = "$v0"; // Register used for return values
     private static final String RETURN_ADDR_REG = "$ra"; // Register used for return from function
     private static final String[] ARG_REGS = {"$a0", "$a1", "$a2", "$a3"}; // Registers used for arguments

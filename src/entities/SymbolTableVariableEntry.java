@@ -81,6 +81,7 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
 
     @Override
     public String toString() {
-        return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope() + ", Times Used: " + numTimesUsed + "\n";
+        return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope()
+                + ", Times Used: " + numTimesUsed + ", Register Assigned: " + (registerID == -1 ? "NULL" : "$t" + registerID) + "\n";
     }
 }

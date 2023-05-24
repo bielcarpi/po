@@ -21,7 +21,7 @@ public class POTACGenerator implements TACGenerator{
 
     private final TACOptimizer tacOptimizer;
     private final boolean outputFile;
-    private static final String WORK_REG = "t9";
+    private static final String WORK_REG = "s0";
     private TACBlock tacBlock; //Current block aux for the traverseTree method
 
     private final ArrayList<Syscall> syscallsList; //Syscalls used in the program. They will be added as separate functions

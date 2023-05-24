@@ -7,12 +7,16 @@ global:
 	firstTerm = 0
 
 main:
+	call hola
+	ret 0
+
+hola:
 	secondTerm = 1
 	i = 0
 E0:
 	if i >= n goto E1
-	t9 = firstTerm + secondTerm
-	nextTerm = t9
+	s0 = firstTerm + secondTerm
+	nextTerm = s0
 	firstTerm = secondTerm
 	secondTerm = nextTerm
 	i = i + 1

@@ -1,8 +1,14 @@
 var n = 10 //Num of terms $t0
 var firstTerm = 0 //$t1
 var secondTerm //$t2
+var r
+var adeu
+var ktal
+var mm
+var kkk
+var bbb
 
-main() {
+func hola() {
     secondTerm = 1
     var nextTerm
 
@@ -14,4 +20,8 @@ main() {
     }
 
     print(firstTerm)
+}
+
+main(){
+    hola()
 }

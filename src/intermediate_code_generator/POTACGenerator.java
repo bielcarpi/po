@@ -290,18 +290,8 @@ public class POTACGenerator implements TACGenerator{
         TACBlock falseBlock = new TACBlock(true);
         tac.add(scope, conditionBlock);
 
-
-        //Add the condition to the true block
+        //Generate the condition
         generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(0), scope);
-        /*trueBlock.add(
-            new TACEntry(
-                scope,
-                node.getChildren().get(0).getChildren().get(0).getToken().getData(),
-                node.getChildren().get(0).getChildren().get(2).getToken().getData(),
-                falseBlock.getBlockNum(),
-                TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())
-            )
-        );*/
 
         tac.add(scope, trueBlock);
         tac.add(scope, falseBlock);
@@ -327,16 +317,15 @@ public class POTACGenerator implements TACGenerator{
 
     private void generateTACElsif(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope, int blockAfterIf){
         //We just need another new block (to jump if the condition is false)
-
+        TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
+        tac.add(scope, trueBlock);
         tac.add(scope, falseBlock);
 
         //If it is an ELSIF
         if(node.getToken().getType() == TokenType.ELSIF){
-            tacBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
-                    node.getChildren().get(0).getChildren().get(2).getToken().getData(),
-                    falseBlock.getBlockNum(),
-                    TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+            generateTACCondition(tacBlock, trueBlock, falseBlock, node.getChildren().get(0), scope);
+            tacBlock = trueBlock; //Update current block working on
             traverseTree(node.getChildren().get(1), tac, scope);
 
             //The last entry of this block should jump to the end of the if
@@ -393,13 +382,12 @@ public class POTACGenerator implements TACGenerator{
     }
 
     /**
-     *
+     * This function generates TAC code for a conditional with up to 2 conditions
      * @param conditionBlock Block where the condition is evaluated
      * @param trueBlock Block where the code is executed if the condition is true
      * @param falseBlock Block where  the code is executed if the condition is false
      * @param node Node to be traversed
      * @param scope Scope of the block
-     * @param conditionalScope If the condition comes from a nested OR, or nested AND
      */
     private void generateTACCondition(@NotNull TACBlock conditionBlock, @NotNull TACBlock trueBlock,
                                       @NotNull TACBlock falseBlock, @NotNull ParseTreeNode node,

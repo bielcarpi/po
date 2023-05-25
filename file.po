@@ -1,43 +1,9 @@
-var a = 0
+var b = 0
 
-func multiplicarNumeros(num, b) {
-    num--
-
-    var i
-    var j
-    for i = 0, i < 10, i++ {
-        for j = 0, j < 10, j++ {
-            b = i * j
-            while i == 0 {
-                continue
-                break
-            }
-        }
-    }
-
-    ret b
-}
-
-main() {
-    var b = 0
-    var t1 = 0
-    var t2 = 0
-    a = multiplicarNumeros(8, 0)
-
-    t1 = t1 + 0
-    t1 = 0 + t1
-    t1 = t1 - 0
-    t1 = 0 - t1
-    t1 = t1 * 0
-    t1 = 0 * t1
-    t1 = t1 / 0
-    t1 = 0 / t1
-    t1 = 0 / 0
-
-
-    print(a)
-    for a = 0, a < 10, a++ {
-        break
-        //you can use continue too
-    }
+main(){
+    prints("Input a number: ")
+    b = read()
+    prints("\nThe number introduced multiplied by 2 is: ")
+    b = b * 2
+    print(b)
 }

@@ -26,8 +26,24 @@ public class POMIPSGenerator implements MIPSGenerator {
         try (PrintWriter out = new PrintWriter(fileName)) {
             entries = tac.getEntries(); // Get the map of function names to TACBlocks
 
-            // TODO Add the .data section
             //Check if we have strings to add to the .data section
+            ArrayList<SymbolTableVariableEntry> vars = SymbolTable.getInstance().getVariableEntries();
+            if(vars != null && vars.size() > 0){
+                StringBuilder sb = new StringBuilder();
+                sb.append(".data\n");
+                boolean written = false;
+                for(SymbolTableVariableEntry entry : vars){
+                    if(entry.getId().startsWith(SymbolTable.INTERNAL_PREFIX)){
+                        sb.append("\t").append(entry.getId()).
+                                append(": .asciiz ").
+                                append(entry.getStringValue()).
+                                append("\n");
+                        written = true;
+                    }
+                }
+
+                if(written) out.println(sb);
+            }
 
 
 
@@ -86,6 +102,7 @@ public class POMIPSGenerator implements MIPSGenerator {
     private void assignRegisters(){
         //Check most used variables in the program
         ArrayList<SymbolTableVariableEntry> entries = SymbolTable.getInstance().getVariableEntries();
+        if(entries == null || entries.isEmpty()) return;
 
         //Sort the entries by num of uses
         entries.sort((o1, o2) -> o2.getNumTimesUsed() - o1.getNumTimesUsed());
@@ -93,7 +110,8 @@ public class POMIPSGenerator implements MIPSGenerator {
         //Check which ones of the 8 most used variables are in the global scope
         int globalVariablesInRegisters = 0;
         for(int i = 0; i < 8 && i < entries.size(); i++){
-            if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE)){
+            if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE) &&
+                    !entries.get(i).getId().startsWith(SymbolTable.INTERNAL_PREFIX)){
                 entries.get(i).setRegisterID(globalVariablesInRegisters);
                 globalVariablesInRegisters++;
             }
@@ -120,7 +138,7 @@ public class POMIPSGenerator implements MIPSGenerator {
 
             //Assign registers to the 8-GLOBAL_VARIABLES_IN_REGISTERS most used variables in the scope
             for(SymbolTableVariableEntry entry : scopeEntries){
-                if(entry.isParameter()) continue; //Parameters are already assigned a register
+                if(entry.isParameter() || entry.getId().startsWith(SymbolTable.INTERNAL_PREFIX)) continue; //Parameters are already assigned a register
                 if(scopeAssignedRegisters == availableRegisters) break;
                 entry.setRegisterID(globalVariablesInRegisters + scopeAssignedRegisters);
                 scopeAssignedRegisters++;

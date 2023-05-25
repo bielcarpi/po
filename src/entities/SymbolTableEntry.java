@@ -37,6 +37,14 @@ public abstract class SymbolTableEntry {
     }
 
     /**
+     * Returns the type of the entry
+     * @return The type of the entry
+     */
+    public TokenType entryType() {
+        return TokenType.UNKNOWN;
+    }
+
+    /**
      * Returns the ID of the entry
      * @return The ID of the entry
      */
@@ -59,7 +67,6 @@ public abstract class SymbolTableEntry {
      * @return The type of the entry
      */
     public TokenType getType() {
-
         return type;
     }
 

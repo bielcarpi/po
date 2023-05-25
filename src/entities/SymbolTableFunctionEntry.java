@@ -33,6 +33,11 @@ public class SymbolTableFunctionEntry extends SymbolTableEntry{
     }
 
     @Override
+    public TokenType entryType() {
+        return TokenType.FUNC;
+    }
+
+    @Override
     public String toString() {
         return "[Function] ID: " + super.getId() + ", Num. Args: " + this.arguments + ", Ret. Type: " + super.getType() + ", Scope: " + super.getScope();
     }

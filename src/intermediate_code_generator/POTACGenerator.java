@@ -5,7 +5,6 @@ import intermediate_code_optimizer.TACOptimizer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.table.TableCellEditor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ public class POTACGenerator implements TACGenerator{
     private final boolean outputFile;
     private static final String WORK_REG = "s0";
     private TACBlock tacBlock; //Current block aux for the traverseTree method
+    private TACBlock breakBlock; //Block to jump to when a break is found
 
     private final ArrayList<Syscall> syscallsList; //Syscalls used in the program. They will be added as separate functions
 
@@ -47,6 +47,10 @@ public class POTACGenerator implements TACGenerator{
             tacBlock = new TACBlock(false);
             tac.add(pt.getRoot().getToken().getData(), tacBlock);
             traverseTree(pt.getRoot(), tac, pt.getRoot().getToken().getData()); //Traverse the function and generate TAC inside the block
+
+            //Add a return at the end of the function if it doesn't have one
+            if(tacBlock.getEntries().isEmpty() || tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
+                tacBlock.add(new TACEntry(SymbolTable.MAIN_SCOPE, null, "0", TACType.RET));
         }
         else {
             //New block for the global assignations
@@ -78,8 +82,10 @@ public class POTACGenerator implements TACGenerator{
         if(!syscallsList.isEmpty()){
             for (Syscall syscall: syscallsList) {
                 TACBlock syscallBlock = new TACBlock(false);
-                syscallBlock.add(new TACEntry(Syscall.getID(syscall), TACType.SYSCALL));
-                syscallBlock.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
+                //For each entry that the syscall requires, add it to the block
+                for(TACEntry entry: syscall.getTACEntries())
+                    syscallBlock.add(entry);
+
                 tac.add(syscall.name(), syscallBlock);
             }
         }
@@ -124,7 +130,8 @@ public class POTACGenerator implements TACGenerator{
                     return -1;
                 }
                 case BREAK -> { //Converted to GOTO
-                    tacBlock.add(new TACEntry(tacBlock.getBlockNum()+1, TACType.GOTO));
+                    if (breakBlock != null)
+                        tacBlock.add(new TACEntry(breakBlock.getBlockNum(), TACType.GOTO));
                     return -1;
                 }
                 case CONTINUE -> { //Converted to GOTO
@@ -163,6 +170,7 @@ public class POTACGenerator implements TACGenerator{
         //If we have params, add all childs as parameters
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
+                // TODO: here only supported params of type ID
                 tacBlock.add(new TACEntry(scope, null,
                         node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
             }
@@ -225,17 +233,21 @@ public class POTACGenerator implements TACGenerator{
      */
     private void generateTACWhile(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
         //We need two new blocks, one if the condition is true and another one if it is false (to jump to the end of the if)
+        TACBlock conditionBlock = new TACBlock(true);
         TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
+        tac.add(scope, conditionBlock);
         tac.add(scope, trueBlock);
 
-        trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
+        generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(0), scope);
+        /*trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
                 node.getChildren().get(0).getChildren().get(2).getToken().getData(),
                 falseBlock.getBlockNum(),
-                TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+                TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));*/
 
         //Traverse the true block & add the entries
         tacBlock = trueBlock;
+        breakBlock = falseBlock;
         traverseTree(node.getChildren().get(1), tac, scope);
 
         //Add the jump to the condition
@@ -244,6 +256,7 @@ public class POTACGenerator implements TACGenerator{
         //Add the false block to the end of the true block
         tac.add(scope, falseBlock);
         tacBlock = falseBlock;
+        breakBlock = null;
     }
 
     /**
@@ -267,6 +280,7 @@ public class POTACGenerator implements TACGenerator{
 
         //Traverse the true block & add the entries to the true block
         tacBlock = trueBlock;
+        breakBlock = falseBlock;
         traverseTree(node.getChildren().get(3), tac, scope);
 
         //Add the increment to the end of the true block
@@ -278,6 +292,7 @@ public class POTACGenerator implements TACGenerator{
         //Add the false block to the end of the true block
         tac.add(scope, falseBlock);
         tacBlock = falseBlock;
+        breakBlock = null;
     }
 
 
@@ -289,15 +304,15 @@ public class POTACGenerator implements TACGenerator{
      */
     private int generateTACIf(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope){
         //We need two new blocks, one if the condition is true and another one if it is false (to jump to the end of the if)
+        TACBlock conditionBlock = new TACBlock(true);
         TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
-        tac.add(scope, trueBlock);
+        tac.add(scope, conditionBlock);
 
-        //Add the condition to the true block
-        trueBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
-                node.getChildren().get(0).getChildren().get(2).getToken().getData(),
-                falseBlock.getBlockNum(),
-                TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+        //Generate the condition
+        generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(0), scope);
+
+        tac.add(scope, trueBlock);
 
         //Traverse the true block & add the entries to the true block
         tacBlock = trueBlock; //Update current block working on
@@ -324,16 +339,15 @@ public class POTACGenerator implements TACGenerator{
 
     private void generateTACElsif(@NotNull ParseTreeNode node, @NotNull TAC tac, @NotNull String scope, int blockAfterIf){
         //We just need another new block (to jump if the condition is false)
-
+        TACBlock trueBlock = new TACBlock(true);
         TACBlock falseBlock = new TACBlock(true);
+        tac.add(scope, trueBlock);
         tac.add(scope, falseBlock);
 
         //If it is an ELSIF
         if(node.getToken().getType() == TokenType.ELSIF){
-            tacBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
-                    node.getChildren().get(0).getChildren().get(2).getToken().getData(),
-                    falseBlock.getBlockNum(),
-                    TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+            generateTACCondition(tacBlock, trueBlock, falseBlock, node.getChildren().get(0), scope);
+            tacBlock = trueBlock; //Update current block working on
             traverseTree(node.getChildren().get(1), tac, scope);
 
             //The last entry of this block should jump to the end of the if
@@ -372,7 +386,7 @@ public class POTACGenerator implements TACGenerator{
         }
         else{ //x = z
             //If z is a function call, we need to call it
-            if(SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
+            if(Syscall.isSyscall(node.getChildren().get(2).getToken().getData()) || SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
                 generateTACFuncCall(node.getChildren().get(2), scope);
                 entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
                         "v0",
@@ -388,6 +402,45 @@ public class POTACGenerator implements TACGenerator{
         //Add the entry to the block
         tacBlock.add(entry);
     }
+
+    /**
+     * This function generates TAC code for a conditional with up to 2 conditions
+     * @param conditionBlock Block where the condition is evaluated
+     * @param trueBlock Block where the code is executed if the condition is true
+     * @param falseBlock Block where  the code is executed if the condition is false
+     * @param node Node to be traversed
+     * @param scope Scope of the block
+     */
+    private void generateTACCondition(@NotNull TACBlock conditionBlock, @NotNull TACBlock trueBlock,
+                                      @NotNull TACBlock falseBlock, @NotNull ParseTreeNode node,
+                                      String scope) {
+        TokenType type = node.getChildren().get(1).getToken().getType();
+        if (type != TokenType.OR && type != TokenType.AND) {
+            conditionBlock.add(new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
+                    node.getChildren().get(2).getToken().getData(),
+                    falseBlock.getBlockNum(),
+                    TACType.GetAntonym(node.getChildren().get(1).getToken().getType())));
+            return;
+        }
+        switch (type) {
+            case OR -> {
+                // OR block will always have an exp on the 1s and 3d node. One of this two nodes is a concrete
+                conditionBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
+                        node.getChildren().get(0).getChildren().get(2).getToken().getData(),
+                        trueBlock.getBlockNum(),
+                        TACType.GetEquivalent(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+                generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(2), scope);
+            }
+            case AND -> {
+                conditionBlock.add(new TACEntry(scope, node.getChildren().get(0).getChildren().get(0).getToken().getData(),
+                        node.getChildren().get(0).getChildren().get(2).getToken().getData(),
+                        falseBlock.getBlockNum(),
+                        TACType.GetAntonym(node.getChildren().get(0).getChildren().get(1).getToken().getType())));
+                generateTACCondition(conditionBlock, trueBlock, falseBlock, node.getChildren().get(2), scope);
+            }
+        }
+    }
+
 
     /**
      * Traverses the tree and generates TAC for the assignations

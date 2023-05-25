@@ -18,11 +18,14 @@ public class SymbolTable {
 
     public static final String GLOBAL_SCOPE = "global";
     public static final String MAIN_SCOPE = "main";
+    public static final String INTERNAL_PREFIX = "$z1";
 
     private static SymbolTable instance = null;
     private static HashMap<String, SymbolTableEntry> map;
 
     private static HashSet<String> scopes = new HashSet<>();
+
+    private static int internalIDCount = 101;
 
 
     /**
@@ -117,6 +120,10 @@ public class SymbolTable {
             ((SymbolTableVariableEntry) ste).incrementNumTimesUsed();
 
         return ste;
+    }
+
+    public String getNewInternalID() {
+        return INTERNAL_PREFIX + internalIDCount++;
     }
 
     @Override

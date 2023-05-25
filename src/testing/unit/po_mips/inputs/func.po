@@ -1,0 +1,23 @@
+var c = 0
+var d = 0
+
+func sum(a, b) {
+    c = a + b
+    ret c
+}
+
+func mult(a, b) {
+    d = a * b
+    ret d
+}
+
+main() {
+    var a = 1
+    var b = 2
+
+    var ab_sum = sum(a, b)
+    var ab_mult = mult(a, b)
+
+    print(ab_sum)
+    print(ab_mult)
+}

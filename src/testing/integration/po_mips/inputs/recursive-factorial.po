@@ -1,0 +1,17 @@
+func recFactorial(num) {
+    if num >= 1 {
+        ret num * recFactorial(1 + 3)
+    }
+    else {
+        ret 1
+    }
+}
+
+main() {
+    var num = 4
+    //print("Factorial of ")
+    //print(num)
+    //print(" is ")
+    var factorial = recFactorial(num)
+    print(factorial)
+}

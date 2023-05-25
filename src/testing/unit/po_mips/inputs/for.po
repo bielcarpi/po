@@ -1,0 +1,10 @@
+var cont = 0
+
+main() {
+    var i = 0
+
+    for i = 0, i < 10, i++ {
+        cont = cont + 2
+    }
+    print(cont)
+}

@@ -184,7 +184,6 @@ public class POTACGenerator implements TACGenerator{
         //If we have params, add all childs as parameters
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
-                // TODO: here only supported params of type ID
                 if (node.getChildren().get(i).getSelf().equals("exp")) {
                     generateTACAssignacioTemporal(node.getChildren().get(i), scope);
                     tacBlock.add(new TACEntry(scope, null, "s4", i, TACType.ADD_PARAM));

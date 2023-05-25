@@ -1,6 +1,6 @@
 func recFactorial(num) {
     if num >= 1 {
-        ret num * recFactorial(1 + 3)
+        ret num * recFactorial(num - 1)
     }
     else {
         ret 1
@@ -8,10 +8,12 @@ func recFactorial(num) {
 }
 
 main() {
-    var num = 4
-    //print("Factorial of ")
-    //print(num)
-    //print(" is ")
+    //prints(" --- Factorial Calculator --- \n")
+    //prints("Enter a number: ")
+    var num = 3
+    //prints("Calculating the factorial of ")
+    print(num)
     var factorial = recFactorial(num)
+    //prints("The factorial result is: ")
     print(factorial)
 }

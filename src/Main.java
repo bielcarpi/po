@@ -14,7 +14,7 @@ import syntax_analysis.Parser;
 
 public class Main {
 
-    private final static String file = "file.po";
+    private final static String file = "src/testing/integration/po_mips/inputs/recursive-factorial.po";
     public static void main(String[] args) {
 
         Preprocessor preprocessor = new POPreprocessor();

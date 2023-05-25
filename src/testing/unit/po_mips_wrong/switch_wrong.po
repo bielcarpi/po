@@ -1,7 +1,5 @@
 var num1 = 5
-var num2 = 2
-var option = 2
-
+var option = num2 = 2 // We don't accept this
 main() {
     var aux
 

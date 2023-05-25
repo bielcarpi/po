@@ -1,0 +1,15 @@
+var num1 = 100
+var num2 = 101
+
+main() {
+    // There must be a "\n" at the end of each "}" -> "}\n" correct format
+
+    // Print the bigger number or if they are equal print 1
+    if num1 > num2 {
+        print(num1)
+    } elsif num2 > num1{
+        print(num2)
+    } elsif num1 == num2{
+        print(1)
+    }
+}

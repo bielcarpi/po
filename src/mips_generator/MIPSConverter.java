@@ -316,7 +316,7 @@ public class MIPSConverter {
     }
 
     private static boolean isInRAM(String name, String scope){
-        if(name == null || isLiteral(name)) return false;
+        if(name == null || isLiteral(name) || name.startsWith(SymbolTable.INTERNAL_PREFIX)) return false;
         if(scope == null) scope = SymbolTable.GLOBAL_SCOPE;
 
         SymbolTableEntry ste = SymbolTable.getInstance().lookup(name, scope);

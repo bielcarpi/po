@@ -1,15 +1,9 @@
 var b = 0
-var c = 1
-var d = 2
-var e = 3
-var f = 4
-var g = 5
-var h = 6
-var i = 7
-var j = 8
-var z = 9
 
 main(){
-    b = c*d*e*f*g*h*i*j*z
+    prints("Introdueix un numero : ")
+    b = read()
+    prints("El numero introduit es: ")
+    b = b * 2
     print(b)
 }

@@ -1,6 +1,8 @@
 package syntax_analysis;
 
-import java.util.ArrayList;
+import entities.ErrorManager;
+import entities.ErrorType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +28,7 @@ public class ParsingTable {
      */
     public void addProduction(ParsingTableKey key, ParsingTableValue value){
         if(map.containsKey(key)){
-            //TODO: Manage critical error
-            System.out.println("Error filling the Parsing Table. Grammar is ambiguous.");
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.AMBIGUOUS_GRAMMAR, ErrorType.getMessage(ErrorType.AMBIGUOUS_GRAMMAR)));
             return;
         }
 

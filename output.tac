@@ -1,28 +1,28 @@
-fibonacci:
-	i = 0
-E0:
-	if n > 1 goto E2
-E1:
-	ret n
-E2:
-	fib = 1
-	prevFib = 1
-	i = 2
-E3:
-	if i >= n goto E4
-	temp = fib
-	s0 = fib + prevFib
-	fib = s0
-	prevFib = temp
-	i = i + 1
-	goto E3
-E4:
-	ret fib
-
 PRINT_INT:
 	syscall 1
 	a0 = 0xA
 	syscall 11
+	ret 0
+
+recFactorial:
+E0:
+	if num < 1 goto E2
+E1:
+	savec
+	s0 = num - 1
+	s4 = s0
+	addp 0 s4
+	call recFactorial
+	loadc
+	aux = v0
+	s0 = num * aux
+	s4 = s0
+	ret s4
+	goto E3
+E2:
+	ret 1
+E3:
+E4:
 	ret 0
 
 READ_INT:
@@ -44,19 +44,38 @@ main:
 	call read
 	loadc
 	num = v0
-	savec
-	addp 0 num
-	call fibonacci
-	loadc
-	result = v0
+E5:
+	if num > 12 goto E7
+E6:
 	savec
 	addp 0 $z1103
 	call prints
 	loadc
 	savec
-	addp 0 result
+	addp 0 num
 	call print
 	loadc
+	savec
+	addp 0 num
+	call recFactorial
+	loadc
+	factorial = v0
+	savec
+	addp 0 $z1104
+	call prints
+	loadc
+	savec
+	addp 0 factorial
+	call print
+	loadc
+	goto E8
+E7:
+	savec
+	addp 0 $z1105
+	call prints
+	loadc
+E8:
+E9:
 	ret 0
 
 PRINT_STR:

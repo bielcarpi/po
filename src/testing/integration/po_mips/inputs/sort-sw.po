@@ -1,0 +1,59 @@
+var v1 = 5
+var v2 = 2
+var v3 = 15
+var v4 = 1
+var v5 = 1000
+
+func sortVars(var n) {
+    var i = 0
+    var j = 0
+    var aux = 0
+
+    for i = 0; i < n; i++ {
+        while j < 4 {
+            switch j {
+                opt 0 -> {
+                     if v1 > v2 {
+                         aux = v1
+                         v1 = v2
+                         v2 = aux
+                     }
+                }
+                opt 1 -> {
+                    if v2 > v3 {
+                        aux = v2
+                        v2 = v3
+                        v3 = aux
+                    }
+                }
+                opt 2 -> {
+                    if v3 > v4 {
+                        aux = v3
+                        v3 = v4
+                        v4 = aux
+                    }
+                }
+                default -> {
+                    if v4 > v5 {
+                        aux = v4
+                        v4 = v5
+                        v5 = aux
+                    }
+                    break
+                }
+            }
+            j++
+        }
+    }
+}
+
+main() {
+    var n = 5 //Num of variables
+    sortVars(n)
+    print(v1)
+    print(v2)
+    print(v3)
+    print(v4)
+    print(v5)
+    print(v6)
+}

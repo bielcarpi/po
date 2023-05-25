@@ -1,0 +1,27 @@
+func recFactorial(num) {
+    var aux
+
+    if num >= 1 {
+        aux = recFactorial(num - 1)
+        ret num * aux
+    }
+    else {
+        ret 1
+    }
+}
+
+main() {
+    prints(" *** Factorial Calculator *** \n")
+    prints("Enter a number: ")
+    var num = read()
+    if num <= 12 {
+        prints("Calculating the factorial of ")
+        print(num)
+        var factorial = recFactorial(num)
+        prints("\nThe factorial result is: ")
+        print(factorial)
+    }
+    else {
+        prints("The number is too big, please enter a number between 0 and 12")
+    }
+}

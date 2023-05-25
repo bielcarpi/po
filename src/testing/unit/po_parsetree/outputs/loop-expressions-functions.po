@@ -1,0 +1,94 @@
+└── <programa>
+    ├── assignacio
+    │   ├── ID
+    │   ├── EQU
+    │   └── exp
+    │       ├── INT
+    │       ├── MULT
+    │       └── INT
+    ├── assignacio
+    │   ├── ID
+    │   ├── EQU
+    │   └── exp
+    │       ├── exp
+    │       │   ├── exp
+    │       │   │   ├── INT
+    │       │   │   ├── MULT
+    │       │   │   └── INT
+    │       │   ├── DIV
+    │       │   └── INT
+    │       ├── ADD
+    │       └── INT
+    ├── ID
+    │   ├── assignacio
+    │   │   ├── ID
+    │   │   └── DOUBLE_ADD
+    │   ├── FOR
+    │   │   ├── assignacio
+    │   │   │   ├── ID
+    │   │   │   ├── EQU
+    │   │   │   └── exp
+    │   │   │       ├── exp
+    │   │   │       │   ├── exp
+    │   │   │       │   │   ├── INT
+    │   │   │       │   │   ├── MULT
+    │   │   │       │   │   └── INT
+    │   │   │       │   ├── ADD
+    │   │   │       │   └── INT
+    │   │   │       ├── AND
+    │   │   │       └── INT
+    │   │   ├── exp
+    │   │   │   ├── ID
+    │   │   │   ├── LT
+    │   │   │   └── exp
+    │   │   │       ├── INT
+    │   │   │       ├── ADD
+    │   │   │       └── exp
+    │   │   │           ├── exp
+    │   │   │           │   ├── INT
+    │   │   │           │   ├── MULT
+    │   │   │           │   └── INT
+    │   │   │           ├── DIV
+    │   │   │           └── INT
+    │   │   ├── assignacio
+    │   │   │   ├── ID
+    │   │   │   └── DOUBLE_ADD
+    │   │   └── llista
+    │   │       ├── ID
+    │   │       │   └── STRING
+    │   │       └── BREAK
+    │   └── RET
+    │       └── INT
+    └── MAIN
+        ├── ID
+        │   ├── exp
+        │   │   ├── exp
+        │   │   │   ├── INT
+        │   │   │   ├── ADD
+        │   │   │   └── INT
+        │   │   ├── ADD
+        │   │   └── exp
+        │   │       ├── INT
+        │   │       ├── MULT
+        │   │       └── INT
+        │   └── exp
+        │       ├── INT
+        │       ├── DIV
+        │       └── ID
+        ├── WHILE
+        │   ├── exp
+        │   │   ├── INT
+        │   │   ├── GT
+        │   │   └── INT
+        │   └── llista
+        │       ├── assignacio
+        │       │   ├── ID
+        │       │   └── DOUBLE_ADD
+        │       └── ID
+        └── llista
+            ├── ID
+            │   ├── ID
+            │   └── INT
+            └── assignacio
+                ├── ID
+                └── DOUBLE_ADD

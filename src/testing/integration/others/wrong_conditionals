@@ -1,0 +1,33 @@
+func main() {
+    // Declaració de variables
+    type A {
+        var a = 1
+    }
+
+    type B {
+        var b = 2
+    }
+
+    /* En cas de complir la condició de l'if s'executarà el "Codi a executar...", en cas contrari no. */
+    if A->a > B->b {
+        // a és més gran que b
+    } elsif A->a < B->b {
+        // a és més petit que b
+    } else {
+        // a és igual a b
+    } else {
+        // No hi poden haver 2 else
+    }
+
+    if A->a > B->b
+        // Falten els corchetes
+
+
+    switch A->a {
+        // Falten els corchetes
+        opt 5 ->  // a es 5
+        // Falta la fletxa
+        opt 6 { // a es 6 }
+        default -> { // a no es ni 5 ni 6 }
+    }
+}

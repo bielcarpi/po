@@ -1,0 +1,29 @@
+func initA() {
+    type A {
+        var a
+    }
+    A.a = 42
+    ret A.a
+}
+
+func procedure() {
+    // No return value
+}
+
+func sum(a, b) {
+    ret a + b
+}
+
+
+func main() {
+    type A {
+        var a
+    }
+    type B {
+        var b
+    }
+
+    a = initA()
+    procedure()
+    b = sum(A.b, 3)
+}

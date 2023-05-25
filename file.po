@@ -1,0 +1,9 @@
+var b = 0
+
+main(){
+    prints("Introdueix un numero : ")
+    b = read()
+    prints("El numero introduit es: ")
+    b = b * 2
+    print(b)
+}

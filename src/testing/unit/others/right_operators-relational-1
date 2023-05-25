@@ -1,0 +1,12 @@
+func main() {
+    type A {
+        var a = -2
+    }
+    type B {
+        var b = 2
+    }
+    type C {
+        var c
+    }
+    C->c = A->a == B->b
+}

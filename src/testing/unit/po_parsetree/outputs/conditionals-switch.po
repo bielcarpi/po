@@ -1,0 +1,19 @@
+└── MAIN
+    └── SWITCH
+        ├── ID
+        ├── OPT
+        │   ├── INT
+        │   └── llista
+        │       └── ID
+        │           └── STRING
+        ├── OPT
+        │   ├── INT
+        │   ├── llista
+        │   │   └── ID
+        │   │       └── STRING
+        │   └── assignacio
+        │       ├── ID
+        │       └── DOUBLE_ADD
+        └── DEFAULT
+            └── ID
+                └── STRING

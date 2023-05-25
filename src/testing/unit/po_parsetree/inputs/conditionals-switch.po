@@ -1,0 +1,14 @@
+main() {
+    switch z {
+        opt 1 -> {
+            print("1, 2, or 3")
+        }
+        opt 2 -> {
+            print("1, 2, or 3")
+            a++
+        }
+        default -> {
+            print("else")
+        }
+    }
+}

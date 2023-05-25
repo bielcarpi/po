@@ -1,0 +1,21 @@
+var num1 = 5
+var option = num2 = 2 // We don't accept this
+main() {
+    var aux
+
+    switch option {
+        opt 0 -> {
+            print(num2)
+        }
+        opt 1 -> {
+            print(num1)
+        }
+        opt 2 -> {
+            aux = num1 + num2
+            print(aux)
+        }
+        default -> {
+            prints("Invalid option")
+        }
+    }
+}

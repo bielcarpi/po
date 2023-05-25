@@ -1,0 +1,10 @@
+var a = 2
+
+main() {
+    var b = a + 1   //b = 3
+    //var c = a * b + 1   //c = 7
+
+    // Substitution of the variable c by its value
+    //print(c)
+    print(a * b + 1)
+}

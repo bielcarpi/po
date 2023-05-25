@@ -318,6 +318,11 @@ public class MIPSConverter {
     private static boolean isInRAM(String name, String scope){
         if(name == null || isLiteral(name)) return false;
         if(scope == null) scope = SymbolTable.GLOBAL_SCOPE;
-        return SymbolTable.getInstance().lookup(name, scope) != null && ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getRegisterID() == -1;
+
+        SymbolTableEntry ste = SymbolTable.getInstance().lookup(name, scope);
+        if (ste == null) return false;
+        if (ste.entryType() == TokenType.FUNC) return false;
+        int entryRegisterID = ste.getRegisterID();
+        return entryRegisterID != -1;
     }
 }

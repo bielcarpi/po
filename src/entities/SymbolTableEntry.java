@@ -45,6 +45,14 @@ public abstract class SymbolTableEntry {
     }
 
     /**
+     * Returns the register of the variable if it has been set, otherwise returns -1
+     * @return The register of the variable if it has been set, otherwise returns -1
+     */
+    public int getRegisterID() {
+        return -1;
+    }
+
+    /**
      * Returns the ID of the entry
      * @return The ID of the entry
      */

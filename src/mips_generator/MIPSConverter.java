@@ -323,6 +323,6 @@ public class MIPSConverter {
         if (ste == null) return false;
         if (ste.entryType() == TokenType.FUNC) return false;
         int entryRegisterID = ste.getRegisterID();
-        return entryRegisterID != -1;
+        return entryRegisterID == -1;
     }
 }

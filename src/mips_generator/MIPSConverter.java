@@ -290,6 +290,8 @@ public class MIPSConverter {
         if(SymbolTable.getInstance().lookup(name, scope) == null)
             return "$" + name;
 
+       // SymbolTableEntry ste = SymbolTable.getInstance().lookup(name, scope);
+        //if (ste == null) return "$" + name;
         SymbolTableVariableEntry entry = ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope));
         if(entry == null) return "$" + name;
 

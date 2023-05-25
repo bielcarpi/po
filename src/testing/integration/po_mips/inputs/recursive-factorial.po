@@ -1,19 +1,38 @@
-func recFactorial(num) {
-    if num >= 1 {
-        ret num * recFactorial(num - 1)
-    }
-    else {
-        ret 1
-    }
-}
+//var num = 0
 
-main() {
-    //prints(" --- Factorial Calculator --- \n")
-    //prints("Enter a number: ")
-    var num = 3
+//func recFactorial(num2) {
+  //  var aux
+
+   // if num >= 1 {
+    //    aux = recFactorial(num2 - 1)
+    //    ret num2 * aux
+    //}
+    //else {
+    //    ret 1
+   // }
+//}
+
+//main() {
+
+     //var num2 = 0
+     //prints(" --- Factorial Calculator --- \n")
+     //prints("Enter a number: ")
+     //num = read()
+     //num2 = num
     //prints("Calculating the factorial of ")
-    print(num)
-    var factorial = recFactorial(num)
+    //print(num)
+    //var factorial = recFactorial(num2)
     //prints("The factorial result is: ")
-    print(factorial)
+    //print(factorial)
+//}
+
+var b = 0
+
+main(){
+    prints("Input a number: ")
+    b = read()
+    prints("The number * 2 is : ")
+    b = b * 2
+    print(b)
+
 }

@@ -5,7 +5,6 @@ import intermediate_code_optimizer.TACOptimizer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.table.TableCellEditor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -48,6 +47,10 @@ public class POTACGenerator implements TACGenerator{
             tacBlock = new TACBlock(false);
             tac.add(pt.getRoot().getToken().getData(), tacBlock);
             traverseTree(pt.getRoot(), tac, pt.getRoot().getToken().getData()); //Traverse the function and generate TAC inside the block
+
+            //Add a return at the end of the function if it doesn't have one
+            if(tacBlock.getEntries().isEmpty() || tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
+                tacBlock.add(new TACEntry(SymbolTable.MAIN_SCOPE, null, "0", TACType.RET));
         }
         else {
             //New block for the global assignations
@@ -79,8 +82,10 @@ public class POTACGenerator implements TACGenerator{
         if(!syscallsList.isEmpty()){
             for (Syscall syscall: syscallsList) {
                 TACBlock syscallBlock = new TACBlock(false);
-                syscallBlock.add(new TACEntry(Syscall.getID(syscall), TACType.SYSCALL));
-                syscallBlock.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
+                //For each entry that the syscall requires, add it to the block
+                for(TACEntry entry: syscall.getTACEntries())
+                    syscallBlock.add(entry);
+
                 tac.add(syscall.name(), syscallBlock);
             }
         }
@@ -381,7 +386,7 @@ public class POTACGenerator implements TACGenerator{
         }
         else{ //x = z
             //If z is a function call, we need to call it
-            if(SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
+            if(Syscall.isSyscall(node.getChildren().get(2).getToken().getData()) || SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
                 generateTACFuncCall(node.getChildren().get(2), scope);
                 entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
                         "v0",

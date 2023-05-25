@@ -1,9 +1,6 @@
 package mips_generator;
 
-import entities.SymbolTable;
-import entities.SymbolTableVariableEntry;
-import entities.Syscall;
-import entities.TACEntry;
+import entities.*;
 import org.jetbrains.annotations.NotNull;
 
 public class MIPSConverter {
@@ -135,8 +132,13 @@ public class MIPSConverter {
             //If arg1 is a literal
             sb.append("\t").append(assignLiteral(ARG_REGS[tacEntry.getBlockNum()], tacEntry.getArg2()));
         }
+        else if(tacEntry.getArg2().startsWith(SymbolTable.INTERNAL_PREFIX)){
+            //If arg1 is a string
+            sb.append("\tla ").append(ARG_REGS[tacEntry.getBlockNum()]).append(", ")
+                    .append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb));
+        }
         else{
-            //If arg1 is a variable
+            //If arg1 is a normal variable
             sb.append("\tmove ").append(ARG_REGS[tacEntry.getBlockNum()]).append(", ")
                     .append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb));
         }
@@ -147,6 +149,7 @@ public class MIPSConverter {
         //Do the actual call
         return "\tjal $" + (Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
     }
+
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
         StringBuilder sb = new StringBuilder();
@@ -225,6 +228,11 @@ public class MIPSConverter {
             //If arg1 is a literal
             sb.append("\t").append(assignLiteral(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb), tacEntry.getArg1()));
         }
+        else if(tacEntry.getArg1().startsWith(SymbolTable.INTERNAL_PREFIX)) {
+            //If arg1 is a string
+            sb.append("\tla ").append(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb)).append(", ")
+                    .append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb));
+        }
         else{
             //If arg1 is a variable
             sb.append("\tmove ").append(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb)).append(", ")
@@ -235,7 +243,8 @@ public class MIPSConverter {
     }
 
     private static boolean isLiteral(String toValidate) {
-        return toValidate.matches("[0-9]+"); //Check if string is a number
+        if(toValidate.startsWith("0x")) return true; //Check if string is a hex number
+        return toValidate.matches("^[0-9]+"); //Check if string is a number
     }
 
     private static String generateOperationMIPS(TACEntry tacEntry){
@@ -285,6 +294,8 @@ public class MIPSConverter {
     }
 
     private static String getVariableRegister(@NotNull String name, @NotNull String scope, @NotNull StringBuilder sb){
+        if(name.startsWith("0x")) return name; //If it is a memory address, return it
+
         if(SymbolTable.getInstance().lookup(name, scope) == null)
             return "$" + name;
 
@@ -298,6 +309,10 @@ public class MIPSConverter {
             return entry.isParameter() ? "$a" + registerID : "$t" + registerID;
 
         //Else, load it from memory into a register
+        if(entry.getStringValue() != null){ //If we have a string, load its address
+            return entry.getId();
+        }
+
         return null;
     }
 

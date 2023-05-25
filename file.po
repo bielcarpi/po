@@ -1,4 +1,13 @@
 var b = 0
+var c
+var d
+var e
+var f
+var g
+var h
+var i
+var j
+var z
 
 main(){
     prints("Input a number: ")

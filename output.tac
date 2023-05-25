@@ -30,7 +30,7 @@ main:
 	addp 0 b
 	call print
 	loadc
-	ret $z1103
+	ret 0
 
 PRINT_STR:
 	syscall 4

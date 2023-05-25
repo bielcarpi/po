@@ -32,7 +32,10 @@ public class POMIPSGenerator implements MIPSGenerator {
                 StringBuilder sb = new StringBuilder();
                 sb.append(".data\n");
                 boolean written = false;
+
+                //Loop through all variables. Check for strings and variables without registers
                 for(SymbolTableVariableEntry entry : vars){
+                    //If we have a string, add it to the .data section
                     if(entry.getId().startsWith(SymbolTable.INTERNAL_PREFIX)){
                         sb.append("\t").append(entry.getId()).
                                 append(": .asciiz ").
@@ -40,11 +43,15 @@ public class POMIPSGenerator implements MIPSGenerator {
                                 append("\n");
                         written = true;
                     }
+                    else if(entry.getRegisterID() == -1){ //If we have a variable without register, add it to the .data section
+                        sb.append("\t").append(entry.getId()).
+                                append(": .word 0\n");
+                        written = true;
+                    }
                 }
 
                 if(written) out.println(sb);
             }
-
 
 
             //Add the .text section
@@ -107,11 +114,13 @@ public class POMIPSGenerator implements MIPSGenerator {
         //Sort the entries by num of uses
         entries.sort((o1, o2) -> o2.getNumTimesUsed() - o1.getNumTimesUsed());
 
+        //Delete from the list internal variables
+        entries.removeIf(entry -> entry.getId().startsWith(SymbolTable.INTERNAL_PREFIX));
+
         //Check which ones of the 8 most used variables are in the global scope
         int globalVariablesInRegisters = 0;
         for(int i = 0; i < 8 && i < entries.size(); i++){
-            if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE) &&
-                    !entries.get(i).getId().startsWith(SymbolTable.INTERNAL_PREFIX)){
+            if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE)){
                 entries.get(i).setRegisterID(globalVariablesInRegisters);
                 globalVariablesInRegisters++;
             }

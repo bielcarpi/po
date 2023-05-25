@@ -3,10 +3,8 @@ package syntax_analysis;
 import entities.*;
 import lexical_analysis.Lexer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import semantic_analysis.SemanticAnalyzer;
 
-import java.lang.Error;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,15 +23,13 @@ public class POParser implements Parser {
     public @NotNull ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer) {
         TokenStream ts = lexer.generateTokenStream(pureHLL);
         if(ts == null){
-            //TODO: Manage critical error
-            System.out.println("Error generating the token stream");
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.TOKEN_STREAM_ERROR, ErrorType.getMessage(ErrorType.TOKEN_STREAM_ERROR)));
             return null;
         }
 
         ArrayList<Production> productions = GrammarFactory.getGrammar(grammarFilePath);
         if(productions == null){
-            //TODO: Manage critical error
-            System.out.println("Error parsing the grammar");
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.TOKEN_STREAM_ERROR, ErrorType.getMessage(ErrorType.TOKEN_STREAM_ERROR)));
             return null;
         }
 
@@ -118,9 +114,6 @@ public class POParser implements Parser {
                         String err = "Error. Esperavem " + stackTerminal + " i hem trobat " + input.getType();
                         ErrorManager.getInstance().addError(new entities.Error(ErrorType.SYNTAX_ERROR, err, input.getLine(), input.getColumn()));
                     }
-                    //TODO: Provem de recuperar-nos trobant el seguent terminal de la produccio que ha fallat, en el cas de que aquest terminal no fos l'ultim de la produccio
-                    //TODO: Cada terminal s'hauria de guardar a quina derivacio pertany, per poder fer el skip fins al seguent terminal de la mateixa derivacio
-
                     //Ens recuperem de l'error fent skip fins a trobar un dels follows
                     if(latestProduction == null) break;
                     errorDetected = true;

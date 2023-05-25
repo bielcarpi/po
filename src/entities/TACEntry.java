@@ -10,7 +10,7 @@ package entities;
  */
 public class TACEntry {
     private final TACType type;
-    private final String dest, arg1, arg2;
+    private String dest, arg1, arg2;
     private final String scope; //We also need scope in order to identify the variable later on
     private int blockNum; //Optional argument for GOTOs
 
@@ -101,6 +101,31 @@ public class TACEntry {
     public String getScope(){
         return scope;
     }
+
+    /**
+     * Sets the arg1 of the entry
+     * @param arg1 The new arg1
+     */
+    public void setArg1(String arg1){
+        this.arg1 = arg1;
+    }
+
+    /**
+     * Sets the arg2 of the entry
+     * @param arg2 The new arg2
+     */
+    public void setArg2(String arg2){
+        this.arg2 = arg2;
+    }
+
+    /**
+     * Sets the dest of the entry
+     * @param dest The new dest
+     */
+    public void setDest(String dest){
+        this.dest = dest;
+    }
+
 
     /**
      * Returns the block number of the entry

@@ -9,6 +9,10 @@ public class MIPSConverter {
     private static final String WORK_REG_2 = "$s1"; // Working register used for arg1
     private static final String WORK_REG_3  = "$s2"; // Working register used for result
     private static final String RETURN_REG = "$v0"; // Register used for return values
+
+    private static final String RAM_REG_1 = "t9"; // Register used for arg1 in RAM
+
+    private static final String RAM_REG_2 = "t8"; // Register used for arg2 in RAM
     private static final String RETURN_ADDR_REG = "$ra"; // Register used for return from function
     private static final String[] ARG_REGS = {"$a0", "$a1", "$a2", "$a3"}; // Registers used for arguments
 
@@ -23,46 +27,51 @@ public class MIPSConverter {
     }
 
     public static String convert(TACEntry tacEntry){
-        switch (tacEntry.getType()) {
-            case ADD, SUB, MUL, DIV, AND, OR -> {
-                return generateOperationMIPS(tacEntry);
-            }
-            case EQU -> {
-                return generateAssignmentMIPS(tacEntry);
-            }
-            case IFEQU, IFNEQ, IFGEQ, IFLEQ, IFG, IFL -> {
-                return generateConditionalMIPS(tacEntry);
-            }
-            case GOTO -> {
-                return generateGotoMIPS(tacEntry);
-            }
-            case RET -> {
-                return generateReturnMIPS(tacEntry);
-            }
-            case CALL -> {
-                return generateCallMIPS(tacEntry);
-            }
-            case SYSCALL -> {
-                return generateSyscallMIPS(tacEntry);
-            }
-            case ADD_PARAM -> {
-                return generateAddParamMIPS(tacEntry);
-            }
-            case SAVE_CONTEXT -> {
-                return generateSaveContextMIPS(tacEntry);
-            }
-            case LOAD_CONTEXT -> {
-                return generateLoadContextMIPS(tacEntry);
-            }
-            default -> {
-                return null;
-            }
+        StringBuilder sb = new StringBuilder();
+        String destAux = null;
+
+        //If we have either arg1 or arg2 or dest in RAM, load them into a register
+        if(isInRAM(tacEntry.getArg1(), tacEntry.getScope())){
+            sb.append("\tla $").append(RAM_REG_1).append(", ").append(tacEntry.getArg1()).append("\n");
+            sb.append("\tlw $").append(RAM_REG_1).append(", 0($").append(RAM_REG_1).append(")\n");
+            tacEntry.setArg1(RAM_REG_1);
         }
+        if(isInRAM(tacEntry.getArg2(), tacEntry.getScope())){
+            sb.append("\tla $").append(RAM_REG_2).append(", ").append(tacEntry.getArg2()).append("\n");
+            sb.append("\tlw $").append(RAM_REG_2).append(", 0($").append(RAM_REG_2).append(")\n");
+            tacEntry.setArg2(RAM_REG_2);
+        }
+        if(isInRAM(tacEntry.getDest(), tacEntry.getScope())){
+            destAux = tacEntry.getDest();
+            sb.append("\tla $").append(RAM_REG_1).append(", ").append(tacEntry.getDest()).append("\n");
+            sb.append("\tlw $").append(RAM_REG_1).append(", 0($").append(RAM_REG_1).append(")\n");
+            tacEntry.setDest(RAM_REG_1);
+        }
+
+
+        switch (tacEntry.getType()) {
+            case ADD, SUB, MUL, DIV, AND, OR -> generateOperationMIPS(sb, tacEntry);
+            case EQU -> generateAssignmentMIPS(sb, tacEntry);
+            case IFEQU, IFNEQ, IFGEQ, IFLEQ, IFG, IFL -> generateConditionalMIPS(sb, tacEntry);
+            case GOTO -> generateGotoMIPS(sb, tacEntry);
+            case RET -> generateReturnMIPS(sb, tacEntry);
+            case CALL -> generateCallMIPS(sb, tacEntry);
+            case SYSCALL -> generateSyscallMIPS(sb, tacEntry);
+            case ADD_PARAM -> generateAddParamMIPS(sb, tacEntry);
+            case SAVE_CONTEXT -> generateSaveContextMIPS(sb);
+            case LOAD_CONTEXT -> generateLoadContextMIPS(sb);
+        }
+
+        //Load it again to RAM
+        if(destAux != null){
+            sb.append("\n\tla $").append(RAM_REG_2).append(", ").append(destAux).append("\n");
+            sb.append("\tsw $").append(RAM_REG_1).append(", 0($").append(RAM_REG_2).append(")");
+        }
+
+        return sb.toString();
     }
 
-    private static String generateLoadContextMIPS(TACEntry tacEntry) {
-        StringBuilder sb = new StringBuilder();
-
+    private static void generateLoadContextMIPS(StringBuilder sb) {
         //Restore the context
         //Modify the stack pointer and pop the last stack frame
         int i = lastStackPointer;
@@ -86,12 +95,9 @@ public class MIPSConverter {
         sb.append("\tlw $s0").append(", ").append(i++ * 4).append("($sp)\n");
         sb.append("\tlw $s1").append(", ").append(i++ * 4).append("($sp)\n");
         sb.append("\tlw $s2").append(", ").append(i * 4).append("($sp)\n");
-
-        return sb.toString();
     }
 
-    private static String generateSaveContextMIPS(TACEntry tacEntry) {
-        StringBuilder sb = new StringBuilder();
+    private static void generateSaveContextMIPS(StringBuilder sb) {
         sb.append("\n");
 
         //Save the current arguments
@@ -118,16 +124,14 @@ public class MIPSConverter {
         sb.append("\taddi $sp, $sp, ").append(i * 4).append("\n\n");
 
         lastStackPointer = i;
-        return sb.toString();
     }
 
-    private static String generateSyscallMIPS(TACEntry tacEntry) {
-        return "\tli $v0, " + tacEntry.getBlockNum() + "\n\tsyscall";
+    private static void generateSyscallMIPS(StringBuilder sb, TACEntry tacEntry) {
+        sb.append("\tli $v0, ").append(tacEntry.getBlockNum()).append("\n\tsyscall");
     }
 
 
-    private static String generateAddParamMIPS(TACEntry tacEntry){
-        StringBuilder sb = new StringBuilder();
+    private static void generateAddParamMIPS(StringBuilder sb, TACEntry tacEntry){
         if(isLiteral(tacEntry.getArg2())){
             //If arg1 is a literal
             sb.append("\t").append(assignLiteral(ARG_REGS[tacEntry.getBlockNum()], tacEntry.getArg2()));
@@ -142,22 +146,20 @@ public class MIPSConverter {
             sb.append("\tmove ").append(ARG_REGS[tacEntry.getBlockNum()]).append(", ")
                     .append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb));
         }
-        return sb.toString();
     }
 
-    private static String generateCallMIPS(TACEntry tacEntry) {
+    private static void generateCallMIPS(StringBuilder sb, TACEntry tacEntry) {
         //Do the actual call
-        return "\tjal $" + (Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
+        sb.append("\tjal $").append(Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
     }
 
 
-    private static String generateReturnMIPS(TACEntry tacEntry) {
-        StringBuilder sb = new StringBuilder();
+    private static void generateReturnMIPS(StringBuilder sb, TACEntry tacEntry) {
 
         //If we're in main, syscall 10 (exit)
         if(tacEntry.getScope().equals(SymbolTable.MAIN_SCOPE)){
             sb.append("\tli $v0, 10\n\tsyscall");
-            return sb.toString();
+            return;
         }
 
         if (isLiteral(tacEntry.getArg1())) {
@@ -171,23 +173,20 @@ public class MIPSConverter {
         }
 
         sb.append("\n\tjr ").append(RETURN_ADDR_REG);
-
-        return sb.toString();
     }
 
-    private static String generateGotoMIPS(TACEntry tacEntry) {
+    private static void generateGotoMIPS(StringBuilder sb, TACEntry tacEntry) {
         if(tacEntry.getDest() != null){
             //If the goto is a label
-            return "\tj $" + tacEntry.getDest();
+            sb.append("\tj $").append(tacEntry.getDest());
         }
         else{
             //If the goto is a block number
-            return "\tj $E" + tacEntry.getBlockNum();
+            sb.append("\tj $E").append(tacEntry.getBlockNum());
         }
     }
 
-    private static String generateConditionalMIPS(TACEntry tacEntry) {
-        StringBuilder sb = new StringBuilder();
+    private static void generateConditionalMIPS(StringBuilder sb, TACEntry tacEntry) {
         String conditionalType = switch (tacEntry.getType()) {
             case IFEQU -> "beq ";
             case IFNEQ -> "bne ";
@@ -218,12 +217,9 @@ public class MIPSConverter {
                     .append(", ").append(getVariableRegister(tacEntry.getArg2(), tacEntry.getScope(), sb))
                     .append(", $E").append(tacEntry.getBlockNum());
         }
-
-        return sb.toString();
     }
 
-    private static String generateAssignmentMIPS(TACEntry tacEntry) {
-        StringBuilder sb = new StringBuilder();
+    private static void generateAssignmentMIPS(StringBuilder sb, TACEntry tacEntry) {
         if(isLiteral(tacEntry.getArg1())){
             //If arg1 is a literal
             sb.append("\t").append(assignLiteral(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb), tacEntry.getArg1()));
@@ -238,8 +234,6 @@ public class MIPSConverter {
             sb.append("\tmove ").append(getVariableRegister(tacEntry.getDest(), tacEntry.getScope(), sb)).append(", ")
                     .append(getVariableRegister(tacEntry.getArg1(), tacEntry.getScope(), sb));
         }
-
-        return sb.toString();
     }
 
     private static boolean isLiteral(String toValidate) {
@@ -247,8 +241,7 @@ public class MIPSConverter {
         return toValidate.matches("^[0-9]+"); //Check if string is a number
     }
 
-    private static String generateOperationMIPS(TACEntry tacEntry){
-        StringBuilder sb = new StringBuilder();
+    private static void generateOperationMIPS(StringBuilder sb, TACEntry tacEntry){
         sb.append("\t");
 
         String operationType = switch (tacEntry.getType()) {
@@ -289,8 +282,6 @@ public class MIPSConverter {
             sb.append("move ").append(tacEntry.getDest()).append(", ").append(WORK_REG_1);
         else
             sb.delete(sb.length() - 2, sb.length()); //Remove the last \n\t
-
-        return sb.toString();
     }
 
     private static String getVariableRegister(@NotNull String name, @NotNull String scope, @NotNull StringBuilder sb){
@@ -322,5 +313,11 @@ public class MIPSConverter {
      */
     public static void setGlobalRegCount(int count) {
         GLOBAL_REG_COUNT = count;
+    }
+
+    private static boolean isInRAM(String name, String scope){
+        if(name == null || isLiteral(name)) return false;
+        if(scope == null) scope = SymbolTable.GLOBAL_SCOPE;
+        return SymbolTable.getInstance().lookup(name, scope) != null && ((SymbolTableVariableEntry)SymbolTable.getInstance().lookup(name, scope)).getRegisterID() == -1;
     }
 }

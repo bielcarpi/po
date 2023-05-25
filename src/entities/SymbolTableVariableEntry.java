@@ -126,6 +126,11 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
         return isParam;
     }
 
+    @Override
+    public TokenType entryType() {
+        return TokenType.VAR;
+    }
+
     public String getStringValue() {
         return strValue;
     }

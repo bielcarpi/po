@@ -1,23 +1,18 @@
 var num1 = 5
-var num2 = 2
-var option = 2
+var option = num2 = 2 // We don't accept this
 main() {
     var aux
 
-    // The keyword "break" is not used in our language
     switch option {
         opt 0 -> {
             print(num2)
-            break
         }
         opt 1 -> {
             print(num1)
-            break
         }
         opt 2 -> {
             aux = num1 + num2
             print(aux)
-            break
         }
         default -> {
             prints("Invalid option")

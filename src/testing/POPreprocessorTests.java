@@ -23,15 +23,15 @@ class POPreprocessorTests {
 
     @Test
     void funcMainEmpty() {
-        test("src/tests/unit/po_preprocessor/inputs/func-main-empty.po", "src/tests/unit/po_preprocessor/outputs/func-main-empty.po");
+        test("src/testing/unit/po_preprocessor/inputs/func-main-empty.po", "src/testing/unit/po_preprocessor/outputs/func-main-empty.po");
     }
     @Test
     void funcMainInlineComment() {
-        test("src/tests/unit/po_preprocessor/inputs/func-main-inline-comment.po", "src/tests/unit/po_preprocessor/outputs/func-main-inline-comment.po");
+        test("src/testing/unit/po_preprocessor/inputs/func-main-inline-comment.po", "src/testing/unit/po_preprocessor/outputs/func-main-inline-comment.po");
     }
 
     @Test
     void funcMainInlineComments() {
-        test("src/tests/unit/po_preprocessor/inputs/func-main-inline-comments.po", "src/tests/unit/po_preprocessor/outputs/func-main-inline-comments.po");
+        test("src/testing/unit/po_preprocessor/inputs/func-main-inline-comments.po", "src/testing/unit/po_preprocessor/outputs/func-main-inline-comments.po");
     }
 }

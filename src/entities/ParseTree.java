@@ -113,9 +113,9 @@ public class ParseTree {
             node.getChildren().remove(0);
 
             //If now that we removed we have only one child, and it is non-terminal, we can remove that node and move its childs up
-            if(node.getChildren().size() == 1 && node.getChildren().get(0).getSelf() instanceof String &&
+            /*if(node.getChildren().size() == 1 && node.getChildren().get(0).getSelf() instanceof String &&
                     !node.getChildren().get(0).toString().contains("sentencia"))
-                node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
+                node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());*/
         }
 
         //If the node is a non-terminal and contains the name of his parent + Prima in his own name, we can remove it (example, <expressioMulPrima> contains <expressioMul>)
@@ -271,7 +271,8 @@ public class ParseTree {
                 node.getChildren().remove(0);
 
             // Only one child is left, so substitute it with its childs.
-            if (node.getChildren().size() != 0 && !node.getChildren().get(0).getSelf().equals("<sentencia>")) // Make sure first the function is not void
+            if (node.getChildren().size() != 0 && !node.getChildren().get(0).getSelf().equals("<sentencia>") &&
+                !node.getChildren().get(0).getSelf().equals(TokenType.RET)) // Make sure first the function is not void
                 node.replaceChild(node.getChildren().get(0), node.getChildren().get(0).getChildren());
 
             return;

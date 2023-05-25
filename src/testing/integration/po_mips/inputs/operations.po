@@ -1,0 +1,44 @@
+func calculator(num1, num2, op) {
+    var result = 0
+
+    if op == 0 {
+        result = num1 + num2
+    }
+    elsif op == 1 {
+        result = num1 - num2
+    }
+    elsif op == 2 {
+        if num1 <= 65000 and num2 <= 65000 {
+            result = num1 * num2
+        }
+        else {
+            print("The result can be bigger than 32 bits")
+        }
+    }
+    elsif op == 3 {
+        result = num1 / num2
+    }
+    else {
+        if op == 4 {
+            print("Mod is not supported yet")
+        }
+        else {
+            print("OP should be between 0 and 3")
+        }
+    }
+
+    ret result
+
+}
+
+main() {
+    var num1 = 100
+    var num2 = 100
+    var op = 0 // 0 = sum - 1 = sub - 2 = mult - 3 = div
+    var times = 0 // How many times the op will be done
+
+    var result = calculator(num1, num2, op, times)
+    print("The result is: \n")
+    print(result)
+    print("\n")
+}

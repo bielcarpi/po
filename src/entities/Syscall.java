@@ -3,13 +3,17 @@ package entities;
 import java.util.ArrayList;
 
 public enum Syscall {
-    PRINT_INT("print", 1),
-    PRINT_STR("print", 4),
-    READ_INT("read", 5);
+    PRINT_INT("print", TokenType.INT, 1),
+    PRINT_STR("prints", TokenType.STRING, 4),
+    READ_INT("read", null, 5);
 
     private final String call;
     private final int id;
-    private Syscall(String call, int id) {
+
+    private final TokenType argType;
+
+    private Syscall(String call, TokenType argType, int id) {
+        this.argType = argType;
         this.call = call;
         this.id = id;
     }
@@ -44,7 +48,8 @@ public enum Syscall {
                 entries.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
             }
             case PRINT_STR -> {
-                //entries.add(new TACEntry(TACType.SYSCALL, "4"));
+                entries.add(new TACEntry(id, TACType.SYSCALL));
+                entries.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
             }
             case READ_INT -> {
                 entries.add(new TACEntry(id, TACType.SYSCALL));

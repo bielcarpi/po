@@ -1,9 +1,6 @@
 package mips_generator;
 
-import entities.SymbolTable;
-import entities.SymbolTableVariableEntry;
-import entities.Syscall;
-import entities.TACEntry;
+import entities.*;
 import org.jetbrains.annotations.NotNull;
 
 public class MIPSConverter {
@@ -147,6 +144,7 @@ public class MIPSConverter {
         //Do the actual call
         return "\tjal $" + (Syscall.isSyscall(tacEntry.getArg1()) ? Syscall.get(tacEntry.getArg1()) : tacEntry.getArg1());
     }
+
 
     private static String generateReturnMIPS(TACEntry tacEntry) {
         StringBuilder sb = new StringBuilder();

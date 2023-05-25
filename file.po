@@ -3,4 +3,5 @@ var a = 0
 main() {
     a = read()
     print(a)
+    prints("hollal")
 }

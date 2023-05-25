@@ -55,23 +55,11 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                     continue;
                 }
 
-                if (ptn.getChildren().get(1).getToken().getType() != TokenType.DIFF &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.DOUBLE_EQU &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.GT &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.GTE &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.LT &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.LTE &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.AND &&
-                        ptn.getChildren().get(1).getToken().getType() != TokenType.OR) {
-                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
-                            "Error, invalid expression. Expression must contain a comparison operator",
-                            ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
-                    continue;
-                }
-                TokenType type = validateAssignacio(ptn, scope);
+                TokenType type = validateCondition(ptn, scope);
+
                 if (type == TokenType.STRING) {
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
-                            "Error, invalid expression. Trying to compare strings",
+                            "Error, invalid expression. Cannot use strings in conditionals",
                             ptn.getChildren().get(1).getToken().getLine(), ptn.getChildren().get(1).getToken().getColumn()));
                 }
             } else if ((ptn.getSelf().toString().equals("ID") && ptn.getParent().getSelf().equals("<programa>"))
@@ -143,6 +131,77 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             }
         }
 
+    }
+
+    private TokenType validateCondition(@NotNull ParseTreeNode node, String scope) {
+        if (node.getSelf().equals("exp")) {
+            if (node.getChildren().size() == 2) {
+                ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                        "Error, invalid expression. Expression must contain a comparison operator",
+                        node.getChildren().get(0).getToken().getLine(), node.getChildren().get(0).getToken().getColumn()));
+                return TokenType.UNKNOWN;
+            }
+            TokenType condition = node.getChildren().get(1).getToken().getType();
+            if (condition != TokenType.DIFF && condition != TokenType.DOUBLE_EQU && condition != TokenType.GT &&
+                condition != TokenType.GTE && condition != TokenType.LT && condition != TokenType.LTE &&
+                condition != TokenType.AND && condition != TokenType.OR) {
+                ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                        "Error, invalid expression. Expression must contain a comparison operator",
+                        node.getChildren().get(1).getToken().getLine(), node.getChildren().get(1).getToken().getColumn()));
+                return TokenType.UNKNOWN;
+            }
+
+            if (condition == TokenType.OR || condition == TokenType.AND) {
+                // Left side must be an expression and right side too
+                if (!node.getChildren().get(0).getSelf().equals("exp") || !node.getChildren().get(2).getSelf().equals("exp")) {
+                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                            "Error, invalid expression. Cannot use OR/AND with literals",
+                            node.getChildren().get(1).getToken().getLine(), node.getChildren().get(1).getToken().getColumn()));
+                    return TokenType.UNKNOWN;
+                }
+            }
+
+
+            TokenType left = validateCondition(node.getChildren().get(0), scope);
+            TokenType right = validateCondition(node.getChildren().get(2), scope);
+
+            if (left == TokenType.UNKNOWN || right == TokenType.UNKNOWN) {
+                return TokenType.UNKNOWN;
+            }
+            if (left != right) {
+                ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                        "Error, invalid expression. Cannot compare different types",
+                        node.getChildren().get(1).getToken().getLine(), node.getChildren().get(1).getToken().getColumn()));
+                return TokenType.UNKNOWN;
+            }
+
+            return left;
+        } else if (node.getSelf().equals(TokenType.ID)) {
+            SymbolTableEntry ste = SymbolTable.getInstance().lookup(node.getToken().getData(), scope);
+            if (ste == null) {
+                if (Syscall.isSyscall(node.getToken().getData())) {
+                    return TokenType.INT;
+                }
+                ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
+                        "Error, undeclared identifier: " + node.getToken().getData(),
+                        node.getToken().getLine(), node.getToken().getColumn()));
+                return TokenType.UNKNOWN;
+            }
+            if (ste.entryType().equals(TokenType.FUNC) && Syscall.isSyscall(node.getToken().getData())) {
+                return TokenType.INT;
+            }
+
+            return ste.getType();
+        } else if (node.getSelf().equals(TokenType.INT)) {
+            return TokenType.INT;
+        } else if (node.getSelf().equals(TokenType.STRING)) {
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                    "Error, invalid expression. Cannot compare strings",
+                    node.getToken().getLine(), node.getToken().getColumn()));
+            return TokenType.UNKNOWN;
+        }
+
+        return TokenType.UNKNOWN;
     }
 
     private TokenType validateAssignacio(@NotNull ParseTreeNode node, String scope) {

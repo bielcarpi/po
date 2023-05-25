@@ -30,7 +30,7 @@ public enum TACType {
             case DIV -> DIV;
             case AND -> AND;
             case OR -> OR;
-            case EQU -> EQU;
+            case EQU-> EQU;
             default -> null;
         };
     }
@@ -38,6 +38,7 @@ public enum TACType {
     public static TACType GetAntonym(TokenType type) {
         return switch (type) {
             case DOUBLE_EQU -> IFNEQ;
+            case DIFF -> IFEQU;
             case GT -> IFLEQ;
             case LT -> IFGEQ;
             case GTE -> IFL;
@@ -45,6 +46,19 @@ public enum TACType {
             default -> null;
         };
     }
+
+    public static TACType GetEquivalent(TokenType type) {
+        return switch (type) {
+            case DOUBLE_EQU -> IFEQU;
+            case DIFF -> IFNEQ;
+            case GT -> IFG;
+            case LT -> IFL;
+            case GTE -> IFGEQ;
+            case LTE -> IFLEQ;
+            default -> null;
+        };
+    }
+
 
     public String toString(){
         return switch (this) {

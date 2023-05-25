@@ -1,0 +1,4 @@
+main() {
+    // The char ";" doesn't exist in our language
+    prints("Hello World");
+}

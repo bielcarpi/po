@@ -1,0 +1,9 @@
+var cont = 0
+
+main() {
+    // Wrong declaration inside the loop condition
+    for var i = 0, i < 10, i++ {
+        cont = cont + 2
+    }
+    print(cont)
+}

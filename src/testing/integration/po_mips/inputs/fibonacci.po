@@ -1,0 +1,26 @@
+func fibonacci(n) {
+    var i = 0
+    if n <= 1 {
+        ret n
+    }
+
+    var fib = 1
+    var prevFib = 1
+
+    for i = 2, i < n, i++ {
+        var temp = fib
+        fib = fib + prevFib
+        prevFib = temp
+    }
+
+    ret fib
+}
+
+main() {
+    prints(" *** Fibonacci Calculator *** \n")
+    prints("Enter a number: ")
+    var num = read()
+    var result = fibonacci(num)
+    prints("\nThe Fibonacci number is: ")
+    print(result)
+}

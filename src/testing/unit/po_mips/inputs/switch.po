@@ -1,6 +1,7 @@
 var num1 = 5
 var num2 = 2
 var option = 2
+
 main() {
     var aux
 

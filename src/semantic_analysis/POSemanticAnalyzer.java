@@ -90,7 +90,7 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                     exploreTACOTree(ptn, scope);
                 }
             } else if (ptn.getSelf() == TokenType.ID &&
-                    SymbolTable.getInstance().lookup(ptn.getToken().getData(), scope) instanceof SymbolTableFunctionEntry ste){ // Function call without assignment
+                SymbolTable.getInstance().lookup(ptn.getToken().getData(), scope) instanceof SymbolTableFunctionEntry ste){ // Function call without assignment
                 if (ste == null) {
                     // If function call is a system call, ignore semantics
                     if (Syscall.isSyscall(ptn.getToken().getData())) {
@@ -121,6 +121,44 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                             ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
                                     "Error, invalid argument type for function: " + ptn.getToken().getData(),
                                     ptn.getToken().getLine(), ptn.getToken().getColumn()));
+                        }
+                    }
+                }
+            } else if (ptn.getSelf() == TokenType.RET) {
+                if (ptn.getChildren() != null) { // void return
+                    return;
+                }
+                // Return statement should only have one child
+                if (ptn.getChildren().size() == 1) { // Is ID or INT
+                    if (!ptn.getChildren().get(0).getSelf().equals(TokenType.ID) &&
+                        !ptn.getChildren().get(0).getSelf().equals(TokenType.INT) &&
+                        !ptn.getChildren().get(0).getSelf().equals("exp")) {
+                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                                "Error, invalid return type. Must be INT or ID",
+                                ptn.getChildren().get(0).getToken().getLine(), ptn.getChildren().get(0).getToken().getColumn()));
+                    }
+                    if (ptn.getChildren().get(0).getSelf().equals(TokenType.ID)) {
+                        SymbolTableEntry ste = SymbolTable.getInstance().lookup(ptn.getChildren().get(0).getToken().getData(), scope);
+                        if (ste == null) {
+                            ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
+                                    "Error, undeclared variable: " + ptn.getChildren().get(0).getToken().getData(),
+                                    ptn.getChildren().get(0).getToken().getLine(), ptn.getChildren().get(0).getToken().getColumn()));
+                            return;
+                        }
+
+                        if (ste.getType() == TokenType.STRING) {
+                            ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                                    "Error, invalid return type. Must be INT or ID",
+                                    ptn.getChildren().get(0).getToken().getLine(), ptn.getChildren().get(0).getToken().getColumn()));
+                            return;
+                        }
+                    }
+                    if (ptn.getChildren().get(0).getSelf().equals("exp")) {
+                        TokenType type = validateAssignacio(ptn.getChildren().get(0), scope);
+                        if (type != TokenType.INT) {
+                            ErrorManager.getInstance().addError(new entities.Error(ErrorType.MISMATCHED_TYPE_OPERATION,
+                                    "Error, invalid return type. Must be INT or ID",
+                                    ptn.getChildren().get(0).getToken().getLine(), ptn.getChildren().get(0).getToken().getColumn()));
                         }
                     }
                 }

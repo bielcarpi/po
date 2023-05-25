@@ -14,7 +14,7 @@ import syntax_analysis.Parser;
 
 public class Main {
 
-    private final static String file = "src/testing/unit/po_mips/inputs/vars.po";
+    private final static String file = "src/testing/integration/po_mips/inputs/sort-else.po";
     public static void main(String[] args) {
 
         Preprocessor preprocessor = new POPreprocessor();

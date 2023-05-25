@@ -10,7 +10,7 @@ func sortVars(n) {
     var aux = 0
 
     for i = 0, i < n, i++ {
-        while 1 == 1 {
+        while j < 4 {
             if j == 0 {
                 if v1 > v2 {
                     aux = v1
@@ -32,13 +32,12 @@ func sortVars(n) {
                     v4 = aux
                 }
             }
-            else {
+            elsif j == 3 {
                 if v4 > v5 {
                     aux = v4
                     v4 = v5
                     v5 = aux
                 }
-                break
             }
             j++
         }
@@ -53,5 +52,4 @@ main() {
     print(v3)
     print(v4)
     print(v5)
-    print(v6)
 }

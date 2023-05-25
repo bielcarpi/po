@@ -1,23 +1,8 @@
 var num1 = 5
 var num2 = 2
-var option = 1
+var option = 2
 main() {
     var aux
-
-    //if option == 0 {
-    //    print(num2)
-    //}
-    //elsif option == 1 {
-    //    print(num1)
-    //}
-    //elsif option == 2 {
-    //    aux = num1 + num2
-    //    print(aux)
-    //}
-    //else {
-    //    aux = num1 * num2
-    //    print(aux)
-    //}
 
     switch option {
         opt 0 -> {
@@ -31,10 +16,7 @@ main() {
             print(aux)
         }
         default -> {
-            aux = num1 * num2
-            print(aux)
+            prints("Invalid option")
         }
     }
-
-
 }

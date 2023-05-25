@@ -45,12 +45,13 @@ class POMipsTests {
 
     }
 
-    /*
+
     @Test
     void integration_sortElse() {
         test("src/testing/integration/po_mips/inputs/sort-else.po", "src/testing/integration/po_mips/outputs/sort-else.po");
     }
 
+    /*
     @Test
     void integration_sortSw() {
         test("src/testing/integration/po_mips/inputs/sort-sw.po", "src/testing/integration/po_mips/outputs/sort-sw.po");
@@ -72,13 +73,33 @@ class POMipsTests {
         test("src/testing/unit/po_mips/inputs/if-else.po", "src/testing/unit/po_mips/outputs/if-else.asm");
     }
 
-    /*@Test
+    @Test
     void unit_switch() {
         test("src/testing/unit/po_mips/inputs/switch.po", "src/testing/unit/po_mips/outputs/switch.asm");
-    }*/
+    }
 
     @Test
     void unit_for() {
             test("src/testing/unit/po_mips/inputs/for.po", "src/testing/unit/po_mips/outputs/for.asm");
+    }
+
+    @Test
+    void unit_while() {
+        test("src/testing/unit/po_mips/inputs/while.po", "src/testing/unit/po_mips/outputs/while.asm");
+    }
+
+    @Test
+    void unit_vars() {
+        test("src/testing/unit/po_mips/inputs/vars.po", "src/testing/unit/po_mips/outputs/vars.asm");
+    }
+
+    @Test
+    void unit_functions() {
+        test("src/testing/unit/po_mips/inputs/func.po", "src/testing/unit/po_mips/outputs/func.asm");
+    }
+
+    @Test
+    void unit_helloWorld() {
+        test("src/testing/unit/po_mips/inputs/hello-world.po", "src/testing/unit/po_mips/outputs/hello-world.asm");
     }
 }

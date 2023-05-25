@@ -1,7 +1,8 @@
-var cont = 0
-
 main() {
-    while 1 == 1 {
+    var cont = 0
+    var a = 1
+
+    while a == a {
         if cont == 10 {
             break
         }

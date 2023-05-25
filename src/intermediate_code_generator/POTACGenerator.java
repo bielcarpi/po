@@ -46,6 +46,10 @@ public class POTACGenerator implements TACGenerator{
             tacBlock = new TACBlock(false);
             tac.add(pt.getRoot().getToken().getData(), tacBlock);
             traverseTree(pt.getRoot(), tac, pt.getRoot().getToken().getData()); //Traverse the function and generate TAC inside the block
+
+            //Add a return at the end of the function if it doesn't have one
+            if(tacBlock.getEntries().isEmpty() || tacBlock.getEntries().get(tacBlock.getEntries().size() - 1).getType() != TACType.RET)
+                tacBlock.add(new TACEntry(SymbolTable.MAIN_SCOPE, null, "0", TACType.RET));
         }
         else {
             //New block for the global assignations

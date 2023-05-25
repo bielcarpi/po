@@ -122,7 +122,7 @@ public class SymbolTable {
     }
 
     public String getNewInternalID() {
-        return "^" + internalIDCount++;
+        return "." + internalIDCount++;
     }
 
     @Override

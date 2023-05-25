@@ -138,6 +138,7 @@ public class POParser implements Parser {
         ParseTree.runTACOptimization(tree);
         System.out.println(tree);
         semanticAnalyzer.validateParseTree(tree);
+        System.out.println(SymbolTable.getInstance());
         ErrorManager.getInstance().printErrors();
         return tree;
     }

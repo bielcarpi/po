@@ -1,17 +1,14 @@
-global:
-	b = ^1001
-	a = 3
-
-main:
-	b = ^1002
-	savec
-	addp 0 ^1003
-	call prints
-	loadc
+PRINT_INT:
+	syscall 1
+	a0 = 0xA
+	syscall 11
 	ret 0
 
-PRINT_STR:
-	syscall 4
+main:
+	savec
+	addp 0 b
+	call print
+	loadc
 	ret 0
 
 

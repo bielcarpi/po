@@ -23,15 +23,13 @@ public class POParser implements Parser {
     public @NotNull ParseTree generateParseTree(@NotNull Lexer lexer, @NotNull SemanticAnalyzer semanticAnalyzer) {
         TokenStream ts = lexer.generateTokenStream(pureHLL);
         if(ts == null){
-            //TODO: Manage critical error
-            System.out.println("Error generating the token stream");
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.TOKEN_STREAM_ERROR, ErrorType.getMessage(ErrorType.TOKEN_STREAM_ERROR)));
             return null;
         }
 
         ArrayList<Production> productions = GrammarFactory.getGrammar(grammarFilePath);
         if(productions == null){
-            //TODO: Manage critical error
-            System.out.println("Error parsing the grammar");
+            ErrorManager.getInstance().addError(new entities.Error(ErrorType.TOKEN_STREAM_ERROR, ErrorType.getMessage(ErrorType.TOKEN_STREAM_ERROR)));
             return null;
         }
 

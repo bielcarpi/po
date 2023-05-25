@@ -22,7 +22,8 @@ public enum ErrorType {
     FUNCTION_UNDECLARED,
     INVALID_SYSCALL_USE,
     AMBIGUOUS_GRAMMAR,
-    TOKEN_STREAM_ERROR;
+    TOKEN_STREAM_ERROR,
+    GRAMMAR_PARSING_ERROR;
 
     public static String getMessage(ErrorType type) {
         return switch (type) {
@@ -33,6 +34,7 @@ public enum ErrorType {
             case BUFFER_LENGTH_ERROR -> "End of the execution. Warning: Token buffer is not empty!";
             case AMBIGUOUS_GRAMMAR -> "Error filling the Parsing Table. Grammar is ambiguous.";
             case TOKEN_STREAM_ERROR -> "Error generating the token stream.";
+            case GRAMMAR_PARSING_ERROR -> "Error parsing the grammar";
             default -> "Unknown error";
         };
     }

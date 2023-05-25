@@ -4,36 +4,32 @@ PRINT_INT:
 	syscall 11
 	ret 0
 
-READ_INT:
-	syscall 5
-	ret v0
-
 global:
 	b = 0
+	c = 1
+	d = 2
+	e = 3
+	f = 4
+	g = 5
+	h = 6
+	i = 7
+	j = 8
+	z = 9
 
 main:
-	savec
-	addp 0 $z1101
-	call prints
-	loadc
-	savec
-	call read
-	loadc
-	b = v0
-	savec
-	addp 0 $z1102
-	call prints
-	loadc
-	s0 = b * 2
+	s0 = c * d
+	s0 = s0 * e
+	s0 = s0 * f
+	s0 = s0 * g
+	s0 = s0 * h
+	s0 = s0 * i
+	s0 = s0 * j
+	s0 = s0 * z
 	b = s0
 	savec
 	addp 0 b
 	call print
 	loadc
-	ret 0
-
-PRINT_STR:
-	syscall 4
 	ret 0
 
 

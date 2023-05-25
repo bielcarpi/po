@@ -1,18 +1,15 @@
 var b = 0
-var c
-var d
-var e
-var f
-var g
-var h
-var i
-var j
-var z
+var c = 1
+var d = 2
+var e = 3
+var f = 4
+var g = 5
+var h = 6
+var i = 7
+var j = 8
+var z = 9
 
 main(){
-    prints("Input a number: ")
-    b = read()
-    prints("\nThe number introduced multiplied by 2 is: ")
-    b = b * 2
+    b = c*d*e*f*g*h*i*j*z
     print(b)
 }

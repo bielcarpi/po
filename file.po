@@ -1,6 +1,6 @@
 var a = 0
 
 main() {
-    a = -a
+    a = read()
     print(a)
 }

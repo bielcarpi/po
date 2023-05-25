@@ -367,7 +367,7 @@ public class POTACGenerator implements TACGenerator{
         }
         else{ //x = z
             //If z is a function call, we need to call it
-            if(SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
+            if(Syscall.isSyscall(node.getChildren().get(2).getToken().getData()) || SymbolTable.getInstance().lookup(node.getChildren().get(2).getToken().getData(), SymbolTable.GLOBAL_SCOPE) instanceof SymbolTableFunctionEntry){
                 generateTACFuncCall(node.getChildren().get(2), scope);
                 entry = new TACEntry(scope, node.getChildren().get(0).getToken().getData(),
                         "v0",

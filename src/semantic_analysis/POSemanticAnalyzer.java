@@ -151,10 +151,6 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
                 SymbolTableEntry ste = SymbolTable.getInstance().lookup(node.getToken().getData(), scope);
                 if (ste == null) {
                     if (Syscall.isSyscall(node.getToken().getData())) {
-                        // TODO: aqui potser la syscall retorna algo, de moment no es poden fer syscalls ens assignacions
-                        ErrorManager.getInstance().addError(new entities.Error(ErrorType.INVALID_SYSCALL_USE,
-                                "Error, cannot use a syscall as part of an assignment",
-                                node.getToken().getLine(), node.getToken().getColumn()));
                         return TokenType.UNKNOWN;
                     }
                     ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
@@ -195,10 +191,6 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
 
             if (steFirstChild == null) {
                 if (Syscall.isSyscall(firstChild.getToken().getData())) {
-                    // TODO: aqui potser la syscall retorna algo, de moment no es poden fer syscalls ens assignacions
-                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.INVALID_SYSCALL_USE,
-                            "Error, cannot use a syscall as part of an assignment",
-                            firstChild.getToken().getLine(), firstChild.getToken().getColumn()));
                     return TokenType.UNKNOWN;
                 }
                 ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,
@@ -230,10 +222,6 @@ public class POSemanticAnalyzer implements SemanticAnalyzer {
             SymbolTableEntry steThirdChild = SymbolTable.getInstance().lookup(thirdChild.getToken().getData(), scope);
             if (steThirdChild == null) {
                 if (Syscall.isSyscall(thirdChild.getToken().getData())) {
-                    // TODO: aqui potser la syscall retorna algo, de moment no es poden fer syscalls ens assignacions
-                    ErrorManager.getInstance().addError(new entities.Error(ErrorType.INVALID_SYSCALL_USE,
-                            "Error, cannot use a syscall as part of an assignment",
-                            thirdChild.getToken().getLine(), thirdChild.getToken().getColumn()));
                     return TokenType.UNKNOWN;
                 }
                 ErrorManager.getInstance().addError(new entities.Error(ErrorType.VARIABLE_UNDECLARED,

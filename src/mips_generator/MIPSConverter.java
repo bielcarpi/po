@@ -235,7 +235,8 @@ public class MIPSConverter {
     }
 
     private static boolean isLiteral(String toValidate) {
-        return toValidate.matches("[0-9]+"); //Check if string is a number
+        if(toValidate.startsWith("0x")) return true; //Check if string is a hex number
+        return toValidate.matches("^[0-9]+"); //Check if string is a number
     }
 
     private static String generateOperationMIPS(TACEntry tacEntry){
@@ -285,6 +286,8 @@ public class MIPSConverter {
     }
 
     private static String getVariableRegister(@NotNull String name, @NotNull String scope, @NotNull StringBuilder sb){
+        if(name.startsWith("0x")) return name; //If it is a memory address, return it
+
         if(SymbolTable.getInstance().lookup(name, scope) == null)
             return "$" + name;
 

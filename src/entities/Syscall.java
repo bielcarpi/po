@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 public enum Syscall {
     PRINT_INT("print", 1),
-    PRINT_STR("print", 4);
+    PRINT_STR("print", 4),
+    READ_INT("read", 5);
 
     private final String call;
     private final int id;
@@ -37,10 +38,17 @@ public enum Syscall {
         switch (this) {
             case PRINT_INT -> {
                 entries.add(new TACEntry(id, TACType.SYSCALL));
+                //After print int, print a newline
+                entries.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, "a0", "0xA", TACType.EQU));
+                entries.add(new TACEntry(11, TACType.SYSCALL));
                 entries.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "0", TACType.RET));
             }
             case PRINT_STR -> {
                 //entries.add(new TACEntry(TACType.SYSCALL, "4"));
+            }
+            case READ_INT -> {
+                entries.add(new TACEntry(id, TACType.SYSCALL));
+                entries.add(new TACEntry(SymbolTable.GLOBAL_SCOPE, null, "v0", TACType.RET));
             }
         }
 

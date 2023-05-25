@@ -25,7 +25,9 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
      */
     private int numTimesUsed;
 
-    private boolean isParam;
+    private final boolean isParam;
+
+    private final String strValue;
 
     /**
      * SymbolTableVariableEntry Constructor
@@ -39,10 +41,11 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
         registerID = -1;
         numTimesUsed = 0;
         isParam = false;
+        strValue = null;
     }
 
     /**
-     * SymbolTableVariableEntry Constructor
+     * SymbolTableVariableEntry Default Constructor
      * @param id The ID of the entry
      * @param scope The scope of the Variable
      * @param type The type of the Variable
@@ -56,6 +59,24 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
         registerID = paramNum;
         isParam = true;
         numTimesUsed = 0;
+        strValue = null;
+    }
+
+    /**
+     * SymbolTableVariableEntry Constructor for Strings
+     * @param id The ID of the entry
+     * @param scope The scope of the Variable
+     * @param type The type of the Variable
+     * @param strValue The value of the string
+     */
+    public SymbolTableVariableEntry(final @NotNull String id, final @NotNull String scope, final @NotNull TokenType type,
+                                    final String strValue) {
+        super(id, scope, type);
+        this.size = 1;
+        registerID = -1;
+        isParam = false;
+        numTimesUsed = 0;
+        this.strValue = strValue;
     }
 
     /**
@@ -105,11 +126,16 @@ public class SymbolTableVariableEntry extends SymbolTableEntry{
         return isParam;
     }
 
+    public String getStringValue() {
+        return strValue;
+    }
+
 
     @Override
     public String toString() {
         return "[Variable] ID: " + super.getId() + ", Type: " + super.getType() + ", Scope: " + super.getScope()
                 + ", Times Used: " + numTimesUsed + ", Register Assigned: " +
-                (isParameter() ? "$a" + registerID : (registerID == -1 ? "NULL" : "$t" + registerID) + "\n");
+                (isParameter() ? "$a" + registerID : (registerID == -1 ? "NULL" : "$t" + registerID) +
+                        (strValue == null ? "\n" : ", Value: " + strValue + "\n"));
     }
 }

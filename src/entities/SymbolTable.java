@@ -24,6 +24,8 @@ public class SymbolTable {
 
     private static HashSet<String> scopes = new HashSet<>();
 
+    private static int internalIDCount = 1001;
+
 
     /**
      * Private constructor for the singleton
@@ -117,6 +119,10 @@ public class SymbolTable {
             ((SymbolTableVariableEntry) ste).incrementNumTimesUsed();
 
         return ste;
+    }
+
+    public String getNewInternalID() {
+        return "^" + internalIDCount++;
     }
 
     @Override

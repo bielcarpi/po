@@ -1,27 +1,11 @@
-PRINT_INT:
-	syscall 1
-	a0 = 0xA
-	syscall 11
-	ret 0
-
-READ_INT:
-	syscall 5
-	ret v0
-
 global:
-	a = 0
+	b = ^1001
+	a = 3
 
 main:
+	b = ^1002
 	savec
-	call read
-	loadc
-	a = v0
-	savec
-	addp 0 a
-	call print
-	loadc
-	savec
-	addp 0 "hollal"
+	addp 0 ^1003
 	call prints
 	loadc
 	ret 0

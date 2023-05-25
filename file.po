@@ -1,7 +1,7 @@
-var a = 0
+var b = "hola"
+var a = 3
 
 main() {
-    a = read()
-    print(a)
+    b = "ei"
     prints("hollal")
 }

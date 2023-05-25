@@ -194,6 +194,23 @@ public class ParseTree {
             node.setSelf("assignacio", null);
         }
 
+        //If we have a STRING node, we'll create a new (internal) variable with the string value
+        if(node.getSelf().equals(TokenType.STRING)){
+            String newInternalID = SymbolTable.getInstance().getNewInternalID();
+            SymbolTableVariableEntry entry = new SymbolTableVariableEntry(
+                    newInternalID,
+                    scope,
+                    TokenType.STRING,
+                    node.getToken().getData());
+
+            SymbolTable.getInstance().insert(entry);
+
+            // Replace the STRING node with the new internal variable
+            Token newToken = new Token(TokenType.ID, newInternalID, node.getToken().getLine(), node.getToken().getColumn());
+            node.setSelf(TokenType.ID, newToken);
+            return;
+        }
+
         //If we have a FUNC token, we can substitute it for its first child (ID: the name of the FUNC) and remove the second child (the parameters)
         if(node.getSelf().equals(TokenType.FUNC)){
             // Insert function entry to the symbol table with unknown type for now.

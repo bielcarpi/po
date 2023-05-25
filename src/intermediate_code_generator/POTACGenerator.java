@@ -121,6 +121,19 @@ public class POTACGenerator implements TACGenerator{
                     }
                 }
                 case RET -> {
+                    if (node.getChildren().get(0).getSelf().equals("exp")) {
+                        generateTACAssignacioTemporal(node.getChildren().get(0), scope);
+                        tacBlock.add(new TACEntry(scope, null, "s4", TACType.RET));
+                        return -1;
+                    } else if (node.getChildren().get(0).getSelf().equals(TokenType.ID)) {
+                        SymbolTableEntry ste = SymbolTable.getInstance().lookup(node.getChildren().get(0).getToken().getData(), scope);
+                        assert ste != null;
+                        if (ste.entryType() == TokenType.FUNC) {
+                            generateTACFuncCall(node.getChildren().get(0), scope);
+                            tacBlock.add(new TACEntry(scope, null, "v0", TACType.RET));
+                            return -1;
+                        }
+                    }
                     tacBlock.add(new TACEntry(scope, null, node.getChildren().get(0).getToken().getData(), TACType.RET));
                     return -1;
                 }
@@ -166,6 +179,19 @@ public class POTACGenerator implements TACGenerator{
         if(node.getChildren() != null){
             for(int i = 0; i < node.getChildren().size(); i++) {
                 // TODO: here only supported params of type ID
+                if (node.getChildren().get(i).getSelf().equals("exp")) {
+                    generateTACAssignacioTemporal(node.getChildren().get(i), scope);
+                    tacBlock.add(new TACEntry(scope, null, "s4", i, TACType.ADD_PARAM));
+                    continue;
+                } else if (node.getChildren().get(i).getSelf().equals(TokenType.ID)) {
+                    SymbolTableEntry ste = SymbolTable.getInstance().lookup(node.getChildren().get(i).getToken().getData(), scope);
+                    assert ste != null;
+                    if (ste.entryType() == TokenType.FUNC) {
+                        generateTACFuncCall(node.getChildren().get(i), scope);
+                        tacBlock.add(new TACEntry(scope, null, "v0", i, TACType.ADD_PARAM));
+                        continue;
+                    }
+                }
                 tacBlock.add(new TACEntry(scope, null,
                         node.getChildren().get(i).getToken().getData(), i, TACType.ADD_PARAM));
             }
@@ -393,6 +419,25 @@ public class POTACGenerator implements TACGenerator{
                         TACType.getType(node.getChildren().get(1).getToken().getType()));
             }
         }
+
+        //Add the entry to the block
+        tacBlock.add(entry);
+    }
+
+    /**
+     * Generates TAC for an assignation of temporary values such as function call arguments that are
+     * function1(2 + 3) -> 2 + 3 must be stored in a temporary register
+     * @param node the node to be traversed
+     */
+    private void generateTACAssignacioTemporal(@NotNull ParseTreeNode node, @NotNull String scope) {
+        // During temporal assignations, node is always an expression
+        TACEntry entry;
+        traverseTACAssignacio(node, scope);
+
+        //All the temporary values calculated by the traversal are stored in WORK_REG
+        entry = new TACEntry(scope, "s4",
+                WORK_REG,
+                TACType.EQU);
 
         //Add the entry to the block
         tacBlock.add(entry);

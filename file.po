@@ -1,4 +1,9 @@
+var b = 0
+
 main(){
-    var b = 4
+    prints("Input a number: ")
+    b = read()
+    prints("\nThe number introduced multiplied by 2 is: ")
+    b = b * 2
     print(b)
 }

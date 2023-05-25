@@ -33,10 +33,11 @@ public class POMIPSGenerator implements MIPSGenerator {
                 sb.append(".data\n");
                 boolean written = false;
                 for(SymbolTableVariableEntry entry : vars){
-                    if(entry.getType() == TokenType.STRING){
+                    if(entry.getId().startsWith(SymbolTable.INTERNAL_PREFIX)){
                         sb.append("\t").append(entry.getId()).
                                 append(": .asciiz ").
-                                append(entry.getStringValue());
+                                append(entry.getStringValue()).
+                                append("\n");
                         written = true;
                     }
                 }
@@ -110,7 +111,7 @@ public class POMIPSGenerator implements MIPSGenerator {
         int globalVariablesInRegisters = 0;
         for(int i = 0; i < 8 && i < entries.size(); i++){
             if(entries.get(i).getScope().equals(SymbolTable.GLOBAL_SCOPE) &&
-                    entries.get(i).getType() != TokenType.STRING){
+                    !entries.get(i).getId().startsWith(SymbolTable.INTERNAL_PREFIX)){
                 entries.get(i).setRegisterID(globalVariablesInRegisters);
                 globalVariablesInRegisters++;
             }
@@ -137,7 +138,7 @@ public class POMIPSGenerator implements MIPSGenerator {
 
             //Assign registers to the 8-GLOBAL_VARIABLES_IN_REGISTERS most used variables in the scope
             for(SymbolTableVariableEntry entry : scopeEntries){
-                if(entry.isParameter() || entry.getStringValue() != null) continue; //Parameters are already assigned a register
+                if(entry.isParameter() || entry.getId().startsWith(SymbolTable.INTERNAL_PREFIX)) continue; //Parameters are already assigned a register
                 if(scopeAssignedRegisters == availableRegisters) break;
                 entry.setRegisterID(globalVariablesInRegisters + scopeAssignedRegisters);
                 scopeAssignedRegisters++;

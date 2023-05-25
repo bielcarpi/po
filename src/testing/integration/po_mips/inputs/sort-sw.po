@@ -10,7 +10,7 @@ func sortVars(var n) {
     var aux = 0
 
     for i = 0; i < n; i++ {
-        while 1 == 1 {
+        while j < 4 {
             switch j {
                 opt 0 -> {
                      if v1 > v2 {
